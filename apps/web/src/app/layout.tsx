@@ -1,7 +1,16 @@
 import type { Metadata } from 'next';
+import { Cormorant_Garamond, Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
 
 import './globals.css';
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
+const cormorant = Cormorant_Garamond({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-display',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Filaretti — ambiente de desenvolvimento',
@@ -12,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={`${inter.variable} ${cormorant.variable}`}>
       <body>
         <a className="skip-link" href="#conteudo">
           Ir para o conteúdo

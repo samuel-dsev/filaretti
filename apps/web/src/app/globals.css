@@ -1,101 +1,101 @@
 @import 'tailwindcss';
+@import '@filaretti/ui/styles.css';
+@import '../components/site/styles.css';
+@import '../components/admin/styles.css';
+@import './dev/design-system/demo.css';
 
 :root {
   color-scheme: light;
-  color: #161a1d;
-  background: #f7f8fa;
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--f-color-ink);
+  background: var(--f-color-offwhite);
+  font-family: var(--f-font-body);
 }
 
 body {
   margin: 0;
   line-height: 1.65;
 }
-
-.foundation {
-  width: min(100% - 2rem, 46rem);
-  margin: 0 auto;
-  padding: clamp(2rem, 8vw, 5rem) 0;
+* {
+  box-sizing: border-box;
 }
-
-h1,
-h2 {
-  color: #102a43;
-  font-weight: 700;
-  line-height: 1.2;
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
-
-h1 {
-  margin: 0 0 1.25rem;
-  font-size: clamp(2rem, 6vw, 3rem);
-}
-
-h2 {
-  margin: 0 0 0.75rem;
-  font-size: 1.25rem;
-}
-
 p {
   margin: 0 0 1rem;
 }
+img {
+  max-width: 100%;
+}
+html {
+  scroll-padding-top: 2rem;
+}
 
+:focus-visible {
+  outline: 3px solid var(--f-focus-color, var(--f-color-focus));
+  outline-offset: 4px;
+}
+.skip-link {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  color: #102a43;
+  background: #fff;
+  transform: translateY(-200%);
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+.foundation {
+  width: min(100% - 2rem, 46rem);
+  margin: auto;
+  padding: clamp(2rem, 8vw, 5rem) 0;
+}
+.foundation h1,
+.foundation h2 {
+  color: #102a43;
+  font-family: var(--f-font-display);
+  font-weight: 600;
+  line-height: 1.1;
+}
+.foundation h1 {
+  margin: 0 0 1.25rem;
+  font-size: clamp(2.5rem, 6vw, 4rem);
+}
+.foundation h2 {
+  margin: 0 0 0.75rem;
+  font-size: 2rem;
+}
 .environment-label {
   color: #404852;
   font-size: 0.875rem;
-  font-weight: 700;
+  font-weight: 600;
 }
-
 .introduction {
   margin-bottom: 2rem;
   font-size: 1.125rem;
 }
-
-.filaretti-panel {
-  padding: clamp(1.25rem, 4vw, 2rem);
-  border: 1px solid #cbd5e1;
-  border-radius: 0.5rem;
-  background: #fff;
-}
-
-.filaretti-panel > :last-child {
-  margin-bottom: 0;
-}
-
 .foundation-note {
   margin-top: 1.5rem;
   color: #404852;
   font-size: 0.875rem;
 }
-
 .return-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: 0.625rem 1rem;
   border: 0;
   border-radius: 0.25rem;
   color: #fff;
   background: #1d4e89;
   font: inherit;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-}
-
-:focus-visible {
-  outline: 3px solid #1d4e89;
-  outline-offset: 4px;
-}
-
-.skip-link {
-  position: absolute;
-  top: 0.5rem;
-  left: 0.5rem;
-  z-index: 1;
-  padding: 0.5rem 1rem;
-  color: #102a43;
-  background: #fff;
-  transform: translateY(-200%);
-}
-
-.skip-link:focus {
-  transform: translateY(0);
 }

@@ -1,6 +1,6 @@
 {
   "name": "filaretti",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "packageManager": "pnpm@11.25.0",
   "engines": {
@@ -14,6 +14,7 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:integration": "pnpm --filter @filaretti/api test:integration",
+    "test:design-system": "node scripts/check-design-system.mjs",
     "db:generate": "pnpm --filter @filaretti/api db:generate",
     "db:migrate": "pnpm --filter @filaretti/api db:migrate",
     "db:seed:development": "pnpm --filter @filaretti/api db:seed:development",

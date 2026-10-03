@@ -2,17 +2,17 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                            | Situação                                                                                                                                            |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Última atualização               | 03/10/2026 — F2 concluída com PostgreSQL e HTTP reais                                                                                               |
-| Último relatório                 | `RP-003`, em `relate.md`                                                                                                                            |
-| Última entrega técnica concluída | **F2 — Banco, autenticação e API de domínio; aceite local aprovado**                                                                                |
-| Versão de referência             | `0.2.0`, registrada no `package.json` raiz e nos sete workspaces privados                                                                           |
-| Etapa em execução                | Nenhuma; F2 concluída                                                                                                                               |
-| Próxima etapa                    | **F3 — Design System e estrutura de interfaces**                                                                                                    |
-| Autorização da próxima etapa     | **Aguardando confirmação do usuário para F3**                                                                                                       |
-| Git                              | `dev`, remoto `origin` em `samuel-dsev/filaretti`; base F1 `1ffd195`; commit F2 previsto em RP-003; push para `origin/dev` expressamente autorizado |
-| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                                                                      |
+| Campo                            | Situação                                                                                                                         |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Última atualização               | 03/10/2026 — F3 concluída com revisão visual e teclado no Edge                                                                   |
+| Último relatório                 | `RP-004`, em `relate.md`                                                                                                         |
+| Última entrega técnica concluída | **F3 — Design System e estrutura de interfaces; aceite local aprovado**                                                          |
+| Versão de referência             | `0.3.0`, registrada no package.json raiz e nos sete workspaces privados                                                          |
+| Etapa em execução                | Nenhuma; F3 concluída                                                                                                            |
+| Próxima etapa                    | **F4 — Site institucional conectado à API**                                                                                      |
+| Autorização da próxima etapa     | **Aguardando confirmação do usuário para F4**                                                                                    |
+| Git                              | `dev`, remoto `origin` em `samuel-dsev/filaretti`; base F2 `93ac520`; commit local F3 previsto em RP-004; push F3 não autorizado |
+| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                                                   |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -70,7 +70,7 @@ Usar migrations versionadas, relações e políticas de exclusão explícitas. A
 | F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                 | **Concluída — RP-000** |
 | F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026     | **Concluída — RP-002** |
 | F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1; autorizada pelo usuário  | **Concluída — RP-003** |
-| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2                           | Pendente               |
+| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026 | **Concluída — RP-004** |
 | F4    | 0.4.0           | Site institucional conectado à API            | F3                           | Pendente               |
 | F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4                           | Pendente               |
 | F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5                           | Pendente               |
@@ -223,4 +223,4 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 
 ## 8. Registro da última atualização
 
-**03/10/2026 — RP-003 — F2 concluída:** versão `0.2.0`; 26 modelos, duas migrations, índices/FTS em português, seeds protegidos e idempotentes, autenticação/roles/CSRF/revogação e APIs institucionais/editoriais implementadas. Instalação frozen, schema, lint, typecheck, build e testes passaram; integração executada em bancos PostgreSQL 17.11 novos e isolados, com 27 entradas aprovadas, sem skips, mais checks de seeds e primeiro ADMIN. Banco local de desenvolvimento recebeu migrations e seed sem reset; smoke HTTP comprovou API/proxy, Swagger e sessão na mesma origem da web. Commit de entrega previsto e inventário completo em RP-003; push para `origin/dev` autorizado pelo usuário. Nenhum deploy ou fornecedor real executado. **Ponto de parada: F2 entregue; aguardar autorização para F3.**
+**03/10/2026 — RP-004 — F3 concluída:** versão `0.3.0`; tokens, Inter/Cormorant via next/font, componentes compartilhados, layouts público/administrativo e demonstrações somente locais. Instalação frozen, lint, typecheck, 12 testes e build passaram; 44 combinações de contraste, 10 layouts em cinco larguras e 15 interações no Edge 154 aprovados. Proxy/gates do bundle otimizado retornam 404 fora do ambiente/Host permitido. Migrations, consultas e API de domínio preservadas. Commit local previsto e inventário em RP-004; sem push, deploy ou fornecedores reais. **Ponto de parada: F3 entregue; aguardar autorização para F4.**

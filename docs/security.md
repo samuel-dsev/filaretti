@@ -47,6 +47,12 @@ ADMIN controla usuários/configurações; EDITOR mantém e publica conteúdo; AU
 
 DTOs recusam campos não previstos. Conteúdo TipTap e seções de página têm schema permitido e limites; os detalhes ficam em `docs/api.md`. Sanitização/renderização completa, upload e preview pertencem às F5/F6. Preparar entidades/interfaces não representa fluxos completos de mídia, contato, newsletter ou worker.
 
+## Demonstração visual local da F3
+
+`/dev/design-system` e seu layout administrativo são exemplos fictícios, sem sessão, dados reais ou chamadas administrativas. Exigem APP_ENV=development, Host loopback e bind local; Proxy Next rejeita fora dessas condições com HTTP 404/no-store/noindex antes da renderização. O layout servidor repete a guarda e não produz cache estático. A checagem de Host complementa o isolamento local, sem substituir autenticação ou autorização da API.
+
+Nenhum campo de exemplo é enviado ou persistido. Cookies/tokens continuam exclusivos dos contratos da F2; o layout administrativo não declara login concluído. Testes da allowlist e smokes do bundle otimizado validam ambientes e hosts negativos; detalhes em docs/design-system.md e RP-004.
+
 ## Controles futuros e gates
 
 | Fase   | Controles pendentes                                                                                               |

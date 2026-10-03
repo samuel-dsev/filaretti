@@ -1,9 +1,9 @@
-import { Panel } from '@filaretti/ui';
+import { LinkButton, Panel } from '@filaretti/ui';
 
 export default function FoundationPage() {
   return (
     <main id="conteudo" className="foundation" tabIndex={-1}>
-      <p className="environment-label">Ambiente local · F1</p>
+      <p className="environment-label">Ambiente de desenvolvimento · F3</p>
       <h1>Fundação do projeto Filaretti</h1>
       <p className="introduction">
         Aplicação web preparada para as próximas etapas do planejamento.
@@ -15,6 +15,9 @@ export default function FoundationPage() {
           Esta página contém apenas conteúdo fictício de demonstração. O site institucional e o
           painel administrativo serão implementados nas etapas autorizadas do plano.
         </p>
+        {process.env.APP_ENV === 'development' && (
+          <LinkButton href="/dev/design-system">Abrir demonstração visual</LinkButton>
+        )}
       </Panel>
 
       <p className="foundation-note">

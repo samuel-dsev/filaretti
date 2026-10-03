@@ -1,6 +1,6 @@
 # Arquitetura
 
-Referência: F2, versão `0.2.0`, 03/10/2026. O estado da entrega e as evidências executadas ficam em `../relate.md`; este documento registra decisões e fronteiras de responsabilidade.
+Referência: F3, versão `0.3.0`, 03/10/2026. O estado da entrega e as evidências executadas ficam em `../relate.md`; este documento registra decisões e fronteiras de responsabilidade.
 
 ## Fundação F1
 
@@ -10,7 +10,7 @@ A raiz do repositório é um monorepo pnpm + Turborepo. Web e API rodam como pro
 | ------------------------ | ---------------------------------------------------------------------- |
 | `apps/web`               | Next.js App Router, React e Tailwind; interface e renderização         |
 | `apps/api`               | NestJS; configuração, health, tratamento de erros e logging sanitizado |
-| `packages/ui`            | Ponto de entrada de UI compartilhada; biblioteca completa na F3        |
+| `packages/ui`            | Biblioteca visual React, tokens e estilos compartilhados da F3         |
 | `packages/types`         | Contratos públicos independentes de modelos de persistência            |
 | `packages/config`        | Validação e convenções de ambiente, sem exportar segredos ao navegador |
 | `packages/eslint-config` | Regras compartilhadas de lint                                          |
@@ -35,7 +35,7 @@ As versões selecionadas para a fundação são fixadas nos manifests e no lockf
 | Prisma           | `7.10.0`, reservado para a persistência da F2                   |
 | PostgreSQL       | `17.11-alpine`; imagem oficial e digest fixados no Compose e CI |
 
-`package.json` raiz é a referência da versão do projeto. Apps e pacotes privados acompanham `0.2.0`; não são releases independentes nem são publicados em registry. Versões 0.x seguem os marcos do plano; correções incrementam PATCH e uma mudança funcional incrementa MINOR. A política segue o formato do [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+`package.json` raiz é a referência da versão do projeto. Apps e pacotes privados acompanham `0.3.0`; não são releases independentes nem são publicados em registry. Versões 0.x seguem os marcos do plano; correções incrementam PATCH e uma mudança funcional incrementa MINOR. A política segue o formato do [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## Fluxo local
 
@@ -60,6 +60,8 @@ URLs públicas e internas são separadas: `API_INTERNAL_URL` fica no servidor; `
 As tarefas de lint, typecheck, testes e build são orquestradas na raiz. Configuração usa Vitest; a API usa o test runner nativo do Node, com TypeScript compilado e HTTP real. A integração de health exige PostgreSQL real. CI instala pelo lockfile e executa lint, typecheck, testes unitários, `pnpm test:integration` e build; não publica artefatos nem faz deploy automático. Logs e erros devem preservar os limites de [security.md](security.md).
 
 ## Evolução autorizada por fase
+
+Na F3, `@filaretti/ui` exporta componentes React e CSS sem dependências do backend. A web carrega Inter/Cormorant por next/font e contém layouts consumidores em `components/site` e `components/admin`. A demonstração local tem Proxy de acesso anterior ao streaming, guarda servidor e renderização dinâmica; não consome a API nem cria sessão. O pacote compartilhado e os layouts recebem dados/ações por props para integração nas F4–F6. Detalhes e limites: [design-system.md](design-system.md).
 
 | Fase   | Próxima responsabilidade                                                  |
 | ------ | ------------------------------------------------------------------------- |

@@ -1,6 +1,6 @@
 # Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.2.0**, definida pelo `package.json` raiz e alinhada nos oito workspaces privados. A F2 acrescenta schema, migrations, seeds fictícios, autenticação e API de domínio. Interface institucional, CMS, mídia e integrações completas seguem as fases seguintes. Situação e validações reais: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.3.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. A F2 implementa banco e API; a F3 acrescenta Design System, componentes acessíveis e layouts público/administrativo com demonstração fictícia local. Páginas conectadas, CMS e integrações completas seguem as próximas fases. Situação e validações reais: [relate.md](relate.md).
 
 ## Pré-requisitos
 
@@ -27,7 +27,9 @@ pnpm dev
 
 `setup:local` gera `.env`, `apps/api/.env` e `apps/web/.env.local` ignorados pelo Git, com segredos aleatórios exclusivamente locais. Recusa sobrescrever qualquer um desses arquivos e não imprime valores. Exemplos versionados contêm placeholders; nunca usar esses placeholders em produção. Nenhuma conta externa é necessária. Os pacotes compartilhados são compilados automaticamente antes dos apps pelo Turbo, inclusive no primeiro `pnpm dev`.
 
-Abra `http://127.0.0.1:3000` para a página fictícia da fundação. API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. A web encaminha `/api/v1/*` para a API por origem única; o navegador recebe cookies HttpOnly e envia o header CSRF nas mutações. Contratos e procedimentos: [docs/api.md](docs/api.md). Nenhuma conexão de banco ou segredo usa prefixo `NEXT_PUBLIC_`.
+Abra `http://127.0.0.1:3000` para a página de desenvolvimento e `/dev/design-system` para a biblioteca visual; `/dev/design-system/admin` apresenta o layout administrativo. As demonstrações exigem `APP_ENV=development` e Host de loopback, retornando 404 fora dessas condições. O build otimizado local também permite a revisão com `APP_ENV=development`. Fonte e contratos dos componentes: [docs/design-system.md](docs/design-system.md).
+
+API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. A web encaminha `/api/v1/*` para a API por origem única; o contrato de sessão usa cookies HttpOnly e header CSRF nas mutações. A demonstração da F3 não autentica nem chama endpoints administrativos. Contratos e procedimentos: [docs/api.md](docs/api.md). Nenhuma conexão de banco ou segredo usa prefixo `NEXT_PUBLIC_`.
 
 O seed usa somente contas e conteúdo explicitamente fictícios. Credenciais locais e procedimento do primeiro ADMIN sem senha padrão em produção: [docs/database.md](docs/database.md). Não executar seed de desenvolvimento fora de `APP_ENV=development`; `seed-production` contém apenas configuração estrutural. Recuperação de senha já possui tokens e consumo seguro; a entrega por e-mail entra na F7.
 
@@ -40,6 +42,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm test:integration
+pnpm test:design-system
 pnpm build
 pnpm format:check
 pnpm --filter @filaretti/api db:validate
@@ -64,7 +67,7 @@ O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset
 | --------------------------------------------- | -------------------------------------------------------------------------------------- |
 | `apps/web`                                    | Next.js App Router/React/Tailwind; página local e tratamento inicial de erro/404       |
 | `apps/api`                                    | NestJS; Prisma, autenticação/roles, API de domínio, logs sanitizados, Swagger e health |
-| `packages/ui`                                 | Primitivo inicial compartilhado; Design System completo na F3                          |
+| `packages/ui`                                 | Tokens CSS, controles, formulários, diálogos e estados compartilhados da F3            |
 | `packages/types`                              | Contratos de autenticação e domínio; sem modelos Prisma/segredos                       |
 | `packages/config`                             | Configuração validada por ambiente; exclusivamente no servidor                         |
 | `packages/eslint-config`, `packages/tsconfig` | Regras e TypeScript estrito compartilhados                                             |
@@ -72,7 +75,7 @@ O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset
 
 Todos os pacotes são privados. Não há publicação npm; bump funcional da etapa acontece na raiz e nos workspaces, acompanhado de plano/relatório e lockfile. Husky/lint-staged formatam arquivos staged; CI e checks completos continuam obrigatórios.
 
-Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F2, commit e push para `origin/dev`. F3, PR, homologação e produção dependem de autorização própria.
+Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F3 e commit local. F4, push, PR, homologação e produção dependem de autorização própria.
 
 ## Referências
 

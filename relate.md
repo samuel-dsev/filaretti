@@ -2,22 +2,131 @@
 
 ## Situação atual
 
-| Campo                | Estado                                                                                                                 |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Última atualização   | 03/10/2026 — RP-003                                                                                                    |
-| Etapa                | **F2 concluída — aceite local aprovado**                                                                               |
-| Versão               | `0.2.0` no package.json raiz e nos sete workspaces privados                                                            |
-| Código/aplicação     | Banco, autenticação, autorização e APIs institucionais/editoriais implementados; interfaces visuais nas próximas fases |
-| Ambiente             | PostgreSQL 17.11 real no Compose, migrations/seed locais aplicados; HTTP direto e proxy web verificados                |
-| Git                  | `dev`, remoto `origin`; base F1 `1ffd195`; fechamento da F2 conforme RP-003                                            |
-| Commit desta entrega | `feat(api): implementa banco, autenticação e domínio (v0.2.0)`; SHA real informado após commit                         |
-| Próxima etapa        | **F3 — Design System e estrutura de interfaces**                                                                       |
-| Autorização          | Push da F2 para `origin/dev` autorizado; **aguardando confirmação para F3**                                            |
-| Checkpoint           | RP-003 abaixo e quadro inicial de plan.md                                                                              |
+| Campo                | Estado                                                                                          |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| Última atualização   | 03/10/2026 — RP-004                                                                             |
+| Etapa                | **F3 concluída — aceite local aprovado**                                                        |
+| Versão               | `0.3.0` na raiz e nos sete workspaces privados                                                  |
+| Código/aplicação     | Design System, componentes e layouts público/administrativo; demonstrações locais fictícias     |
+| Ambiente             | Edge 154 em build otimizado local, cinco larguras e teclado revisados; API/banco F2 preservados |
+| Git                  | `dev`, remoto `origin`; base F2 `93ac520`; commit local F3 conforme RP-004                      |
+| Commit desta entrega | `feat(ui): implementa design system e layouts (v0.3.0)`; SHA real informado após commit         |
+| Próxima etapa        | **F4 — Site institucional conectado à API**                                                     |
+| Autorização          | **Aguardando confirmação para F4; push F3 não autorizado**                                      |
+| Checkpoint           | RP-004 abaixo e quadro inicial de plan.md                                                       |
 
-Este documento distingue implementação, validação e pendências externas. Atualizar este quadro em toda entrega ou interrupção e acrescentar uma entrada ao histórico, preservando as anteriores. Datas e horários informados ao usuário seguem America/Sao_Paulo.
+Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo.
 
 ## Histórico
+
+### RP-004 — 03/10/2026 — F3 — Design System e estrutura de interfaces
+
+**Escopo autorizado:** “Inicie a fase F3”. Implementação da F3 e commit local conforme AGENTS.md. **Estado: concluída tecnicamente; aceite local aprovado.** F4, push, PR e publicação dependem de autorização própria.
+
+**Versão:** `0.2.0` → `0.3.0`; oito manifests privados alinhados. Nenhuma dependência nova, alteração de schema, migration, seed ou consulta. Lockfile preservado e instalação frozen aprovada.
+
+**Git e continuidade:** cwd real `C:\Users\Samuel\Documents\Projetos\Filaretti`; caminho antigo `Projeto` ausente. Branch `dev` inicialmente limpa, base F2 `93ac520ea35fa11a291c271a9d707d65a3f90b59`; remoto existente `origin` em samuel-dsev/filaretti. SHA real da F2 confirmado nesta retomada. Commit F3 previsto: `feat(ui): implementa design system e layouts (v0.3.0)`; SHA informado após commit e registrado na próxima retomada, sem commit circular.
+
+#### Arquivos criados e alterados
+
+Criados (34):
+
+- `apps/web/src/app/dev/design-system/admin/page.tsx`
+- `apps/web/src/app/dev/design-system/demo-content.ts`
+- `apps/web/src/app/dev/design-system/demo.css`
+- `apps/web/src/app/dev/design-system/layout.tsx`
+- `apps/web/src/app/dev/design-system/page.tsx`
+- `apps/web/src/app/dev/design-system/showcase.tsx`
+- `apps/web/src/app/icon.svg`
+- `apps/web/src/components/admin/admin-layout.tsx`
+- `apps/web/src/components/admin/index.ts`
+- `apps/web/src/components/admin/styles.css`
+- `apps/web/src/components/site/brand.tsx`
+- `apps/web/src/components/site/breadcrumb.tsx`
+- `apps/web/src/components/site/content-cards.tsx`
+- `apps/web/src/components/site/hero.tsx`
+- `apps/web/src/components/site/icons.tsx`
+- `apps/web/src/components/site/index.ts`
+- `apps/web/src/components/site/public-layout.tsx`
+- `apps/web/src/components/site/search-overlay.tsx`
+- `apps/web/src/components/site/site-footer.tsx`
+- `apps/web/src/components/site/site-header.tsx`
+- `apps/web/src/components/site/styles.css`
+- `apps/web/src/components/site/types.ts`
+- `apps/web/src/lib/local-demo.ts`
+- `apps/web/src/proxy.ts`
+- `apps/web/test/local-demo.test.mjs`
+- `packages/ui/src/accordion.tsx`
+- `packages/ui/src/avatar.tsx`
+- `packages/ui/src/button.tsx`
+- `packages/ui/src/dialog.tsx`
+- `packages/ui/src/fields.tsx`
+- `packages/ui/src/styles.css`
+- `packages/ui/src/surfaces.tsx`
+- `packages/ui/src/toast.tsx`
+- `scripts/check-design-system.mjs`
+
+Alterados (20):
+
+- `.github/workflows/ci.yml`
+- `README.md`
+- `apps/api/package.json`
+- `apps/web/package.json`
+- `apps/web/src/app/globals.css`
+- `apps/web/src/app/layout.tsx`
+- `apps/web/src/app/page.tsx`
+- `docs/architecture.md`
+- `docs/design-system.md`
+- `docs/security.md`
+- `package.json`
+- `packages/config/package.json`
+- `packages/eslint-config/package.json`
+- `packages/tsconfig/package.json`
+- `packages/types/package.json`
+- `packages/ui/package.json`
+- `packages/ui/src/index.ts`
+- `packages/ui/src/panel.tsx`
+- `plan.md`
+- `relate.md`
+
+Nenhum arquivo removido. Helpers, JSONs e imagens de evidência em `.local/` permanecem ignorados, como ambientes privados e builds. Inventário de 54 arquivos revisado para staging explícito.
+
+#### Implementação e decisões
+
+- Tokens semânticos da paleta prevista, cores de status, foco claro/escuro, escala tipográfica/espaçamento, containers e breakpoints. Inter e Cormorant Garamond via next/font, hospedadas no build com fallback e display swap. O primeiro build usa rede para obter fontes; o navegador não consulta Google Fonts.
+- Biblioteca UI compartilhada: botões/links, campos/FormField com erros e ajuda associados, cards/badges/avatar, Dialog/Drawer, Accordion, Pagination, Skeleton, Toast e vazio/erro. Panel preservado. HTML dialog mantém foco, bloqueia scroll e devolve foco ao acionador; Escape explícito cobre o comportamento particular do search input no Edge. Componentes não importam módulos do backend.
+- Layout público: header configurável, mega menu, navegação mobile, footer, hero, breadcrumb, cards editoriais/áreas/profissionais e busca demonstrativa. Layout administrativo: sidebar responsiva, navegação, cabeçalho e slots. Conteúdo vem de props; a integração com domínio fica nas fases consumidoras. Marca tipográfica, SVG e ilustrações CSS substituíveis, sem imagens/identidades reais.
+- Demonstrações `/dev/design-system` e `/dev/design-system/admin`: somente APP_ENV development e Host loopback exato, no-store/noindex. Proxy Next bloqueia antes do streaming com 404, complementado pela guarda de layout servidor. Nenhuma sessão administrativa, API, envio ou persistência de campo da demo.
+- Formulário de exemplo valida localmente, associa feedback ARIA e focaliza o primeiro inválido; sucesso informa ausência de envio. Paginação altera query/aria-current. Toast mantém mensagem até fechamento pelo usuário. Menus e acordeões usam semântica de navegação/divulgação, sem dependência de hover. Reduced motion e estados loading/empty/error presentes.
+- Três subagentes trabalharam em UI, layouts e QA com arquivos separados; principal integrou, revisou código/evidências e executou checks. Correções decorrentes da revisão: skip link único/main consistente, keys de links com mesmo destino, Escape no search, rejeição antes do streaming, ícone local, botão busca sem quebra em 1024 px e espaçamento entre blocos admin.
+- Checker de contraste sem dependências acrescentado como `pnpm test:design-system` e ao CI. Dois testes da allowlist entram em `pnpm test` da web; manifesto web declara ESM para executá-los nativamente no Node 24. Workflow foi atualizado, sem execução remota nesta sessão.
+
+#### Validação executada
+
+| Check                   | Resultado/evidência                                                                                                                                                                                                                                                           |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Continuidade/instalação | AGENTS.md, plan inteiro, RP-003 e docs aplicáveis lidos; dev limpa/base F2 confirmadas; pnpm install --frozen-lockfile passou                                                                                                                                                 |
+| Lint/typecheck          | pnpm lint e pnpm typecheck passaram; checks focados de UI/layouts também passaram                                                                                                                                                                                             |
+| Testes                  | pnpm test: 12 aprovados (7 config, 3 API/fundação, 2 allowlist de demonstração); sem falhas/skips                                                                                                                                                                             |
+| Build                   | pnpm build passou para monorepo; web otimizada repetida após correções finais, com duas demos dinâmicas, Proxy e icon.svg                                                                                                                                                     |
+| Contraste               | 44 combinações semânticas aprovadas; mínimo de texto 5,025:1 e de controle 3,082:1. Duas paletas degradadas foram rejeitadas em cópias isoladas, sem tocar fonte                                                                                                              |
+| Navegador/layouts       | Edge `154.0.4258.53` headless, bundle otimizado em loopback3003: público/admin em 375/768/1024/1440/1920 px; 10 layouts, um h1/main, labels/noindex/skip e sem overflow horizontal ou falha no contraste de texto sólido                                                      |
+| Interações              | 15 cenários aprovados: mega menu por Enter/ArrowDown/Escape; busca com foco inicial/estado/vazio e Escape; modal/drawer com Tab/Escape/restauração; accordion; form inválido/válido sem mutação de rede; toast; paginação; reduced motion; menus mobile/admin e host negativo |
+| Gates reais locais      | Bundle otimizado iniciado somente no host local sob development/staging/production: duas rotas200 em development e404 nos outros ambientes; três hosts negativos404; no-store. Não é deploy em ambiente externo                                                               |
+| Inspeção visual         | 20 PNGs dos layouts (10 fullPage + 10 viewport) e 4 overlays; principal inspecionou os cinco tamanhos e templates; correção1024 revisada. Rodada final sem console error, pageerror ou HTTP inesperado >=400                                                                  |
+| Fronteiras              | Nenhum import de Prisma/Nest/config privado em fonte UI/web, e nenhum envio de dados no formulário/busca demo; ambientes/builds/evidências ignorados pelo Git                                                                                                                 |
+| Formatação/Git          | Prettier e git diff --check no fechamento; staging explícito dos arquivos desta etapa, sem push                                                                                                                                                                               |
+
+Evidências ignoradas: `.local/f3-smoke.json`, `f3-contrast.json`, `f3-contrast-negative.json`, `f3-gates.json` e `f3-evidence/`. Smokes/browser helpers são locais, não testes Playwright portáveis/CI; a consolidação E2E está prevista na F8. Não declarar execução remota do workflow.
+
+#### Limites e encerramento
+
+- Nenhuma verificação com Safari/Firefox, dispositivos físicos ou leitor de tela. Contraste sólido/teclado e inspeção visual não certificam conformidade WCAG completa; revisão abrangente na F8.
+- PostgreSQL/integracao de domínio não repetidos nesta fase: schema, migrations e consultas não mudaram; o aceite real da F2 permanece no RP-003. Nenhum fornecedor, e-mail, storage remoto, DNS, conta ou dado real foi operado.
+- Busca é estrutura visual; páginas/API na F4/F5, CMS na F6 e relacionamento/busca operacional na F7. Identidade, fotos e materiais oficiais dependem de aprovação até F9. O painel demonstrativo não autentica nem representa CMS concluído.
+- Preview otimizado local disponibilizado em `http://127.0.0.1:3003/dev/design-system` durante a entrega; execução futura pelo README. Nenhum push, PR, merge, release ou deploy foi realizado.
+
+**Ponto de parada:** F3 concluída, versão `0.3.0`. **Próxima etapa:** F4 — Site institucional conectado à API, somente após confirmação do usuário. Reler documentos, conferir Git/cwd e registrar o SHA real da F3 na próxima retomada.
 
 ### RP-003 — 03/10/2026 — F2 — Banco, autenticação e API de domínio
 
