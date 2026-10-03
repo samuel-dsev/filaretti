@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [dev, main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+        env:
+          POSTGRES_USER: filaretti_dev
+          POSTGRES_PASSWORD: ci-test-only-password
+          POSTGRES_DB: filaretti_dev
+        ports: ['5434:5432']
+        options: >-
+          --health-cmd "pg_isready -U filaretti_dev -d filaretti_dev"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      APP_ENV: development
+      API_INTERNAL_URL: http://localhost:3001
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_API_BASE_PATH: /api/v1
+      MOCK_CONTENT: 'true'
+      DATABASE_URL: postgresql://filaretti_dev:ci-test-only-password@127.0.0.1:5434/filaretti_dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm test:integration
+      - run: pnpm build

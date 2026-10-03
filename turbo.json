@@ -1,0 +1,36 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "globalDependencies": ["**/.env", "**/.env.local"],
+  "globalEnv": [
+    "APP_ENV",
+    "NODE_ENV",
+    "API_INTERNAL_URL",
+    "NEXT_PUBLIC_SITE_URL",
+    "NEXT_PUBLIC_API_BASE_PATH",
+    "MOCK_CONTENT",
+    "NEXT_PUBLIC_TURNSTILE_SITE_KEY",
+    "NEXT_PUBLIC_GA4_ID",
+    "NEXT_PUBLIC_SENTRY_DSN"
+  ],
+  "tasks": {
+    "@filaretti/ui#build": { "outputs": [] },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": [
+        "NODE_ENV",
+        "API_INTERNAL_URL",
+        "NEXT_PUBLIC_SITE_URL",
+        "NEXT_PUBLIC_API_BASE_PATH",
+        "MOCK_CONTENT",
+        "NEXT_PUBLIC_TURNSTILE_SITE_KEY",
+        "NEXT_PUBLIC_GA4_ID",
+        "NEXT_PUBLIC_SENTRY_DSN"
+      ]
+    },
+    "dev": { "dependsOn": ["^build"], "cache": false, "persistent": true, "env": ["*"] },
+    "lint": { "dependsOn": ["^build"] },
+    "typecheck": { "dependsOn": ["^build"] },
+    "test": { "dependsOn": ["^build"] }
+  }
+}

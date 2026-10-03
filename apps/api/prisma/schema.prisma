@@ -1,0 +1,4 @@
+// Domínio e migrations serão adicionados somente na F2.
+datasource db {
+  provider = "postgresql"
+}

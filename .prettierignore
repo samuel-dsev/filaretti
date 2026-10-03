@@ -1,0 +1,10 @@
+node_modules
+.next
+.turbo
+dist
+dist-test
+coverage
+pnpm-lock.yaml
+.local
+.husky/_
+**/next-env.d.ts

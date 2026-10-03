@@ -2,16 +2,17 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo | Situação |
-| --- | --- |
-| Última atualização | 02/10/2026 — F0: planejamento inicial |
-| Último relatório | `RP-000`, em `relate.md` |
-| Última entrega técnica concluída | Documentação de planejamento; nenhum código implementado |
-| Versão de referência | `0.0.0`, apenas documental; ainda não existe manifesto de versão |
-| Etapa em execução | Nenhuma |
-| Próxima etapa | **F1 — Fundação técnica e ambiente local** |
-| Autorização da próxima etapa | **Aguardando confirmação do usuário** |
-| Git | Pasta sem repositório em 02/10/2026; primeiro commit, remoto e branch serão preparados pelo usuário |
+| Campo                            | Situação                                                                                                         |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Última atualização               | 02/10/2026 — F1: base local preparada; aguardando reinício/Docker                                                |
+| Último relatório                 | `RP-001`, em `relate.md`                                                                                         |
+| Última entrega técnica concluída | F0 documental; implementação local da F1 validada, com aceite de PostgreSQL/Compose pendente                     |
+| Versão de referência             | `0.1.0`, registrada no `package.json` raiz e nos workspaces privados                                             |
+| Etapa em execução                | **F1 parcial — aguardando reinício do computador e Docker disponível**                                           |
+| Próxima etapa                    | Concluir o aceite da F1 com PostgreSQL real; F2 permanece pendente                                               |
+| Autorização da próxima etapa     | Retomada da F1 já autorizada; F2 exige confirmação após a conclusão da F1                                        |
+| Git                              | `dev`, remoto `origin` em `samuel-dsev/filaretti`; baseline do usuário `6c84b6a`; commit local da base preparado |
+| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`; caminho antigo `Projeto` não existe                              |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -21,13 +22,13 @@ Os números de versão abaixo são marcos previstos. Correções intermediárias
 
 Construir, nesta pasta, um portal institucional e editorial para a Filaretti Advocacia, com CMS próprio. O fluxo principal será **conteúdo → área de atuação → profissional → contato**. A V1 deve permitir que a equipe mantenha o conteúdo sem editar código.
 
-| Superfície | Escopo da V1 |
-| --- | --- |
-| Institucional | Home, escritório, áreas e detalhes, profissionais e perfis, FAQ, contato, privacidade e cookies |
-| Editorial | Artigos, atualizações e guias; detalhes, filtros, busca global, relacionados, sumário, compartilhamento e downloads públicos aprovados |
-| Relacionamento | Link de WhatsApp, contato com anexos privados, newsletter com confirmação e descadastro |
-| Administração | Login, dashboard, artigos, categorias, tags, áreas, profissionais, FAQ, páginas institucionais, mídia, contatos, assinantes, usuários, redirecionamentos e configurações |
-| Operação | SEO, analytics por consentimento, segurança, acessibilidade, testes, CI, homologação, migração, backup e publicação controlada |
+| Superfície     | Escopo da V1                                                                                                                                                             |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Institucional  | Home, escritório, áreas e detalhes, profissionais e perfis, FAQ, contato, privacidade e cookies                                                                          |
+| Editorial      | Artigos, atualizações e guias; detalhes, filtros, busca global, relacionados, sumário, compartilhamento e downloads públicos aprovados                                   |
+| Relacionamento | Link de WhatsApp, contato com anexos privados, newsletter com confirmação e descadastro                                                                                  |
+| Administração  | Login, dashboard, artigos, categorias, tags, áreas, profissionais, FAQ, páginas institucionais, mídia, contatos, assinantes, usuários, redirecionamentos e configurações |
+| Operação       | SEO, analytics por consentimento, segurança, acessibilidade, testes, CI, homologação, migração, backup e publicação controlada                                           |
 
 Ficam fora da V1: área do cliente, chat, CRM, campanhas e automação de marketing, multilíngue, assinatura eletrônica, integração processual, IA de pesquisa, recomendações automáticas, histórico completo de revisões de artigos e auditoria avançada. Registro básico de ações críticas e eventos de segurança permanece na V1.
 
@@ -46,37 +47,37 @@ Desenvolvimento e homologação usam conteúdo explicitamente fictício e imagen
 - **Processamento:** cron/worker NestJS para publicações, envio de e-mails e tarefas de retenção, com trabalho persistido em PostgreSQL, retries limitados e idempotência. Redis não é dependência inicial; só entra se uma necessidade técnica demonstrada justificar.
 - **Ambientes:** desenvolvimento, homologação e produção com dados, segredos e storage isolados. Homologação é protegida, não indexável e envia mensagens apenas a destinatários de teste. Hosting proposto: Vercel para web e Railway para API/worker/PostgreSQL, com Cloudflare; custos e compatibilidade serão confirmados antes da contratação.
 
-As versões de Node LTS, pnpm, Next.js, NestJS, Prisma e demais bibliotecas serão verificadas e fixadas na F1 por compatibilidade e suporte, com lockfile. Este documento não presume versões de pacotes ainda instaladas.
+Versões verificadas e fixadas na F1, com lockfile: Node 24.18.0 LTS, pnpm 11.25.0, Next.js 16.3.8, NestJS 12.1.2, Prisma 7.10.0 e PostgreSQL 17.11. A matriz e as decisões de compatibilidade ficam em `docs/architecture.md`; o relatório distingue instalação/configuração de validação real do banco.
 
 ### Modelo de dados mínimo, a detalhar na F2
 
-| Grupo | Entidades e regras |
-| --- | --- |
-| Identidade | `users`, `refresh_tokens`, `password_reset_tokens`; e-mail único, roles, usuário ativo, revogação de sessões; separar usuário administrativo de profissional público |
-| Institucional | `professionals`, `practice_areas`, `professional_practice_areas`, `pages`, `faqs`, `site_settings`; páginas com seções estruturadas e validadas; FAQ global ou vinculada a uma área |
-| Editorial | `articles`, `categories`, `tags`, `article_categories`, `article_tags`, `article_practice_areas`; autor profissional, usuário criador, tipo ARTICLE/UPDATE/GUIDE, slug único, destaque, imagem e PDF opcional |
-| Publicação | Estados DRAFT/SCHEDULED/PUBLISHED/ARCHIVED; datas em UTC, edição exibida em America/Sao_Paulo; tokens de preview com hash e expiração; controle de edição concorrente por versão ou `updated_at` |
-| Arquivos | `media`, `contacts`, `contact_attachments`; proprietário, visibilidade, MIME, tamanho, chave de storage, alt, licença/origem quando aplicável e vínculo de uso |
-| Newsletter | `newsletter_subscribers` e tokens de confirmação/descadastro; e-mail normalizado único, estados PENDING/ACTIVE/UNSUBSCRIBED, prova de consentimento e versão do texto aceito |
-| Operação | `redirects`, outbox de tarefas/notificações e eventos básicos de ações críticas; índice de busca textual, índices de listagem e restrições de integridade |
+| Grupo         | Entidades e regras                                                                                                                                                                                            |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identidade    | `users`, `refresh_tokens`, `password_reset_tokens`; e-mail único, roles, usuário ativo, revogação de sessões; separar usuário administrativo de profissional público                                          |
+| Institucional | `professionals`, `practice_areas`, `professional_practice_areas`, `pages`, `faqs`, `site_settings`; páginas com seções estruturadas e validadas; FAQ global ou vinculada a uma área                           |
+| Editorial     | `articles`, `categories`, `tags`, `article_categories`, `article_tags`, `article_practice_areas`; autor profissional, usuário criador, tipo ARTICLE/UPDATE/GUIDE, slug único, destaque, imagem e PDF opcional |
+| Publicação    | Estados DRAFT/SCHEDULED/PUBLISHED/ARCHIVED; datas em UTC, edição exibida em America/Sao_Paulo; tokens de preview com hash e expiração; controle de edição concorrente por versão ou `updated_at`              |
+| Arquivos      | `media`, `contacts`, `contact_attachments`; proprietário, visibilidade, MIME, tamanho, chave de storage, alt, licença/origem quando aplicável e vínculo de uso                                                |
+| Newsletter    | `newsletter_subscribers` e tokens de confirmação/descadastro; e-mail normalizado único, estados PENDING/ACTIVE/UNSUBSCRIBED, prova de consentimento e versão do texto aceito                                  |
+| Operação      | `redirects`, outbox de tarefas/notificações e eventos básicos de ações críticas; índice de busca textual, índices de listagem e restrições de integridade                                                     |
 
 Usar migrations versionadas, relações e políticas de exclusão explícitas. Autor ou mídia em uso não pode ser removido silenciosamente. A modelagem de tokens/outbox pode usar tabelas dedicadas, documentadas em `docs/database.md`; isso não introduz um sistema genérico de workflows.
 
 ## 4. Grandes atualizações e ordem cronológica
 
-| Etapa | Versão prevista | Entrega principal | Dependência | Estado |
-| --- | --- | --- | --- | --- |
-| F0 | 0.0.0 | Planejamento e regras de continuidade | Plano mestre | **Concluída — RP-000** |
-| F1 | 0.1.0 | Fundação, arquitetura e ambiente reproduzível | Confirmação do usuário | Aguardando autorização |
-| F2 | 0.2.0 | Banco, autenticação e API de domínio | F1 | Pendente |
-| F3 | 0.3.0 | Design System e estrutura de interfaces | F2 | Pendente |
-| F4 | 0.4.0 | Site institucional conectado à API | F3 | Pendente |
-| F5 | 0.5.0 | Portal editorial e leitura de conteúdos | F4 | Pendente |
-| F6 | 0.6.0 | CMS, mídia e publicação ponta a ponta | F5 | Pendente |
-| F7 | 0.7.0 | Contato, newsletter, busca, SEO e privacidade | F6 | Pendente |
-| F8 | 0.8.0 | Validação integrada e homologação | F7 | Pendente |
-| F9 | 0.9.0 | Migração e preparação da release | F8 + materiais aprovados | Pendente |
-| F10 | 1.0.0 | Publicação e validação operacional da V1 | F9 + autorização de produção | Pendente |
+| Etapa | Versão prevista | Entrega principal                             | Dependência                  | Estado                                                       |
+| ----- | --------------- | --------------------------------------------- | ---------------------------- | ------------------------------------------------------------ |
+| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                 | **Concluída — RP-000**                                       |
+| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026     | **Parcial — RP-001; aceite Docker/PostgreSQL após reinício** |
+| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1                           | Pendente                                                     |
+| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2                           | Pendente                                                     |
+| F4    | 0.4.0           | Site institucional conectado à API            | F3                           | Pendente                                                     |
+| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4                           | Pendente                                                     |
+| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5                           | Pendente                                                     |
+| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6                           | Pendente                                                     |
+| F8    | 0.8.0           | Validação integrada e homologação             | F7                           | Pendente                                                     |
+| F9    | 0.9.0           | Migração e preparação da release              | F8 + materiais aprovados     | Pendente                                                     |
+| F10   | 1.0.0           | Publicação e validação operacional da V1      | F9 + autorização de produção | Pendente                                                     |
 
 Cada etapa termina com validação, documentação, commit local quando o Git estiver preparado, relatório e pausa. Os subpassos pertencem à mesma atualização; não autorizam executar a etapa seguinte. Segurança, testes e acessibilidade começam na fundação e acompanham todas as entregas.
 
@@ -197,15 +198,15 @@ Cada etapa termina com validação, documentação, commit local quando o Git es
 
 ## 6. Pendências externas e decisões a confirmar no momento adequado
 
-| Pendência | Necessária até |
-| --- | --- |
-| Primeiro commit, remoto e branch de desenvolvimento pelo usuário | Primeiro commit de implementação; não serão criados nesta entrega |
-| Refinamento visual e identidade definitiva | Validação da F3 / materiais finais na F9 |
-| Limites do contato, destinatários, retenção e textos de privacidade | Definição na F7 e aprovação até F8, antes de receber dados reais em produção |
-| Contas e acessos R2, Resend, Turnstile, domínio/e-mail, Sentry e hosting | Integrações reais e homologação na F8 |
-| Política de backup, recuperação de mídia e orçamento operacional | F8, antes do corte de produção |
-| Inventário do site atual e materiais/aprovação do escritório | F9 |
-| GA4, Search Console e aprovação do corte/DNS | F10 |
+| Pendência                                                                | Necessária até                                                               |
+| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| Primeiro commit, remoto e branch de desenvolvimento pelo usuário         | Resolvida: baseline `6c84b6a`, `origin` e `dev` confirmados na F1            |
+| Refinamento visual e identidade definitiva                               | Validação da F3 / materiais finais na F9                                     |
+| Limites do contato, destinatários, retenção e textos de privacidade      | Definição na F7 e aprovação até F8, antes de receber dados reais em produção |
+| Contas e acessos R2, Resend, Turnstile, domínio/e-mail, Sentry e hosting | Integrações reais e homologação na F8                                        |
+| Política de backup, recuperação de mídia e orçamento operacional         | F8, antes do corte de produção                                               |
+| Inventário do site atual e materiais/aprovação do escritório             | F9                                                                           |
+| GA4, Search Console e aprovação do corte/DNS                             | F10                                                                          |
 
 Essas pendências não impedem o trabalho local independente; impedem declarar concluído o aceite que depende delas. Credenciais são configuradas por canal seguro/ambiente, nunca coladas nos relatórios.
 
@@ -222,4 +223,4 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 
 ## 8. Registro da última atualização
 
-**02/10/2026 — RP-000 — F0:** plano mestre convertido em dez grandes etapas técnicas; criados `plan.md`, `relate.md` e `AGENTS.md`. Arquitetura, dependências, critérios de aceite e gates registrados. Git, código, infraestrutura e integrações não foram iniciados. **Ponto de parada: aguardar confirmação para F1.**
+**02/10/2026 — RP-001 — F1 parcial:** monorepo e documentação da arquitetura, apps/pacotes, ambiente local isolado, validação, health, erros/logs sanitizados e CI implementados. Install frozen, lint, typecheck, dez testes, build, Prisma e smoke web/API sem banco passaram. Docker/WSL2 não iniciam por hipervisor indisponível; PostgreSQL real, Compose e health 200 permanecem pendentes. O usuário pediu aguardar reinício. **Ponto de parada: retomar a F1 após Docker disponível, concluir seu aceite e somente então entregar conclusão; F2 não iniciada.**

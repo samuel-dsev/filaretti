@@ -1,0 +1,16 @@
+{
+  "name": "@filaretti/eslint-config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./base.js": "./base.js"
+  },
+  "dependencies": {
+    "typescript-eslint": "8.71.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9.39.5",
+    "typescript": "5.9.3"
+  }
+}
