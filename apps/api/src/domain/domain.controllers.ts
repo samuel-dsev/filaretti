@@ -54,6 +54,7 @@ import {
   articleSchema,
   articleSummarySchema,
   deletedSchema,
+  editorialFiltersSchema,
   faqSchema,
   listSchema,
   pageSchema,
@@ -79,6 +80,14 @@ export class PublicArticlesController {
   }
   @Get(':slug') @ApiOkResponse({ schema: articleSchema }) detail(@Param('slug') slug: string) {
     return this.articles.publicDetail(slug);
+  }
+}
+@ApiTags('Catálogo editorial público')
+@Controller('editorial')
+export class PublicEditorialController {
+  constructor(private readonly articles: ArticlesService) {}
+  @Get('filters') @ApiOkResponse({ schema: editorialFiltersSchema }) filters() {
+    return this.articles.publicFilters();
   }
 }
 @ApiTags('Artigos administrativos')

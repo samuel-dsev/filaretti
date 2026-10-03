@@ -55,6 +55,14 @@ export interface TaxonomySummary {
   slug: string;
   name: string;
 }
+/** Options present in the public editorial catalog, without pagination. Years use UTC. */
+export interface PublicEditorialFilters {
+  areas: TaxonomySummary[];
+  categories: TaxonomySummary[];
+  authors: TaxonomySummary[];
+  tags: TaxonomySummary[];
+  years: number[];
+}
 export interface ProfessionalSummary {
   id: string;
   slug: string;

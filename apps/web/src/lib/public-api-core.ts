@@ -2,7 +2,9 @@ import type {
   ArticleType,
   PaginatedResponse,
   ProfessionalSummary,
+  PublicArticle,
   PublicArticleSummary,
+  PublicEditorialFilters,
   PublicMedia,
   PublicPage,
   PublicPracticeArea,
@@ -38,6 +40,10 @@ export interface PaginationQuery {
 export interface ArticleQuery extends PaginationQuery {
   area?: string;
   professional?: string;
+  category?: string;
+  tag?: string;
+  year?: number;
+  sort?: 'newest' | 'oldest' | 'title';
   type?: ArticleType;
   featured?: boolean;
 }
@@ -78,21 +84,32 @@ function taxonomy(value: unknown): TaxonomySummary {
   const item = record(value);
   return { id: text(item.id), slug: text(item.slug), name: text(item.name) };
 }
-function media(value: unknown): PublicMedia | null {
+function media(value: unknown, kind: 'image' | 'pdf' = 'image'): PublicMedia | null {
   if (value === null) return null;
   const item = record(value);
   const url = safeMediaUrl(text(item.url));
   const mimeType = text(item.mimeType);
+  const extension = kind === 'pdf' ? /\.pdf$/iu : /\.(?:jpe?g|png|webp|avif)$/iu;
   if (
     !url ||
-    !['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'application/pdf'].includes(mimeType)
+    (url.startsWith('/') &&
+      (!url.startsWith('/media/public/') ||
+        /[?#]/u.test(url) ||
+        url
+          .slice(1)
+          .split('/')
+          .some((part) => part === '.' || part === '..' || part === '') ||
+        !extension.test(url))) ||
+    !(
+      kind === 'pdf' ? ['application/pdf'] : ['image/jpeg', 'image/png', 'image/webp', 'image/avif']
+    ).includes(mimeType)
   )
     return null;
   return {
     id: text(item.id),
     alt: nullableText(item.alt),
     mimeType,
-    size: integer(item.size),
+    size: integer(item.size, 1),
     url,
   };
 }
@@ -176,6 +193,27 @@ function article(value: unknown): PublicArticleSummary {
     practiceAreas: array(item.practiceAreas, taxonomy),
   };
 }
+function articleDetail(value: unknown): PublicArticle {
+  const item = record(value);
+  return {
+    ...article(item),
+    content: document(item.content),
+    pdf: media(item.pdf, 'pdf'),
+    seoTitle: nullableText(item.seoTitle),
+    seoDescription: nullableText(item.seoDescription),
+  };
+}
+function editorialFilters(value: unknown): PublicEditorialFilters {
+  const item = record(value);
+  // Facets describe the whole catalog; never truncate them to the list page size.
+  return {
+    areas: array(item.areas, taxonomy, Number.MAX_SAFE_INTEGER),
+    categories: array(item.categories, taxonomy, Number.MAX_SAFE_INTEGER),
+    authors: array(item.authors, taxonomy, Number.MAX_SAFE_INTEGER),
+    tags: array(item.tags, taxonomy, Number.MAX_SAFE_INTEGER),
+    years: array(item.years, (value) => integer(value), Number.MAX_SAFE_INTEGER),
+  };
+}
 function settings(value: unknown): PublicSiteSettings {
   const item = record(value);
   const addressValue = record(item.address);
@@ -214,7 +252,8 @@ function paginated<T>(value: unknown, decode: (item: unknown) => T): PaginatedRe
 }
 
 function slugPath(slug: string): string {
-  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug) || slug.length > 120) return invalid();
+  if (typeof slug !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug) || slug.length > 120)
+    return invalid();
   return encodeURIComponent(slug);
 }
 
@@ -293,10 +332,19 @@ export function createPublicApiClient({
     getProfessionals: (query: PaginationQuery = {}) =>
       request(`professionals?${queryString(query)}`, (value) => paginated(value, professional)),
     getProfessional: (slug: string) => single(`professionals/${slugPath(slug)}`, professional),
+    getEditorialFilters: () => request('editorial/filters', editorialFilters),
+    getArticle: (slug: string) => single(`articles/${slugPath(slug)}`, articleDetail),
     getArticles: (query: ArticleQuery = {}) => {
       const params = queryString(query);
-      if (query.area !== undefined) params.set('area', query.area);
-      if (query.professional !== undefined) params.set('professional', query.professional);
+      for (const key of ['area', 'professional', 'category', 'tag'] as const) {
+        const value = query[key];
+        if (value !== undefined) params.set(key, slugPath(value));
+      }
+      if (query.year !== undefined) params.set('year', String(integer(query.year, 1900, 2100)));
+      if (query.sort !== undefined) {
+        if (!['newest', 'oldest', 'title'].includes(query.sort)) return invalid();
+        params.set('sort', query.sort);
+      }
       if (query.type !== undefined) {
         if (!['ARTICLE', 'UPDATE', 'GUIDE'].includes(query.type)) return invalid();
         params.set('type', query.type);

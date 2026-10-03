@@ -2,22 +2,129 @@
 
 ## Situação atual
 
-| Campo                | Estado                                                                                      |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| Última atualização   | 03/10/2026 — RP-005                                                                         |
-| Etapa                | **F4 concluída — aceite local aprovado**                                                    |
-| Versão               | `0.4.0` na raiz e nos sete workspaces privados                                              |
-| Código/aplicação     | Seis rotas institucionais SSR sobre a API real; visual F3 aprovado e preservado             |
-| Ambiente             | PostgreSQL local saudável; API 3001 e Next otimizado 3000 em loopback; Edge 154 revisado    |
-| Git                  | `dev`, remoto `origin`; base F3 `cf5dedc`; commit local F4 conforme RP-005                  |
-| Commit desta entrega | `feat(site): conecta páginas institucionais à API (v0.4.0)`; SHA real informado após commit |
-| Próxima etapa        | **F5 — Portal editorial e leitura de conteúdos**                                            |
-| Autorização          | **Aguardando confirmação para F5; push F3/F4 não autorizado**                               |
-| Checkpoint           | RP-005 abaixo e quadro inicial de plan.md                                                   |
+| Campo                | Estado                                                                                          |
+| -------------------- | ----------------------------------------------------------------------------------------------- |
+| Última atualização   | 03/10/2026 — RP-006                                                                             |
+| Etapa                | **F5 concluída — aceite local aprovado**                                                        |
+| Versão               | `0.5.0` na raiz e nos sete workspaces privados                                                  |
+| Código/aplicação     | Portal editorial SSR com filtros/URLs, leitura segura, sumário, compartilhamento e PDF público  |
+| Ambiente             | PostgreSQL local saudável; API 3001/Next otimizado 3000 em loopback; Edge 154 revisado          |
+| Git                  | `dev`, remoto `origin`; base F4 real `e96b124`; commit local F5 conforme RP-006                 |
+| Commit desta entrega | `feat(editorial): implementa portal e leitura de conteúdos (v0.5.0)`; SHA informado após commit |
+| Próxima etapa        | **F6 — CMS, mídia e publicação ponta a ponta**                                                  |
+| Autorização          | **Aguardando confirmação para F6; push não autorizado**                                         |
+| Checkpoint           | RP-006 abaixo e quadro inicial de plan.md                                                       |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo.
 
 ## Histórico
+
+### RP-006 — 03/10/2026 — F5 — Portal editorial e leitura de conteúdos
+
+**Escopo autorizado:** “Inicie a F5”. Implementação e aceite da F5, incluindo commit local conforme AGENTS.md. **Estado: concluída tecnicamente; aceite local aprovado.** F6, push, PR, homologação externa e publicação exigem autorização própria.
+
+**Versão:** `0.4.0` → `0.5.0`; oito manifests privados alinhados. Nenhuma biblioteca externa, mudança de schema, migration ou seed existente. Lockfile preservado e instalação frozen aprovada.
+
+**Git e continuidade:** cwd real `C:\Users\Samuel\Documents\Projetos\Filaretti`, pois o caminho antigo `Projeto` está ausente. Branch `dev` inicialmente limpa; base F4 confirmada `e96b124`. Commit F5 previsto: `feat(editorial): implementa portal e leitura de conteúdos (v0.5.0)`; SHA real informado após commit e registrado na próxima retomada, sem commit circular.
+
+#### Arquivos criados, alterados e removidos
+
+Criados (14):
+
+- `apps/web/src/app/(institutional)/conteudos/[slug]/page.tsx`
+- `apps/web/src/app/(institutional)/conteudos/layout.tsx`
+- `apps/web/src/app/(institutional)/conteudos/page.tsx`
+- `apps/web/src/components/editorial/article-card.module.css`
+- `apps/web/src/components/editorial/article-card.tsx`
+- `apps/web/src/components/editorial/detail-view.tsx`
+- `apps/web/src/components/editorial/index-view.tsx`
+- `apps/web/src/components/editorial/outline-links.tsx`
+- `apps/web/src/components/editorial/share-links.tsx`
+- `apps/web/src/components/editorial/styles.css`
+- `apps/web/src/lib/editorial-query.ts`
+- `apps/web/test/editorial-query.test.mjs`
+- `docs/editorial.md`
+- `scripts/test-editorial.mjs`
+
+Alterados (36):
+
+- `README.md`
+- `apps/api/package.json`
+- `apps/api/src/domain/articles.service.ts`
+- `apps/api/src/domain/domain.controllers.ts`
+- `apps/api/src/domain/domain.module.ts`
+- `apps/api/src/domain/institution.service.ts`
+- `apps/api/src/domain/responses.ts`
+- `apps/api/src/domain/shared.ts`
+- `apps/api/test/domain.integration.test.ts`
+- `apps/web/package.json`
+- `apps/web/src/app/(institutional)/layout.tsx`
+- `apps/web/src/components/institutional/home-view.tsx`
+- `apps/web/src/components/institutional/shared.tsx`
+- `apps/web/src/lib/public-api-core.ts`
+- `apps/web/src/lib/public-api.ts`
+- `apps/web/src/lib/public-content-core.ts`
+- `apps/web/src/lib/public-content.tsx`
+- `apps/web/src/lib/public-media.ts`
+- `apps/web/src/lib/public-routing.ts`
+- `apps/web/src/proxy.ts`
+- `apps/web/test/public-api.test.mjs`
+- `apps/web/test/public-content.test.mjs`
+- `apps/web/test/public-routing.test.mjs`
+- `docs/api.md`
+- `docs/public-site.md`
+- `docs/security.md`
+- `docs/seo.md`
+- `package.json`
+- `packages/config/package.json`
+- `packages/eslint-config/package.json`
+- `packages/tsconfig/package.json`
+- `packages/types/package.json`
+- `packages/types/src/domain.ts`
+- `packages/ui/package.json`
+- `plan.md`
+- `relate.md`
+
+Removidos: nenhum. Inventário de 50 arquivos pertinente à fase revisado para staging explícito. Ambientes, builds, fixtures temporárias e evidências ignoradas não integram o commit.
+
+#### Implementação e decisões
+
+- `/conteudos` lista ARTICLE/UPDATE/GUIDE com paginação real de 12 registros e filtros GET por área, categoria, autor, tag, tipo, ano e ordem. URL preserva a interseção na paginação/reabertura. Valores repetidos/inválidos são normalizados; seleção que saiu do catálogo permanece identificada no formulário, sem alterar silenciosamente o resultado. A busca global/overlay funcional segue F7.
+- `GET /api/v1/editorial/filters` entrega opções completas derivadas de publicações visíveis e relações ativas. Transação RepeatableRead mantém snapshot consistente; anos usam UTC como o filtro existente. Endpoint separado preserva slugs anteriores, inclusive `filters`, protegido por regressão. A API decide publicação, visibilidade, filtros e ordenação; cliente servidor projeta somente DTOs públicos e não duplica essas regras.
+- Leitura SSR traz categorias, título, resumo, datas em America/Sao_Paulo, estimativa de tempo da API, capa otimizada, texto, sumário H2, compartilhamento, perfil do autor, áreas e relacionados. Home, áreas, profissionais, menu e footer agora levam a leitura/listagem editorial. Cards reutilizam o design aprovado, com navegação por requisição nova.
+- `PublicContent` produz JSX escapado de árvore TipTap limitada e permitida, sem HTML bruto, scripts ou embeds. URLs perigosas perdem a marca de link; texto é preservado. IDs H2 determinísticos têm índice para impedir colisões entre títulos repetidos/vazios/Unicode e recebem foco pelo sumário. Renderer fica reutilizável pelo preview F6, que não foi antecipado.
+- Compartilhamento usa canonical da configuração pública, nunca Host do visitante; links WhatsApp/LinkedIn/e-mail e cópia com aria-live. Falha de Clipboard oferece campo readOnly rotulado, focado e selecionado para cópia manual por teclado. Não há carregamento de analytics/envio externo automático.
+- PDF aparece somente em GUIDE com referência pública local, MIME/extension corretos e tamanho positivo até 10 MiB. Serializer da API também verifica tipo de mídia, path público e ausência de vínculo com contato; integridade PostgreSQL existente permanece intacta. O teste serve PNG/PDF reais fictícios em arquivos owned temporários; upload, validação de bytes/storage completo/R2 seguem F6. Retirada de publicação remove a referência do site, não torna privado um arquivo previamente público ou baixado.
+- Política explícita de cache: fetch no-store, grupo force-dynamic e Cache-Control no-store, sem Data Cache/Full Route Cache persistentes; React.cache apenas deduplica na renderização. Primeiro pedido após a transação de retirada remove detalhe, listas, relações e opções, sem rebuild/restart/TTL. Proxy consulta publicação antes do streaming para HTTP404/503 reais. Não apaga documento já aberto/histórico/download e não cria snapshot transacional entre Proxy/API/renderização. Decisão, fontes oficiais Next 16.3.8 e dependências futuras em docs/editorial.md/public-site.md.
+- Três subagentes apoiaram API/cliente, UI e QA com arquivos distintos. Principal estabilizou contratos, implementou helpers/renderer/cache, revisou código/8 PNGs, executou integração e documentou/commitou a entrega.
+
+#### Validação executada
+
+| Check                   | Resultado/evidência                                                                                                                                                                                                                                                                 |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Continuidade/instalação | RTK.md, AGENTS.md, plan inteiro, RP-005 e docs aplicáveis lidos; cwd/dev/base/árvore/Compose verificados; pnpm install --frozen-lockfile passou                                                                                                                                     |
+| Lint/tipagem/build      | pnpm lint, pnpm typecheck e pnpm build passaram; rotas editoriais dinâmicas SSR no build otimizado, demais rotas preservadas                                                                                                                                                        |
+| Testes básicos          | pnpm test: 37 aprovados (27 web, 7 config, 3 API/fundação), zero falhas/skips                                                                                                                                                                                                       |
+| PostgreSQL real         | pnpm test:integration: 30 aprovados, zero falhas/skips; migrations/seeds/idempotência, roles/CSRF/sessões, filtros combinados/paginação/ordenação, facets com mais de 50 categorias, anos UTC, mídia/paths, slug filters, retirada e provisionamento isolado                        |
+| Contraste tokens        | pnpm test:design-system: 44 combinações aprovadas                                                                                                                                                                                                                                   |
+| Smoke real otimizado    | pnpm test:editorial: 38 checks aprovados,20 layouts (índice/leitura/guia/segunda página filtrada × 375/768/1024/1440/1920), Edge 154.0.4258.53; zero falhas/console/overflow/labels/IDs/alt/imagens;1932 amostras de texto sólido com contraste ≥ 4,5:1, zero ignoradas             |
+| Navegação/teclado       | Links Home/área/perfil→leitura; GET por teclado e filtros mantidos sem pagina antiga; URLs/reload repetem seleção; TOC focaliza H2; copiar e fallback com input selecionado aprovados                                                                                               |
+| Conteúdo/arquivos       | Nove ocultos (DRAFT/SCHEDULED/ARCHIVED/PUBLISHED futuro) fora do site e 404 no detalhe; dez documentos inseguros rejeitados antes de SSR; texto XSS escapado sem execução; URLs PDF perigosas sem download; raster 512×384→256×192 pelo otimizador e PDF fictício 610 bytes servido |
+| Retirada/falha          | Primeira nova consulta remove publicação de cinco superfícies em 581 ms no ensaio (medição local, sem SLA); autor inativo oculto; API parada produz 503/no-store e reiniciada volta 200 sem rebuild                                                                                 |
+| Limpeza/local           | Banco/PNG/PDF/processos owned do smoke removidos e portas3014/3015 liberadas; preview local atualizado em 3000/API 3001 com 200 e /conteudos no-store; banco de desenvolvimento preservado                                                                                          |
+| Formato/diff            | Prettier e git diff --check aprovados antes do commit; staging somente inventário explícito da fase                                                                                                                                                                                 |
+
+A primeira integração falhou porque uma fixture SCHEDULED nova não tinha scheduledAt; fixture corrigida para respeitar a constraint vigente, sem alterar produto/migration. Repetição passou 30/30. Primeiro smoke teve duas asserções de runner corrigidas: estado streaming/skeleton capturado como página vazia e tentativa de converter PDF vinculado para PRIVATE corretamente rejeitada pela integridade. Run final passou 38/38, sem mudança de produto após build. Uma primeira inicialização do smoke não resolveu o path Playwright por quoting PowerShell; wrapper Node corrigiu antes de criar recursos. Aviso herdado de depreciação pg sobre consultas concorrentes não causou falha; não é teste pendente.
+
+Evidências ignoradas: `.local/f5-smoke.json`, `.local/f5-first-smoke.json`, `.local/f5-evidence/*.png` e registros .local/f5-cleanup.json e .local/f5-qa.md. Runner produziu 42 capturas; QA inspecionou também cinco pranchas e dois recortes. Confirmação independente em pg_database/processos/arquivos/portas comprovou a remoção dos dois bancos dos smokes, seus PNG/PDF e dez PIDs próprios; serviços 3000/3001 permaneceram 200. Capturas mostram dados fictícios do banco temporário. Não foram certificadas WCAG completa, leitores de tela, dispositivos físicos, Safari/Firefox/Chrome nem metas Lighthouse; gates F8 preservados.
+
+#### Limites e ponto de parada
+
+- Aceite local com PostgreSQL/API/SSR e Edge reais. Materiais oficiais permanecem pendentes; não houve cadastro, upload externo, e-mail, túnel, DNS, push, PR, merge ou deploy. PDF/imagens dos testes não foram adicionados ao banco de desenvolvimento nem versionados.
+- CMS/preview/upload/storage/agendamento e tarefas persistidas seguem F6; busca global, relacionamento, sitemap/SEO completo e consentimento seguem F7; fornecedores reais/homologação/produção têm gates próprios. Nenhuma dessas funcionalidades é apresentada como entregue por este smoke.
+- Preview atualizado em loopback `http://127.0.0.1:3000/conteudos`, API 3001 e PostgreSQL 5434. Processos existentes de preview foram identificados antes de reiniciar; somente listeners Filaretti foram interrompidos, sem mexer em outros projetos. Revalidar processos/portas ao retomar.
+
+**Ponto de parada:** F5 concluída em `0.5.0` com commit local verificado. **Próxima etapa:** F6 — CMS, mídia e publicação ponta a ponta. **Aguardando confirmação do usuário para F6; push não autorizado.**
 
 ### RP-005 — 03/10/2026 — F4 — Site institucional conectado à API
 
@@ -26,6 +133,8 @@ Este documento distingue implementação, validação e pendências externas. At
 **Versão:** `0.3.0` → `0.4.0`; oito manifests privados alinhados. Web passou a declarar somente a dependência local `@filaretti/types`; lockfile recebeu três linhas desse vínculo. Nenhuma biblioteca externa nova, alteração de schema, migration, seed ou dados de desenvolvimento.
 
 **Git e continuidade:** cwd real `C:\Users\Samuel\Documents\Projetos\Filaretti`, pois o caminho antigo `Projeto` está ausente. Branch `dev` inicialmente limpa; base F3 real `cf5dedcd358c474d17cf3287238aca20c5bb629d`, um commit à frente de origin/dev. A autorização de push anterior cobria F2. Commit F4 previsto: `feat(site): conecta páginas institucionais à API (v0.4.0)`; SHA real informado na entrega e registrado na próxima retomada, sem commit circular.
+
+**SHA confirmado na retomada F5:** `e96b124`, commit local da F4; branch `dev` sem alterações locais antes do início da fase seguinte.
 
 #### Arquivos criados, alterados e removidos
 

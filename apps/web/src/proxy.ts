@@ -48,7 +48,15 @@ export async function proxy(request: NextRequest) {
       },
     });
   }
-  return NextResponse.next();
+  const response = NextResponse.next();
+  // Revalidate every editorial request. No public payload may survive withdrawal in a CDN cache.
+  if (
+    request.nextUrl.pathname === '/conteudos' ||
+    request.nextUrl.pathname.startsWith('/conteudos/')
+  ) {
+    response.headers.set('Cache-Control', 'no-store');
+  }
+  return response;
 }
 
 export const config = {
@@ -60,5 +68,7 @@ export const config = {
     '/areas-de-atuacao/:slug',
     '/profissionais',
     '/profissionais/:slug',
+    '/conteudos',
+    '/conteudos/:slug',
   ],
 };

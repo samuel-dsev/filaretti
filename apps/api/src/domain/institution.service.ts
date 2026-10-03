@@ -45,6 +45,7 @@ import {
   json,
   paginated,
   paging,
+  publicMediaInclude,
   requireSort,
   strings,
   taxonomy,
@@ -56,11 +57,11 @@ import {
 type Actor = AuthenticatedRequest['user'];
 type TaxonomyKind = 'category' | 'tag';
 const professionalInclude = {
-  photoMedia: true,
+  photoMedia: publicMediaInclude,
   practiceAreas: { include: { practiceArea: true } },
 } satisfies Prisma.ProfessionalInclude;
 const areaInclude = {
-  professionals: { include: { professional: { include: { photoMedia: true } } } },
+  professionals: { include: { professional: { include: { photoMedia: publicMediaInclude } } } },
 } satisfies Prisma.PracticeAreaInclude;
 const faqInclude = { practiceArea: true } satisfies Prisma.FaqInclude;
 type ProfessionalRecord = Prisma.ProfessionalGetPayload<{ include: typeof professionalInclude }>;

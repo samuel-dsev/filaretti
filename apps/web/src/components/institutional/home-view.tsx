@@ -63,7 +63,12 @@ export function HomeView({
           </div>
         </InstitutionalSection>
       ) : null}
-      <InstitutionalSection id="conteudos" title="Conteúdos recentes" eyebrow="Publicações">
+      <InstitutionalSection
+        id="conteudos"
+        title="Conteúdos recentes"
+        eyebrow="Publicações"
+        action={{ label: 'Todos os conteúdos', href: '/conteudos' }}
+      >
         <ArticlePreviewGrid articles={articles} />
       </InstitutionalSection>
       <InstitutionalSection
@@ -75,7 +80,12 @@ export function HomeView({
       >
         <ProfessionalGrid professionals={professionals.slice(0, 3)} />
       </InstitutionalSection>
-      <InstitutionalSection id="guias" title="Guias" eyebrow="Publicações">
+      <InstitutionalSection
+        id="guias"
+        title="Guias"
+        eyebrow="Publicações"
+        action={{ label: 'Todos os guias', href: '/conteudos?tipo=GUIDE' }}
+      >
         <ArticlePreviewGrid articles={guides} emptyTitle="Nenhum guia publicado" />
       </InstitutionalSection>
       <InstitutionalSection id="contato" title="Contato" eyebrow="Canais de contato" soft>

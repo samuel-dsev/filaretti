@@ -8,6 +8,7 @@ import type {
   PaginatedResponse,
   PublicArticle,
   PublicArticleSummary,
+  PublicEditorialFilters,
   PublicPage,
   PublicProfessional,
   PublicSiteSettings,
@@ -54,7 +55,7 @@ class Browser {
     this.csrfToken = ((await response.json()) as AuthenticationResponse).csrfToken;
   }
 }
-const content: TipTapDocument = {
+const content = {
   type: 'doc',
   content: [
     {
@@ -67,7 +68,7 @@ const content: TipTapDocument = {
       content: [{ type: 'text', text: 'Conteúdo exclusivamente fictício para verificar a API.' }],
     },
   ],
-};
+} satisfies TipTapDocument;
 type AdminArticle = PublicArticle & { version: number; createdById: string; status: string };
 type AdminProfessional = PublicProfessional & { version: number };
 
@@ -212,6 +213,368 @@ test('domain permissions, publication, relations and conflicts use real PostgreS
           JSON.stringify(featured),
           /conteudo-ficticio-(?:13|14|15|16|17|18|19|20)/u,
         );
+      },
+    );
+    await t.test(
+      'editorial facets and combined pagination use the full visible catalog and UTC years',
+      async () => {
+        const fixture = `${prefix}-facets`;
+        const authorRecord = await db.professional.create({
+          data: {
+            slug: `${fixture}-author`,
+            name: 'Autor fictício das facetas',
+            title: 'Perfil fictício',
+            bio: content,
+            education: [],
+            experience: [],
+            isMock: true,
+          },
+        });
+        const inactiveAuthor = await db.professional.create({
+          data: {
+            slug: `${fixture}-inactive-author`,
+            name: 'Autor fictício inativo',
+            title: 'Perfil fictício',
+            bio: content,
+            education: [],
+            experience: [],
+            isActive: false,
+            isMock: true,
+          },
+        });
+        const activeArea = await db.practiceArea.create({
+          data: {
+            slug: `${fixture}-area`,
+            name: 'Área fictícia das facetas',
+            summary: 'Resumo fictício',
+            description: content,
+            services: [],
+            isMock: true,
+          },
+        });
+        const inactiveArea = await db.practiceArea.create({
+          data: {
+            slug: `${fixture}-inactive-area`,
+            name: 'Área fictícia inativa',
+            summary: 'Resumo fictício',
+            description: content,
+            services: [],
+            isActive: false,
+            isMock: true,
+          },
+        });
+        const categories = await Promise.all(
+          Array.from({ length: 61 }, (_, index) =>
+            db.category.create({
+              data: {
+                slug: `${fixture}-category-${index}`,
+                name: `Categoria fictícia ${index}`,
+                isMock: true,
+              },
+            }),
+          ),
+        );
+        const tags = await Promise.all(
+          Array.from({ length: 61 }, (_, index) =>
+            db.tag.create({
+              data: {
+                slug: `${fixture}-tag-${index}`,
+                name: `Tag fictícia ${index}`,
+                isMock: true,
+              },
+            }),
+          ),
+        );
+        const hiddenCategory = await db.category.create({
+          data: {
+            slug: `${fixture}-hidden-category`,
+            name: 'Categoria fictícia só em rascunho',
+            isMock: true,
+          },
+        });
+        const inactiveCategory = await db.category.create({
+          data: {
+            slug: `${fixture}-inactive-category`,
+            name: 'Categoria fictícia inativa',
+            isActive: false,
+            isMock: true,
+          },
+        });
+        const inactiveTag = await db.tag.create({
+          data: {
+            slug: `${fixture}-inactive-tag`,
+            name: 'Tag fictícia inativa',
+            isActive: false,
+            isMock: true,
+          },
+        });
+        const published: { id: string; slug: string }[] = [];
+        try {
+          for (const [index, title] of [
+            'Gama fictícia',
+            'Alfa fictícia',
+            'Beta fictícia',
+          ].entries()) {
+            published.push(
+              await db.article.create({
+                data: {
+                  slug: `${fixture}-public-${index}`,
+                  title,
+                  excerpt: 'Resumo fictício',
+                  content,
+                  type: 'GUIDE',
+                  status: 'PUBLISHED',
+                  authorId: authorRecord.id,
+                  createdById: editorUser.id,
+                  publishedAt: new Date(`2025-01-0${index + 1}T00:30:00.000Z`),
+                  isMock: true,
+                  categories: {
+                    create: [...categories, inactiveCategory].map((row) => ({
+                      categoryId: row.id,
+                    })),
+                  },
+                  tags: { create: [...tags, inactiveTag].map((row) => ({ tagId: row.id })) },
+                  practiceAreas: {
+                    create: [activeArea, inactiveArea].map((row) => ({ practiceAreaId: row.id })),
+                  },
+                },
+              }),
+            );
+          }
+          const older = await db.article.create({
+            data: {
+              slug: `${fixture}-old`,
+              title: 'Antigo fictício',
+              excerpt: 'Resumo fictício',
+              content,
+              type: 'GUIDE',
+              status: 'PUBLISHED',
+              authorId: authorRecord.id,
+              createdById: editorUser.id,
+              publishedAt: new Date('2024-12-31T23:59:59.000Z'),
+              isMock: true,
+              practiceAreas: { create: { practiceAreaId: activeArea.id } },
+            },
+          });
+          for (const [index, status] of [
+            'DRAFT',
+            'SCHEDULED',
+            'ARCHIVED',
+            'PUBLISHED',
+            'PUBLISHED',
+          ].entries()) {
+            const hidden = await db.article.create({
+              data: {
+                slug: `${fixture}-hidden-${index}`,
+                title: 'Conteúdo fictício oculto',
+                excerpt: 'Resumo fictício',
+                content,
+                type: 'GUIDE',
+                status: status as 'DRAFT' | 'SCHEDULED' | 'ARCHIVED' | 'PUBLISHED',
+                authorId: index === 4 ? inactiveAuthor.id : authorRecord.id,
+                createdById: editorUser.id,
+                publishedAt: new Date(
+                  index === 3 ? '2099-01-01T00:00:00.000Z' : `198${index}-01-01T00:00:00.000Z`,
+                ),
+                scheduledAt: status === 'SCHEDULED' ? new Date('2099-01-01T00:00:00.000Z') : null,
+                categories: { create: { categoryId: hiddenCategory.id } },
+                isMock: true,
+              },
+            });
+            assert.equal((await visitor.request(`/articles/${hidden.slug}`)).status, 404);
+          }
+          const facetsResponse = await visitor.request('/editorial/filters');
+          assert.equal(facetsResponse.status, 200);
+          assert.equal(facetsResponse.headers.get('cache-control'), 'no-store');
+          const facets = (await facetsResponse.json()) as PublicEditorialFilters;
+          assert.equal(facets.categories.filter((row) => row.slug.startsWith(fixture)).length, 61);
+          assert.equal(facets.tags.filter((row) => row.slug.startsWith(fixture)).length, 61);
+          assert.ok(facets.authors.some((row) => row.id === authorRecord.id));
+          assert.ok(!facets.authors.some((row) => row.id === inactiveAuthor.id));
+          assert.ok(facets.areas.some((row) => row.id === activeArea.id));
+          assert.ok(!facets.areas.some((row) => row.id === inactiveArea.id));
+          assert.ok(
+            !facets.categories.some((row) =>
+              [hiddenCategory.id, inactiveCategory.id].includes(row.id),
+            ),
+          );
+          assert.ok(!facets.tags.some((row) => row.id === inactiveTag.id));
+          assert.ok(facets.years.includes(2025) && facets.years.includes(2024));
+          assert.ok(!facets.years.some((year) => [1980, 1981, 1982, 1984, 2099].includes(year)));
+          assert.deepEqual(
+            facets.years,
+            [...new Set(facets.years)].sort((one, two) => two - one),
+          );
+          assert.doesNotMatch(
+            JSON.stringify(facets),
+            /isMock|version|createdById|status|education|bio/u,
+          );
+          const query = `area=${activeArea.slug}&category=${categories[0]!.slug}&professional=${authorRecord.slug}&tag=${tags[0]!.slug}&type=GUIDE&year=2025`;
+          const newest = (await (
+            await visitor.request(`/articles?${query}&page=1&limit=2&sort=newest`)
+          ).json()) as PaginatedResponse<PublicArticleSummary>;
+          const second = (await (
+            await visitor.request(`/articles?${query}&page=2&limit=2&sort=newest`)
+          ).json()) as PaginatedResponse<PublicArticleSummary>;
+          assert.deepEqual(newest.meta, { page: 1, limit: 2, total: 3, pages: 2 });
+          assert.deepEqual(
+            [...newest.data, ...second.data].map((row) => row.id),
+            [...published].reverse().map((row) => row.id),
+          );
+          const oldest = (await (
+            await visitor.request(`/articles?${query}&sort=oldest`)
+          ).json()) as PaginatedResponse<PublicArticleSummary>;
+          assert.deepEqual(
+            oldest.data.map((row) => row.id),
+            published.map((row) => row.id),
+          );
+          const title = (await (
+            await visitor.request(`/articles?${query}&sort=title`)
+          ).json()) as PaginatedResponse<PublicArticleSummary>;
+          assert.deepEqual(
+            title.data.map((row) => row.title),
+            ['Alfa fictícia', 'Beta fictícia', 'Gama fictícia'],
+          );
+          assert.ok(
+            newest.data.every(
+              (row) =>
+                !row.categories.some((category) => category.id === inactiveCategory.id) &&
+                !row.tags.some((tag) => tag.id === inactiveTag.id) &&
+                !row.practiceAreas.some((area) => area.id === inactiveArea.id),
+            ),
+          );
+          const yearBoundary = (await (
+            await visitor.request(`/articles?professional=${authorRecord.slug}&year=2024`)
+          ).json()) as PaginatedResponse<PublicArticleSummary>;
+          assert.deepEqual(
+            yearBoundary.data.map((row) => row.id),
+            [older.id],
+          );
+          assert.equal(
+            (
+              await visitor.request(
+                `/articles?author=${authorRecord.slug}&professional=${inactiveAuthor.slug}`,
+              )
+            ).status,
+            400,
+          );
+          await db.article.updateMany({
+            where: { id: { in: published.map((row) => row.id) } },
+            data: { status: 'ARCHIVED' },
+          });
+          assert.equal((await visitor.request(`/articles/${published[0]!.slug}`)).status, 404);
+          const withdrawn = (await (
+            await visitor.request('/editorial/filters')
+          ).json()) as PublicEditorialFilters;
+          assert.ok(!withdrawn.categories.some((row) => row.slug.startsWith(fixture)));
+          assert.ok(!withdrawn.tags.some((row) => row.slug.startsWith(fixture)));
+        } finally {
+          await db.article.deleteMany({ where: { slug: { startsWith: fixture } } });
+          await db.category.deleteMany({ where: { slug: { startsWith: fixture } } });
+          await db.tag.deleteMany({ where: { slug: { startsWith: fixture } } });
+          await db.practiceArea.deleteMany({ where: { slug: { startsWith: fixture } } });
+          await db.professional.deleteMany({ where: { slug: { startsWith: fixture } } });
+        }
+      },
+    );
+    await t.test(
+      'public editorial media is projected by type and rejects private paths and unsafe URLs',
+      async () => {
+        const fixture = `${prefix}-media`;
+        const cover = await db.media.create({
+          data: {
+            ownerId: adminUser.id,
+            visibility: 'PUBLIC',
+            storageKey: `${fixture}-cover`,
+            publicUrl: '/media/public/fictitious-cover.png',
+            mimeType: 'image/png',
+            size: 100,
+            alt: 'Imagem fictícia',
+            isMock: true,
+          },
+        });
+        const pdf = await db.media.create({
+          data: {
+            ownerId: adminUser.id,
+            visibility: 'PUBLIC',
+            storageKey: `${fixture}-pdf`,
+            publicUrl: '/media/public/fictitious-guide.pdf',
+            mimeType: 'application/pdf',
+            size: 100,
+            isMock: true,
+          },
+        });
+        const published = await db.article.create({
+          data: {
+            slug: 'filters',
+            title: 'Guia fictício de mídia',
+            excerpt: 'Resumo fictício',
+            content,
+            type: 'GUIDE',
+            status: 'PUBLISHED',
+            authorId: professional.id,
+            createdById: editorUser.id,
+            publishedAt: new Date('2025-01-01T00:00:00.000Z'),
+            coverMediaId: cover.id,
+            pdfMediaId: pdf.id,
+            isMock: true,
+          },
+        });
+        try {
+          const valid = (await (
+            await visitor.request(`/articles/${published.slug}`)
+          ).json()) as PublicArticle;
+          assert.equal(valid.cover?.url, cover.publicUrl);
+          assert.equal(valid.pdf?.url, pdf.publicUrl);
+          assert.doesNotMatch(JSON.stringify(valid), /storageKey|ownerId|license|source|isMock/u);
+          for (const publicUrl of [
+            '/media/private/contact.pdf',
+            '/api/v1/admin/contacts/file.pdf',
+            '/media/public/../private/file.pdf',
+            '/media/public/%2e%2e/private/file.pdf',
+            '/media/public/file.pdf?token=private',
+            '/media/public/file.svg',
+            '//attacker.example.invalid/file.pdf',
+            'javascript:alert(1)',
+            'https://user:password@example.invalid/file.pdf',
+          ]) {
+            await db.media.update({ where: { id: pdf.id }, data: { publicUrl } });
+            const hidden = (await (
+              await visitor.request(`/articles/${published.slug}`)
+            ).json()) as PublicArticle;
+            assert.equal(hidden.pdf, null, publicUrl);
+            assert.doesNotMatch(
+              JSON.stringify(hidden),
+              /token=private|password@example|contact\.pdf/u,
+            );
+            assert.equal(
+              (
+                await editor.request('/admin/articles', 'POST', {
+                  ...articlePayload,
+                  slug: `${fixture}-invalid`,
+                  pdfMediaId: pdf.id,
+                })
+              ).status,
+              400,
+            );
+          }
+          await db.media.update({
+            where: { id: pdf.id },
+            data: { publicUrl: '/media/public/fictitious.png', mimeType: 'image/png' },
+          });
+          await db.media.update({
+            where: { id: cover.id },
+            data: { publicUrl: '/media/public/fictitious.pdf', mimeType: 'application/pdf' },
+          });
+          const mismatch = (await (
+            await visitor.request(`/articles/${published.slug}`)
+          ).json()) as PublicArticle;
+          assert.equal(mismatch.cover, null);
+          assert.equal(mismatch.pdf, null);
+        } finally {
+          await db.article.delete({ where: { id: published.id } });
+          await db.media.deleteMany({ where: { id: { in: [cover.id, pdf.id] } } });
+        }
       },
     );
     await t.test(
@@ -775,6 +1138,7 @@ test('domain permissions, publication, relations and conflicts use real PostgreS
           >;
         };
         assert.ok(swagger.paths['/api/v1/admin/articles/{id}/publication']);
+        assert.ok(swagger.paths['/api/v1/editorial/filters']);
         assert.ok(swagger.paths['/api/v1/taxonomies/{kind}']);
         const articleSchema =
           swagger.paths['/api/v1/articles/{slug}']?.get?.responses?.['200']?.content?.[

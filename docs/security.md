@@ -63,12 +63,16 @@ Textos institucionais TipTap recebem renderer JSX escapado e política de URLs p
 
 | Fase   | Controles pendentes                                                                                               |
 | ------ | ----------------------------------------------------------------------------------------------------------------- |
-| F5–F6  | Renderização segura/HTML/URLs, preview expirante privado, uploads validados e visibilidade explícita              |
+| F6     | Preview expirante privado, uploads validados e visibilidade explícita                                             |
 | F6–F7  | Outbox/retries/idempotência completos, assinatura/deduplicação de webhooks e revalidação                          |
 | F7     | Entrega de recuperação, Turnstile server-side, anexos privados, confirmação/descadastro, retenção e consentimento |
 | F8     | CSP, HSTS, Permissions Policy, CORS/proxy confiável, fornecedores reais, quarentena e backup/restauração          |
 | F9–F10 | Materiais e retenção aprovados, inspeção de mocks, segredos e ADMIN de produção, corte/deploy autorizado          |
 
 Ativos editoriais públicos e anexos de contato privados terão storage separado. Upload validará conteúdo/MIME/tamanho/extensão; SVG/HTML executável não será aceito. Download privado exigirá autorização e URL curta. Turnstile será verificado conforme [documentação oficial](https://developers.cloudflare.com/turnstile/get-started/server-side-validation/); webhooks conforme [orientação do Resend](https://resend.com/docs/webhooks/verify-webhooks-requests).
+
+## Leituras editoriais da F5
+
+O detalhe editorial recebe renderer JSX escapado, árvore limitada/permitida e nova checagem de URLs. Scripts/embeds/HTML bruto não são inseridos; marcas inseguras perdem o link e conservam o texto. Mídia vinculada a contato é excluída da projeção pública mesmo se a visibilidade armazenada estiver inconsistente. Download de guia exige PDF público local de até 10 MiB; validação de bytes/upload/storage segue F6. Sem cache persistente, retirada de publicação vale na primeira nova consulta após a transação. Facets não enumeram rascunhos nem relações inativas. Reprodução e limites: [editorial.md](editorial.md).
 
 Homologação, contratação, dados reais, deploy, DNS e produção exigem autorização aplicável. Antes da publicação: integrações reais, ausência de mocks, aprovação de materiais, backup/restauração e rollback comprovados. O aceite da F2 é local, com PostgreSQL real e sem certificar operação de produção.

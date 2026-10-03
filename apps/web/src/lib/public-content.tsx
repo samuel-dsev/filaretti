@@ -1,13 +1,14 @@
 import type { TipTapDocument, TipTapMark, TipTapNode } from '@filaretti/types';
 import { Fragment, type ReactNode } from 'react';
 
-import { parsePublicDocument, safePublicUrl } from './public-content-core';
+import { getContentOutline, parsePublicDocument, safePublicUrl } from './public-content-core';
 
 export { contentText, safePublicUrl, safeMediaUrl } from './public-content-core';
 
 export interface PublicContentProps {
   document: TipTapDocument;
   className?: string;
+  headingPrefix?: string;
 }
 
 function renderMark(children: ReactNode, mark: TipTapMark, key: number): ReactNode {
@@ -35,8 +36,12 @@ function renderMark(children: ReactNode, mark: TipTapMark, key: number): ReactNo
   }
 }
 
-function renderNode(node: TipTapNode, key: number): ReactNode {
-  const children = node.content?.map(renderNode);
+function renderNode(node: TipTapNode, key: number, headingIds: Iterator<string>): ReactNode {
+  const headingId =
+    node.type === 'heading' && node.attrs?.level === 2
+      ? (headingIds.next().value as string | undefined)
+      : undefined;
+  const children = node.content?.map((child, index) => renderNode(child, index, headingIds));
   switch (node.type) {
     case 'doc':
       return <Fragment key={key}>{children}</Fragment>;
@@ -54,7 +59,11 @@ function renderNode(node: TipTapNode, key: number): ReactNode {
     case 'heading':
       if (node.attrs?.level === 3) return <h3 key={key}>{children}</h3>;
       if (node.attrs?.level === 4) return <h4 key={key}>{children}</h4>;
-      return <h2 key={key}>{children}</h2>;
+      return (
+        <h2 key={key} id={headingId} tabIndex={headingId ? -1 : undefined}>
+          {children}
+        </h2>
+      );
     case 'bulletList':
       return <ul key={key}>{children}</ul>;
     case 'orderedList':
@@ -80,12 +89,15 @@ function renderNode(node: TipTapNode, key: number): ReactNode {
   }
 }
 
-export function PublicContent({ document, className }: PublicContentProps) {
+export function PublicContent({ document, className, headingPrefix }: PublicContentProps) {
   const parsed = parsePublicDocument(document);
   if (!parsed) return null;
+  const headingIds = (headingPrefix ? getContentOutline(parsed, headingPrefix) : [])
+    .map((entry) => entry.id)
+    .values();
   return (
     <div className={['public-content', className].filter(Boolean).join(' ')}>
-      {parsed.content.map(renderNode)}
+      {parsed.content.map((node, index) => renderNode(node, index, headingIds))}
     </div>
   );
 }

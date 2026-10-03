@@ -14,6 +14,8 @@ export const getSettings = cache(() => client().getSettings());
 export const getPage = cache((slug: string) => client().getPage(slug));
 export const getPracticeArea = cache((slug: string) => client().getPracticeArea(slug));
 export const getProfessional = cache((slug: string) => client().getProfessional(slug));
+export const getArticle = cache((slug: string) => client().getArticle(slug));
+export const getEditorialFilters = cache(() => client().getEditorialFilters());
 
 const practiceAreas = cache((page?: number, limit?: number) =>
   client().getPracticeAreas({ page, limit }),
@@ -29,7 +31,23 @@ const articles = cache(
     professional?: string,
     type?: ArticleQuery['type'],
     featured?: boolean,
-  ) => client().getArticles({ page, limit, area, professional, type, featured }),
+    category?: string,
+    tag?: string,
+    year?: number,
+    sort?: ArticleQuery['sort'],
+  ) =>
+    client().getArticles({
+      page,
+      limit,
+      area,
+      professional,
+      type,
+      featured,
+      category,
+      tag,
+      year,
+      sort,
+    }),
 );
 
 export function getPracticeAreas({ page, limit }: PaginationQuery = {}) {
@@ -45,6 +63,10 @@ export function getArticles({
   professional,
   type,
   featured,
+  category,
+  tag,
+  year,
+  sort,
 }: ArticleQuery = {}) {
-  return articles(page, limit, area, professional, type, featured);
+  return articles(page, limit, area, professional, type, featured, category, tag, year, sort);
 }

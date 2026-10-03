@@ -2,17 +2,17 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                            | Situação                                                                                                 |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Última atualização               | 03/10/2026 — F4 concluída com API/PostgreSQL reais e revisão no Edge                                     |
-| Último relatório                 | `RP-005`, em `relate.md`                                                                                 |
-| Última entrega técnica concluída | **F4 — Site institucional conectado à API; aceite local aprovado**                                       |
-| Versão de referência             | `0.4.0`, registrada na raiz e nos sete workspaces privados                                               |
-| Etapa em execução                | Nenhuma; F4 concluída                                                                                    |
-| Próxima etapa                    | **F5 — Portal editorial e leitura de conteúdos**                                                         |
-| Autorização da próxima etapa     | **Aguardando confirmação do usuário para F5**                                                            |
-| Git                              | `dev`, remoto `origin`; base F3 `cf5dedc`; commit local F4 previsto em RP-005; push F3/F4 não autorizado |
-| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                           |
+| Campo                            | Situação                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Última atualização               | 03/10/2026 — F5 concluída com PostgreSQL/API reais e revisão no Edge                                    |
+| Último relatório                 | `RP-006`, em `relate.md`                                                                                |
+| Última entrega técnica concluída | **F5 — Portal editorial e leitura de conteúdos; aceite local aprovado**                                 |
+| Versão de referência             | `0.5.0`, registrada na raiz e nos sete workspaces privados                                              |
+| Etapa em execução                | Nenhuma; F5 concluída                                                                                   |
+| Próxima etapa                    | **F6 — CMS, mídia e publicação ponta a ponta**                                                          |
+| Autorização da próxima etapa     | **Aguardando confirmação do usuário para F6**                                                           |
+| Git                              | `dev`, remoto `origin`; base F4 real `e96b124`; commit local F5 previsto em RP-006; push não autorizado |
+| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                          |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -72,7 +72,7 @@ Usar migrations versionadas, relações e políticas de exclusão explícitas. A
 | F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1; autorizada pelo usuário  | **Concluída — RP-003** |
 | F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026 | **Concluída — RP-004** |
 | F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026 | **Concluída — RP-005** |
-| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4                           | Pendente               |
+| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026 | **Concluída — RP-006** |
 | F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5                           | Pendente               |
 | F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6                           | Pendente               |
 | F8    | 0.8.0           | Validação integrada e homologação             | F7                           | Pendente               |
@@ -223,4 +223,4 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 
 ## 8. Registro da última atualização
 
-**03/10/2026 — RP-005 — F4 concluída:** usuário aprovou a estilização F3 e autorizou F4; versão `0.4.0`. Seis rotas institucionais SSR conectadas à API, relações/paginação, conteúdo institucional seguro, metadata/canonical, mídia local otimizada e estados 404/503 reais. Home consulta recentes/destaques/guias separadamente; filtro `featured` acrescentado ao backend sem migration. Instalação frozen, lint, typecheck, 29 testes, 28 integrações PostgreSQL, build, formato/diff e 44 contrastes passaram. Smoke otimizado no Edge 154: 43 checks, 30 layouts em 320/768/1024/1440/1920, 2033 amostras de texto e 62 PNG, sem falhas; mutabilidade, catálogo com 67 artigos, privacidade, vazio e recuperação comprovados em banco isolado removido. Inventário/commit local previsto em RP-005; sem push ou deploy. **Ponto de parada: F4 entregue; aguardar autorização para F5.**
+**03/10/2026 — RP-006 — F5 concluída:** autorização “Inicie a F5”; versão `0.5.0`. Listagem/leitura SSR editorial com filtros combinados e URLs paginadas, opções completas do catálogo público, renderer TipTap seguro reutilizável, sumário H2, compartilhamento/cópia acessível, autor/áreas/relacionados e PDF GUIDE público local. Links institucionais levam à leitura; endpoint de opções separado preserva slugs existentes. Política no-store/force-dynamic revalida por nova requisição, com 404/503 reais e retirada comprovada em cinco superfícies sem rebuild. Instalação frozen, lint, typecheck,37 testes básicos,30 integrações PostgreSQL, build e 44 contrastes passaram. Smoke Edge 154:38 checks,20 layouts em 375/768/1024/1440/1920,1932 amostras sólidas com contraste ≥ 4,5:1/zero ignoradas e zero falhas/console/overflow. Inventário 50 arquivos, banco/PNG/PDF/processos temporários removidos, preview local atualizado. Nenhuma biblioteca/schema/migration/seed alterado; sem ação externa. Commit local previsto em RP-006. **Ponto de parada: F5 entregue; aguardar autorização para F6.**

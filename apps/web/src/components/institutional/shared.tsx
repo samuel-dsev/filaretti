@@ -12,7 +12,8 @@ import { EmptyState, LinkButton } from '@filaretti/ui';
 import { PublicContent, contentText } from '@/lib/public-content';
 import { safePublicUrl } from '@/lib/public-content-core';
 import { publicImage } from '@/lib/public-media';
-import { EditorialCard, PracticeAreaCard, ProfessionalCard } from '@/components/site';
+import { PracticeAreaCard, ProfessionalCard } from '@/components/site';
+import { EditorialArticleCard } from '@/components/editorial/article-card';
 
 export function InstitutionalSection({
   id,
@@ -141,19 +142,6 @@ export function ProfessionalGrid({
   );
 }
 
-const articleTypeLabels: Record<PublicArticleSummary['type'], string> = {
-  ARTICLE: 'Artigo',
-  UPDATE: 'Atualização',
-  GUIDE: 'Guia',
-};
-
-const publicationDate = new Intl.DateTimeFormat('pt-BR', {
-  day: '2-digit',
-  month: 'long',
-  year: 'numeric',
-  timeZone: 'America/Sao_Paulo',
-});
-
 export function ArticlePreviewGrid({
   articles,
   emptyTitle = 'Nenhum conteúdo publicado',
@@ -170,25 +158,11 @@ export function ArticlePreviewGrid({
     );
 
   return (
-    <>
-      <div className="institution-grid">
-        {articles.map((article) => (
-          <EditorialCard
-            key={article.id}
-            category={article.categories[0]?.name ?? articleTypeLabels[article.type]}
-            title={article.title}
-            description={article.excerpt}
-            dateLabel={publicationDate.format(new Date(article.publishedAt))}
-            readingTimeLabel={`${article.readingTimeMinutes} min de leitura`}
-            image={publicImage(article.cover, article.title)}
-            label={articleTypeLabels[article.type]}
-          />
-        ))}
-      </div>
-      <p className="institution-availability-note">
-        A leitura completa dos conteúdos estará disponível em uma próxima etapa.
-      </p>
-    </>
+    <div className="institution-grid">
+      {articles.map((article) => (
+        <EditorialArticleCard key={article.id} article={article} />
+      ))}
+    </div>
   );
 }
 

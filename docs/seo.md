@@ -1,6 +1,6 @@
 # SEO, cache e indexação
 
-Atualizado na F4, versão `0.4.0`, 03/10/2026. As seis rotas institucionais possuem metadata básica e canonical configurado; sitemap, analytics e Search Console continuam nas fases seguintes. Domínio final e dados oficiais permanecem dependentes de aprovação.
+Atualizado na F5, versão `0.5.0`, 03/10/2026. Rotas institucionais/editoriais possuem metadata básica e canonical configurado; sitemap, analytics e Search Console continuam nas fases seguintes. Domínio final e dados oficiais permanecem dependentes de aprovação.
 
 ## Entregas por fase
 
@@ -26,7 +26,7 @@ Schema.org poderá incluir LegalService, Article, Person, BreadcrumbList e FAQPa
 
 ## Cache e publicação
 
-Não presumir cache automático do Next.js. A F5 deverá definir o modelo efetivamente usado, tempos/tags e invalidação conforme a versão fixada. A [documentação de cache do Next.js](https://nextjs.org/docs/app/getting-started/caching) distingue configurações e modelos; essa escolha será documentada junto com a implementação.
+Na F5, a política é revalidação por requisição: `no-store`, grupo `force-dynamic` e ausência de cache persistente. A primeira consulta posterior à retirada de publicação deve mostrar 404 no detalhe e remover o resultado das listas/opções/relações, sem rebuild. Links editoriais evitam prefetch e iniciam leitura nova. A [documentação de cache do Next.js](https://nextjs.org/docs/app/guides/caching-without-cache-components) sustenta a configuração para a versão fixada; decisão, testes e limites em [editorial.md](editorial.md).
 
 Admin, dados pessoais e preview ficarão fora do cache público. Publicar, alterar slug ou retirar conteúdo deverá atualizar listas, detalhes, relacionados, busca e sitemap dentro de um prazo definido/testado na F6/F7. Preview exigirá token válido, noindex e no-store; o token não poderá ir a logs ou analytics.
 

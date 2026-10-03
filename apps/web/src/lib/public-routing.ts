@@ -10,13 +10,19 @@ export function publicRouteResource(pathname: string): PublicRouteResource | nul
   if (pathname === '/profissionais') {
     return { endpoint: '/professionals?limit=1', isDetail: false };
   }
-  const match = /^\/(areas-de-atuacao|profissionais)\/([^/]+)$/u.exec(pathname);
+  if (pathname === '/conteudos') return { endpoint: '/articles?limit=1', isDetail: false };
+  const match = /^\/(areas-de-atuacao|profissionais|conteudos)\/([^/]+)$/u.exec(pathname);
   if (!match) return null;
   const slug = match[2];
   if (!slug || slug.length > 120 || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(slug)) {
     return { endpoint: '', isDetail: true };
   }
-  const collection = match[1] === 'areas-de-atuacao' ? 'practice-areas' : 'professionals';
+  const collection =
+    match[1] === 'areas-de-atuacao'
+      ? 'practice-areas'
+      : match[1] === 'profissionais'
+        ? 'professionals'
+        : 'articles';
   return { endpoint: `/${collection}/${slug}`, isDetail: true };
 }
 

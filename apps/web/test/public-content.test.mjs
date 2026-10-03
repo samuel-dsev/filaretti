@@ -115,3 +115,40 @@ test('plain text projection preserves adjacent marked fragments and separates bl
   assert.equal(core.contentText(payload, 8), 'Consulta');
   assert.equal(core.contentText(undefined), '');
 });
+
+test('editorial outline matches focusable H2 IDs with repeated, empty and Unicode headings', () => {
+  const heading = (level, ...nodes) => ({ type: 'heading', attrs: { level }, content: nodes });
+  const payload = document(
+    heading(2, text('Ação '), text('jurídica', [{ type: 'bold' }])),
+    heading(3, text('Subtítulo fora do sumário')),
+    { type: 'blockquote', content: [heading(2, text('Ação jurídica'))] },
+    heading(2, text('日本語')),
+    heading(2),
+  );
+  const outline = core.getContentOutline(payload, 'leitura');
+  assert.equal(outline.length, 4);
+  assert.equal(new Set(outline.map((item) => item.id)).size, 4);
+  assert.equal(outline[0].text, 'Ação jurídica');
+  assert.equal(outline[3].text, 'Seção 4');
+  const html = renderToStaticMarkup(PublicContent({ document: payload, headingPrefix: 'leitura' }));
+  for (const entry of outline) assert.ok(html.includes(`id="${entry.id}" tabindex="-1"`));
+  assert.equal(core.getContentOutline(payload, '" onclick="evil')[0].id, outline[0].id);
+});
+
+test('unsupported embeds and executable URL variations cannot generate active HTML', () => {
+  for (const type of ['script', 'iframe', 'embed', 'html', 'image'])
+    assert.equal(PublicContent({ document: document({ type, content: [] }) }), null);
+  for (const href of [
+    'JAVASCRIPT:alert(1)',
+    'vbscript:evil',
+    'data:text/html,<script>x</script>',
+    'java\nscript:evil',
+    '//evil.test',
+    '/%2f%2fevil.test',
+  ]) {
+    const payload = document(paragraph(text('Texto legível', [{ type: 'link', attrs: { href } }])));
+    const html = renderToStaticMarkup(PublicContent({ document: payload }));
+    assert.ok(html.includes('Texto legível'));
+    assert.equal(html.includes('<a'), false);
+  }
+});

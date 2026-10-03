@@ -1,6 +1,6 @@
 # Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.4.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. A F4 conecta Home, escritório, áreas e profissionais à API, preservando o Design System aprovado da F3. O portal editorial completo, CMS e integrações seguem as próximas fases. Situação e validações reais: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.5.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional e portal editorial usam a API real, preservando o Design System aprovado da F3. A F5 acrescenta filtros, paginação, leitura segura, sumário, compartilhamento e referências de PDF público. CMS e integrações seguem as próximas fases. Situação e validações reais: [relate.md](relate.md).
 
 ## Pré-requisitos
 
@@ -45,6 +45,7 @@ pnpm test:integration
 pnpm test:design-system
 pnpm build
 pnpm test:institutional
+pnpm test:editorial
 pnpm format:check
 pnpm --filter @filaretti/api db:validate
 ```
@@ -52,6 +53,8 @@ pnpm --filter @filaretti/api db:validate
 Testes de configuração usam Vitest. A API usa o test runner do Node com TypeScript previamente compilado e HTTP real. A integração exige PostgreSQL real e permissão local/CI de criar bancos: cria um banco temporário próprio, aplica migrations, repete o seed, verifica idempotência e executa testes de auth/domínio/health. Ao final remove somente esse banco temporário, preservando o banco de desenvolvimento e seu volume. Não pula checks se o banco estiver indisponível. `db:validate` verifica o schema; CI gera o cliente Prisma e roda lint → typecheck → testes → integração PostgreSQL → build, sem deploy.
 
 `test:institutional` exige build existente, PostgreSQL local e Playwright já disponível (configurar `PLAYWRIGHT_MODULE_PATH` se necessário), com Edge por padrão. Usa outro banco temporário, API/Next em portas próprias, fixture raster substituível e revisão de seis templates em cinco larguras, sem modificar o banco de desenvolvimento. Não instala navegador/pacotes; detalhes e opção explícita de alcance HTTP em [docs/public-site.md](docs/public-site.md). O smoke visual é local, não foi acrescentado ao CI sem infraestrutura de navegador correspondente.
+
+`test:editorial` usa o mesmo isolamento para verificar listagem/leitura, filtros combinados, URLs compartilháveis, visibilidade, retirada de publicação, sumário, compartilhamento, PDF, XSS e recuperação da API. Requer portas 3014/3015 livres e inspeciona o Edge em cinco larguras; dados/arquivos temporários são próprios. Política de cache, reprodução e limites em [docs/editorial.md](docs/editorial.md).
 
 Consulte `http://127.0.0.1:3001/health`: banco disponível retorna HTTP **200** e `{"status":"ok","database":"up"}`; indisponível retorna **503** e `{"status":"error","database":"down"}`. Ambas as respostas têm `Cache-Control: no-store` e não mostram credenciais/stack. Para testar a mudança de estado somente no banco deste projeto:
 
@@ -68,7 +71,7 @@ O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset
 
 | Caminho                                       | Responsabilidade                                                                       |
 | --------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `apps/web`                                    | Next.js App Router/React/Tailwind; páginas institucionais SSR e estados de erro/404    |
+| `apps/web`                                    | Next.js App Router/React/Tailwind; páginas institucionais/editoriais SSR e estados     |
 | `apps/api`                                    | NestJS; Prisma, autenticação/roles, API de domínio, logs sanitizados, Swagger e health |
 | `packages/ui`                                 | Tokens CSS, controles, formulários, diálogos e estados compartilhados da F3            |
 | `packages/types`                              | Contratos de autenticação e domínio; sem modelos Prisma/segredos                       |
@@ -78,7 +81,7 @@ O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset
 
 Todos os pacotes são privados. Não há publicação npm; bump funcional da etapa acontece na raiz e nos workspaces, acompanhado de plano/relatório e lockfile. Husky/lint-staged formatam arquivos staged; CI e checks completos continuam obrigatórios.
 
-Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F3 e commit local. F4, push, PR, homologação e produção dependem de autorização própria.
+Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F5 e commit local. F6, push, PR, homologação e produção dependem de autorização própria.
 
 ## Referências
 

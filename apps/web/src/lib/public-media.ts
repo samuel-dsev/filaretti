@@ -14,3 +14,24 @@ export function publicImage(
   if (media.url.includes('//') || media.url.split('/').includes('..')) return undefined;
   return { src: media.url, alt: media.alt?.trim() || fallbackAlt };
 }
+
+/** Only a public editorial PDF reference can produce a download; storage validation joins in F6. */
+export function publicPdf(
+  media: PublicMedia | null,
+): { href: string; sizeLabel: string } | undefined {
+  if (
+    !media ||
+    media.mimeType !== 'application/pdf' ||
+    !Number.isSafeInteger(media.size) ||
+    media.size <= 0 ||
+    media.size > 10 * 1024 * 1024 ||
+    !/^\/media\/public\/[a-zA-Z0-9_/-]+\.pdf$/u.test(media.url) ||
+    media.url.includes('//') ||
+    media.url.split('/').some((part) => part === '.' || part === '..')
+  )
+    return undefined;
+  const megabytes = media.size >= 1024 * 1024;
+  const size = media.size / (megabytes ? 1024 * 1024 : 1024);
+  const formatted = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 1 }).format(size);
+  return { href: media.url, sizeLabel: `${formatted} ${megabytes ? 'MB' : 'KB'}` };
+}

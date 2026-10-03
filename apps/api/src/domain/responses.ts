@@ -32,6 +32,13 @@ const mediaSchema = object({
   url: string,
 });
 export const taxonomySchema = object({ id: string, slug: string, name: string });
+export const editorialFiltersSchema = object({
+  areas: array(taxonomySchema),
+  categories: array(taxonomySchema),
+  authors: array(taxonomySchema),
+  tags: array(taxonomySchema),
+  years: array(integer),
+});
 const professionalSummarySchema = object({
   id: string,
   slug: string,

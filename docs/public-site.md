@@ -1,6 +1,6 @@
 # Site institucional
 
-F4, versão `0.4.0`, 03/10/2026. O usuário aprovou a estilização da F3 e autorizou a F4. As evidências e o checkpoint ficam em `../relate.md`. Dados e identidades continuam explicitamente fictícios; aprovação do design não substitui aprovação de materiais oficiais.
+Site institucional entregue na F4 e integrado ao portal editorial na F5, versão `0.5.0`, 03/10/2026. O usuário aprovou a estilização da F3. As evidências e o checkpoint ficam em `../relate.md`. Dados e identidades continuam explicitamente fictícios; aprovação do design não substitui aprovação de materiais oficiais. Leitura, filtros, arquivos e cache editorial: [editorial.md](editorial.md).
 
 ## Rotas e dados
 
@@ -29,11 +29,11 @@ Antes do streaming, o Proxy consulta somente o recurso público correspondente �
 
 Imagens usam `next/image` e `sizes`. A allowlist inicial admite somente raster JPEG/PNG/WebP/AVIF em `/media/public/**`, sem query, traversal, SVG, caminhos privados ou origens remotas. DTOs incompatíveis usam placeholder. Adicionar hosts e paths de storage exige a integração/revisão da F6; não foi criada uma allowlist genérica de URLs. O smoke usa somente uma ilustração raster fictícia temporária e confirma redimensionamento pelo otimizador.
 
-Os resumos editoriais publicados e relacionados já aparecem, mas a leitura integral pertence à F5. Eles não possuem links para rotas ausentes. Newsletter mostra disponibilidade futura, sem formulário que simule inscrição. Contato apresenta apenas canais públicos configurados; envio de formulário, anexos, newsletter e busca operacional pertencem à F7.
+Os resumos editoriais publicados e relacionados agora levam à leitura integral em `/conteudos/[slug]`; menu/footer e Home levam a `/conteudos`. Newsletter mostra disponibilidade futura, sem formulário que simule inscrição. Contato apresenta apenas canais públicos configurados; envio de formulário, anexos, newsletter e busca global operacional pertencem à F7.
 
 ## Contrato para cache e invalidação
 
-A política vigente é **nova leitura por requisição**. A F5 escolherá o cache público e seu prazo; a F6 persistirá a invalidação após mutações. As dependências abaixo devem ser preservadas quando isso ocorrer:
+A política vigente é **nova leitura por requisição**, mantida explicitamente na F5 para que a retirada de publicação apareça na primeira consulta posterior à transação, sem cache persistente. A F6 persistirá as tarefas de invalidação após mutações. As dependências abaixo devem ser preservadas se um cache persistente for introduzido:
 
 | Recurso alterado                               | Superfícies dependentes                                                                                                  |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
@@ -43,7 +43,7 @@ A política vigente é **nova leitura por requisição**. A F5 escolherá o cach
 | Profissional, atividade, slug ou relações      | Home, escritório, índice/perfil e detalhes das áreas vinculadas                                                          |
 | Artigo, destaque, tipo, publicação ou relações | Recentes/destaques/guias da Home, relacionados por área e publicações por profissional; leitura/listagem editorial na F5 |
 
-Retirada, troca de slug e alteração de relações devem invalidar tanto os caminhos antigos quanto os novos e as listagens dependentes. Preview/admin permanecem fora do cache público. Nenhum endpoint de revalidação, worker ou tag com cache ativo é apresentado como entregue na F4.
+Retirada, troca de slug e alteração de relações devem invalidar tanto os caminhos antigos quanto os novos e as listagens dependentes. Preview/admin permanecem fora do cache público. Nenhum endpoint de revalidação, worker ou tag com cache ativo é apresentado como entregue na F4/F5; política e comprovação de retirada na F5 estão em [editorial.md](editorial.md).
 
 ## Verificação reproduzível
 

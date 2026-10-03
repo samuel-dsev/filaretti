@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { publicRouteResource, publicPageNumber } from '../src/lib/public-routing.ts';
-import { publicImage } from '../src/lib/public-media.ts';
+import { publicImage, publicPdf } from '../src/lib/public-media.ts';
 import { publicStatusHtml } from '../src/lib/public-status.ts';
 
 test('status gate restricts backend requests to known public resources and slugs', () => {
@@ -18,6 +18,40 @@ test('status gate restricts backend requests to known public resources and slugs
     assert.equal(publicRouteResource(path).endpoint, '');
   }
   assert.equal(publicRouteResource('/areas-de-atuacao').isDetail, false);
+  assert.deepEqual(publicRouteResource('/conteudos'), {
+    endpoint: '/articles?limit=1',
+    isDetail: false,
+  });
+  assert.deepEqual(publicRouteResource('/conteudos/artigo-ficticio'), {
+    endpoint: '/articles/artigo-ficticio',
+    isDetail: true,
+  });
+  assert.equal(publicRouteResource('/conteudos/%2e%2e').endpoint, '');
+});
+
+test('guide PDF allowlist rejects private paths, remote origins, incorrect MIME and unsafe sizes', () => {
+  const pdf = {
+    id: 'fixture',
+    alt: null,
+    size: 2048,
+    mimeType: 'application/pdf',
+    url: '/media/public/guia-ficticio.pdf',
+  };
+  assert.deepEqual(publicPdf(pdf), { href: pdf.url, sizeLabel: '2 KB' });
+  for (const url of [
+    '/media/private/guia.pdf',
+    '/api/v1/admin/contacts/file.pdf',
+    'https://example.test/guia.pdf',
+    '//example.test/file.pdf',
+    '/media/public/a.pdf?token=secret',
+    '/media/public/a%2fb.pdf',
+    '/media/public/../private/a.pdf',
+    '/media/public/a.pdf.html',
+  ])
+    assert.equal(publicPdf({ ...pdf, url }), undefined);
+  for (const size of [0, -1, 0.5, 10 * 1024 * 1024 + 1, Number.NaN])
+    assert.equal(publicPdf({ ...pdf, size }), undefined);
+  assert.equal(publicPdf({ ...pdf, mimeType: 'text/html' }), undefined);
 });
 
 test('invalid pagination is bounded without forwarding arbitrary query values', () => {

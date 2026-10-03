@@ -46,7 +46,7 @@ Swagger fica em `/api/docs` somente quando `APP_ENV` e `NODE_ENV` são `developm
 
 A API aplica DTOs com transformação explícita, whitelist e rejeição de propriedades desconhecidas. O corpo JSON tem teto de 64 KiB; IDs administrativos/relacionais usam UUID e slugs usam letras minúsculas, números e hífens. `packages/types` publica contratos permitidos sem modelos Prisma. As respostas de domínio passam por serializers explícitos; hash de senha, chave de storage, token, contato e assinante não integram respostas públicas. Swagger inclui DTOs de entrada, rotas reais e schemas dos campos de saída públicos/administrativos.
 
-Todas as respostas ficam `Cache-Control: no-store` na F2. Cache público, renderização HTML e revalidação serão tratados na F5/F6; retirada de publicação já impede imediatamente nova leitura pública pela API.
+Todas as respostas ficam `Cache-Control: no-store`, política mantida na F5. A web revalida por nova requisição e renderiza sem cache persistente; retirada de publicação impede imediatamente nova leitura pública pela API/site. Tarefas persistidas após mutações pertencem à F6; detalhes em [editorial.md](editorial.md).
 
 ## Sessão e usuários
 
@@ -92,6 +92,7 @@ Artigos aceitam filtros combinados `area`, `category`, `professional`, `tag` por
 | Caminho GET                                              | Regra de leitura                                                              |
 | -------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `/articles`, `/articles/:slug`                           | Somente PUBLISHED com data não futura e profissional autor ativo              |
+| `/editorial/filters`                                     | Opções de filtros derivadas exclusivamente do catálogo público, sem paginação |
 | `/taxonomies/categories`, `/taxonomies/categories/:slug` | Categorias ativas                                                             |
 | `/taxonomies/tags`, `/taxonomies/tags/:slug`             | Tags ativas                                                                   |
 | `/professionals`, `/professionals/:slug`                 | Profissionais ativos; áreas vinculadas também ativas                          |
@@ -103,7 +104,9 @@ Artigos aceitam filtros combinados `area`, `category`, `professional`, `tag` por
 
 Rascunhos, agendamentos, arquivados, conteúdo futuro e registros inativos retornam 404 no detalhe público. Categorias/tags/áreas inativas são removidas dos relacionamentos públicos. Listagem de artigos entrega resumos; conteúdo TipTap, PDF e SEO entram somente no detalhe. IDs de usuário criador/editor, status interno, versão e `isMock` não aparecem no contrato público.
 
-Mídia pública é serializada somente com visibilidade PUBLIC, URL HTTPs/relativa segura e MIME permitido no vínculo; o contrato expõe `id`, `alt`, `mimeType`, `size`, `url`. `storageKey`, proprietário e anexos privados ficam fora. Referência privada/inválida existente no banco devolve `null` publicamente; novos vínculos editoriais privados são rejeitados. Upload e download privado não existem na F2.
+Mídia pública é serializada somente com visibilidade PUBLIC, URL HTTPS segura ou caminho local `/media/public/**` correspondente ao MIME, e sem vínculo com contato. O contrato expõe `id`, `alt`, `mimeType`, `size`, `url`; `storageKey`, proprietário e anexos privados ficam fora. Referência privada/inválida existente no banco devolve `null` publicamente; novos vínculos editoriais privados são rejeitados. Upload e download privado seguem F6/F7; a UI F5 permite apenas raster/PDF local da allowlist.
+
+`GET /editorial/filters` retorna `{ areas, categories, authors, tags, years }`, com quatro arrays de `{ id, slug, name }` e anos inteiros descendentes. Opções derivam de PUBLISHED com data não futura e autor ativo; relações inativas são excluídas. As consultas usam uma transação de leitura consistente e não truncam opções com a paginação dos artigos. Anos seguem UTC, como o filtro `year`. O cliente público projeta esses campos e o detalhe `PublicArticle` sem status, propriedade administrativa, flags internas ou chaves de storage.
 
 ## Domínio administrativo
 
@@ -139,11 +142,11 @@ Campos editáveis principais:
 O backend aceita JSON estruturado, sem HTML bruto, embeds, imagem inline, scripts, estilos ou atributos arbitrários. Fotos/PDFs são campos de mídia separados. O documento raiz é `{ type: "doc", content: [...] }` e aceita somente:
 
 - Blocos `paragraph`, `heading`, `bulletList`, `orderedList`, `blockquote`, `horizontalRule`, `codeBlock`; listas contêm `listItem`, que contém blocos.
-- `paragraph`/`heading` contêm `text` e `hardBreak`; `codeBlock` contém apenas `text`. Textos usam `text` como string, renderizada como texto pelo futuro renderer, nunca inserida como HTML.
+- `paragraph`/`heading` contêm `text` e `hardBreak`; `codeBlock` contém apenas `text`. Textos usam `text` como string, renderizada como texto pelo renderer JSX, nunca inserida como HTML.
 - Marks em texto: `bold`, `italic`, `underline`, `strike`, `code`, `link`. Link aceita somente `attrs: { href }`; protocolos permitidos são HTTPs, mailto, tel e caminho interno relativo seguro. `javascript:`, `data:`, URLs com credenciais, caracteres de controle, backslash e `//host` são rejeitados.
 - Atributos: heading `level=2|3|4` obrigatório; orderedList `start` inteiro 1–10000 opcional; codeBlock `language` opcional com letras minúsculas, números e hífen (até 30). Os demais nós não aceitam attrs.
 
-Limites por documento: profundidade 24, 2000 nós, 50000 caracteres de texto e até 6 marks distintos por trecho. Propriedades desconhecidas e relações inválidas entre nós são rejeitadas. Esse contrato é compartilhado por artigo, bio, descrição de área, resposta FAQ e corpo de seção. A F5 acrescentará o renderer seguro e a sanitização de HTML derivado; a API F2 já rejeita payloads executáveis na entrada.
+Limites por documento: profundidade 24, 2000 nós, 50000 caracteres de texto e até 6 marks distintos por trecho. Propriedades desconhecidas e relações inválidas entre nós são rejeitadas. Esse contrato é compartilhado por artigo, bio, descrição de área, resposta FAQ e corpo de seção. O renderer da F5 projeta nós permitidos e gera JSX escapado no servidor, sem inserir HTML bruto; URLs são verificadas novamente. A API rejeita payloads executáveis na entrada. Sumário e controles de arquivo em [editorial.md](editorial.md).
 
 ## Interfaces preparadas e limites da fase
 

@@ -30,19 +30,45 @@ export function strings(value: unknown): string[] {
 export function taxonomy(value: { id: string; slug: string; name: string }): TaxonomySummary {
   return { id: value.id, slug: value.slug, name: value.name };
 }
-export function media(value: Media | null): PublicMedia | null {
+export const publicMediaInclude = {
+  include: { _count: { select: { contactAttachments: true } } },
+} satisfies Prisma.MediaDefaultArgs;
+type EditorialMedia = Media & { _count: { contactAttachments: number } };
+function publicMediaUrl(value: string, kind: 'image' | 'pdf'): boolean {
+  if (!safeUrl(value)) return false;
+  const extension = kind === 'pdf' ? /\.pdf$/iu : /\.(?:jpe?g|png|webp|avif)$/iu;
+  if (value.startsWith('/')) {
+    return (
+      value.startsWith('/media/public/') &&
+      !/[?#]/u.test(value) &&
+      !value
+        .slice(1)
+        .split('/')
+        .some((part) => part === '.' || part === '..' || part === '') &&
+      extension.test(value)
+    );
+  }
+  return value.startsWith('https://');
+}
+export function media(value: EditorialMedia | null, kind?: 'image' | 'pdf'): PublicMedia | null {
   if (
     !value ||
     value.visibility !== MediaVisibility.PUBLIC ||
+    value._count.contactAttachments !== 0 ||
     !value.publicUrl ||
-    !safeUrl(value.publicUrl) ||
-    (!value.publicUrl.startsWith('/') && !value.publicUrl.startsWith('https://'))
+    !Number.isSafeInteger(value.size) ||
+    value.size <= 0
   )
     return null;
+  const mediaKind = value.mimeType === 'application/pdf' ? 'pdf' : 'image';
+  const allowed =
+    mediaKind === 'pdf'
+      ? ['application/pdf']
+      : ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
   if (
-    !['image/jpeg', 'image/png', 'image/webp', 'image/avif', 'application/pdf'].includes(
-      value.mimeType,
-    )
+    (kind !== undefined && kind !== mediaKind) ||
+    !allowed.includes(value.mimeType) ||
+    !publicMediaUrl(value.publicUrl, mediaKind)
   )
     return null;
   return {
@@ -88,7 +114,7 @@ export async function validateMedia(
   kind: 'image' | 'pdf',
 ) {
   if (!id) return;
-  const record = await tx.media.findUnique({ where: { id } });
+  const record = await tx.media.findUnique({ where: { id }, ...publicMediaInclude });
   const allowed =
     kind === 'pdf' ? ['application/pdf'] : ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
   if (!record || !media(record) || !allowed.includes(record.mimeType))

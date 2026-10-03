@@ -1,7 +1,12 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { Prisma, PublicationStatus, UserRole } from '@prisma/client';
 import type { ApiEnvironment } from '@filaretti/config';
-import type { PublicArticle, PublicArticleSummary, ProfessionalSummary } from '@filaretti/types';
+import type {
+  PublicArticle,
+  PublicArticleSummary,
+  PublicEditorialFilters,
+  ProfessionalSummary,
+} from '@filaretti/types';
 import { PrismaService } from '../database/prisma.service';
 import type { AuthenticatedRequest } from '../auth/types';
 import type {
@@ -19,6 +24,7 @@ import {
   exists,
   json,
   media,
+  publicMediaInclude,
   paginated,
   paging,
   requireSort,
@@ -29,9 +35,9 @@ import {
 } from './shared';
 
 const include = {
-  author: { include: { photoMedia: true } },
-  coverMedia: true,
-  pdfMedia: true,
+  author: { include: { photoMedia: publicMediaInclude } },
+  coverMedia: publicMediaInclude,
+  pdfMedia: publicMediaInclude,
   categories: { include: { category: true } },
   tags: { include: { tag: true } },
   practiceAreas: { include: { practiceArea: true } },
@@ -39,14 +45,14 @@ const include = {
 type ArticleRecord = Prisma.ArticleGetPayload<{ include: typeof include }>;
 type Actor = AuthenticatedRequest['user'];
 export function professionalSummary(
-  record: Prisma.ProfessionalGetPayload<{ include: { photoMedia: true } }>,
+  record: Prisma.ProfessionalGetPayload<{ include: { photoMedia: typeof publicMediaInclude } }>,
 ): ProfessionalSummary {
   return {
     id: record.id,
     slug: record.slug,
     name: record.name,
     title: record.title,
-    photo: media(record.photoMedia),
+    photo: media(record.photoMedia, 'image'),
   };
 }
 function summary(record: ArticleRecord): PublicArticleSummary {
@@ -61,7 +67,7 @@ function summary(record: ArticleRecord): PublicArticleSummary {
     updatedAt: record.updatedAt.toISOString(),
     readingTimeMinutes: record.readingTimeMinutes,
     author: record.author.isActive ? professionalSummary(record.author) : null,
-    cover: media(record.coverMedia),
+    cover: media(record.coverMedia, 'image'),
     categories: record.categories
       .filter((row) => row.category.isActive)
       .map((row) => taxonomy(row.category)),
@@ -75,7 +81,7 @@ function detail(record: ArticleRecord): PublicArticle {
   return {
     ...summary(record),
     content: publicContent(record.content),
-    pdf: media(record.pdfMedia),
+    pdf: media(record.pdfMedia, 'pdf'),
     seoTitle: record.seoTitle,
     seoDescription: record.seoDescription,
   };
@@ -133,9 +139,9 @@ function order(query: ArticleQueryDto): Prisma.ArticleOrderByWithRelationInput[]
     { id: 'asc' },
   ];
 }
-const publicWhere = (): Prisma.ArticleWhereInput => ({
+const publicWhere = (now = new Date()): Prisma.ArticleWhereInput => ({
   status: PublicationStatus.PUBLISHED,
-  publishedAt: { lte: new Date() },
+  publishedAt: { lte: now },
   author: { isActive: true },
 });
 
@@ -145,6 +151,44 @@ export class ArticlesService {
     private readonly db: PrismaService,
     @Inject(DOMAIN_ENVIRONMENT) private readonly environment: ApiEnvironment,
   ) {}
+  async publicFilters(): Promise<PublicEditorialFilters> {
+    const now = new Date();
+    const where = publicWhere(now);
+    const select = { id: true, slug: true, name: true } as const;
+    const orderBy = [{ name: 'asc' }, { id: 'asc' }] as const;
+    const [areas, categories, authors, tags, years] = await this.db.$transaction(
+      [
+        this.db.practiceArea.findMany({
+          where: { isActive: true, articles: { some: { article: where } } },
+          select,
+          orderBy: [...orderBy],
+        }),
+        this.db.category.findMany({
+          where: { isActive: true, articles: { some: { article: where } } },
+          select,
+          orderBy: [...orderBy],
+        }),
+        this.db.professional.findMany({
+          where: { isActive: true, articles: { some: where } },
+          select,
+          orderBy: [...orderBy],
+        }),
+        this.db.tag.findMany({
+          where: { isActive: true, articles: { some: { article: where } } },
+          select,
+          orderBy: [...orderBy],
+        }),
+        this.db.$queryRaw<{ year: number }[]>`
+          SELECT DISTINCT EXTRACT(YEAR FROM a.published_at AT TIME ZONE 'UTC')::integer AS year
+          FROM articles a JOIN professionals p ON p.id = a.author_id
+          WHERE a.status = 'PUBLISHED' AND a.published_at <= ${now} AND p.is_active = TRUE
+          ORDER BY year DESC
+        `,
+      ],
+      { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+    );
+    return { areas, categories, authors, tags, years: years.map((row) => row.year) };
+  }
   async publicList(query: ArticleQueryDto) {
     const where: Prisma.ArticleWhereInput = { AND: [publicWhere(), filters(query)] };
     const [records, total] = await this.db.$transaction([

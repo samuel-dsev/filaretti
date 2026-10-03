@@ -145,3 +145,41 @@ export function contentText(
   if (maxLength === undefined || !Number.isFinite(maxLength)) return value;
   return value.slice(0, Math.max(0, Math.floor(maxLength))).trimEnd();
 }
+
+export interface ContentOutlineEntry {
+  id: string;
+  text: string;
+}
+
+/** IDs depend on document order, so repeated, empty and non-Latin titles remain unique. */
+export function getContentOutline(
+  document: TipTapDocument,
+  prefix = 'leitura',
+): ContentOutlineEntry[] {
+  const parsed = parsePublicDocument(document);
+  if (!parsed) return [];
+  const safePrefix = /^[a-z][a-z0-9-]{0,63}$/u.test(prefix) ? prefix : 'leitura';
+  const outline: ContentOutlineEntry[] = [];
+  function visit(node: TipTapNode) {
+    if (node.type === 'heading' && node.attrs?.level === 2) {
+      const index = outline.length + 1;
+      const text =
+        (node.content ?? [])
+          .map((child) => child.text ?? ' ')
+          .join('')
+          .replace(/\s+/gu, ' ')
+          .trim() || `Seção ${index}`;
+      const slug = text
+        .normalize('NFKD')
+        .replace(/\p{Mark}/gu, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/gu, '-')
+        .replace(/^-|-$/gu, '')
+        .slice(0, 64);
+      outline.push({ id: `${safePrefix}-secao-${index}${slug ? `-${slug}` : ''}`, text });
+    }
+    for (const child of node.content ?? []) visit(child);
+  }
+  visit(parsed);
+  return outline;
+}

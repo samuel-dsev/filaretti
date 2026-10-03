@@ -7,6 +7,7 @@ import {
   AdminInstitutionController,
   AdminTaxonomiesController,
   PublicArticlesController,
+  PublicEditorialController,
   PublicInstitutionController,
   PublicTaxonomiesController,
 } from './domain.controllers';
@@ -15,6 +16,7 @@ import { DOMAIN_ENVIRONMENT } from './shared';
 @Module({
   controllers: [
     PublicArticlesController,
+    PublicEditorialController,
     AdminArticlesController,
     PublicInstitutionController,
     AdminInstitutionController,
