@@ -2,22 +2,67 @@
 
 ## Situação atual
 
-| Campo                | Estado                                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------------------ |
-| Última atualização   | 02/10/2026 — RP-001                                                                                    |
-| Etapa                | **F1 parcial — base local validada; aguardando reinício/Docker para aceite real do banco**             |
-| Versão               | `0.1.0` no package.json raiz e workspaces privados                                                     |
-| Código/aplicação     | Web/API/pacotes/configuração/health/CI implementados; sem domínio/auth/CMS                             |
-| Ambiente             | Windows; web/API e smoke local aprovados; PostgreSQL/Compose não iniciaram por hipervisor indisponível |
-| Git                  | `dev`, `origin/dev`, remoto samuel-dsev/filaretti; baseline `6c84b6a`                                  |
-| Commit desta entrega | Commit local parcial da base previsto; SHA real informado após commit e registrado na retomada         |
-| Próxima etapa        | Concluir F1 após reinício/Docker disponível                                                            |
-| Autorização          | F1 já autorizada; usuário pediu aguardar reinício; F2 aguarda confirmação após F1                      |
-| Checkpoint           | RP-001 abaixo e quadro inicial de plan.md                                                              |
+| Campo                | Estado                                                                                        |
+| -------------------- | --------------------------------------------------------------------------------------------- |
+| Última atualização   | 02/10/2026 — RP-002                                                                           |
+| Etapa                | **F1 concluída — aceite integral local aprovado**                                             |
+| Versão               | `0.1.0` no package.json raiz e workspaces privados                                            |
+| Código/aplicação     | Fundação web/API/pacotes/configuração/health/CI concluída; domínio/auth/CMS nas fases futuras |
+| Ambiente             | Web/API locais funcionando; PostgreSQL17.11 saudável no Compose, com volume persistente       |
+| Git                  | `dev`, remoto `origin`; base da retomada `4e1cae8`; fechamento local conforme RP-002          |
+| Commit desta entrega | `docs(foundation): conclui aceite local da F1 (v0.1.0)`; SHA real informado após commit       |
+| Próxima etapa        | **F2 — Banco, autenticação e API de domínio**                                                 |
+| Autorização          | **Aguardando confirmação para F2**                                                            |
+| Checkpoint           | RP-002 abaixo e quadro inicial de plan.md                                                     |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar este quadro em toda entrega ou interrupção e acrescentar uma entrada ao histórico, preservando as anteriores. Datas e horários informados ao usuário seguem America/Sao_Paulo.
 
 ## Histórico
+
+### RP-002 — 02/10/2026 — F1 — Aceite local concluído
+
+**Escopo autorizado:** "docker disponivel, conclua a f1". Retomada limitada ao aceite pendente da F1 e ao fechamento documental/local. **Estado: concluída tecnicamente.** F2 não iniciada.
+
+**Versão:** `0.1.0` → `0.1.0`; sem alteração de aplicação/manifest/lockfile. Completar a validação/documentação do mesmo marco não gera outro bump, conforme a política do plano.
+
+**Git e continuidade:** cwd `C:\Users\Samuel\Documents\Projetos\Filaretti`, branch `dev`, Git limpo na retomada, remoto `origin` existente. Commit parcial anterior confirmado: `4e1cae8a3b489094a3a809bfd27b1bec809a7b15` — `feat(foundation): prepara base local da F1 (v0.1.0)`. Esse SHA registra a entrega parcial do RP-001, que foi preservado integralmente. Commit de fechamento previsto: `docs(foundation): conclui aceite local da F1 (v0.1.0)`; SHA real informado na entrega e registrado na próxima retomada, sem commit circular para inserir o próprio hash.
+
+#### Arquivos e mudanças
+
+- Alterados: `plan.md` (estado F1, checkpoint, próxima fase/gate e atualização final) e `relate.md` (situação atual, RP-002, evidências e SHA anterior).
+- Nenhum arquivo versionável novo/removido; código, manifests, lockfile, README, sete docs técnicos e AGENTS.md preservados.
+- Evidências locais ignoradas criadas: `.local/f1-acceptance.cjs`, `.local/f1-runtime-up.json`, `.local/f1-runtime-down.json`, `.local/f1-runtime-recovered.json` e script local de atualização do checkpoint. Sem credenciais/strings de conexão nessas evidências.
+- Infraestrutura real de desenvolvimento iniciada: rede `filaretti-local_default`, volume `filaretti-local_postgres_data` e contêiner `filaretti-local-postgres-1`. Volume persistente mantido; nenhuma migration, tabela de domínio, seed ou reset executado.
+
+#### Validação e evidências do aceite
+
+| Check                   | Resultado                                                                                                                                                                                                                                                                                                 |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Docker e isolamento     | Engine 29.7.2 disponível; Compose 5.4.0, desktop-linux. Somente serviço PostgreSQL do projeto filaretti-local operado; serviços WAIA existentes não alterados                                                                                                                                             |
+| Instalação reproduzível | `rtk proxy pnpm install --frozen-lockfile` passou; ambiente local existente preservado, sem repetir setup ou expor valores                                                                                                                                                                                |
+| Compose/configuração    | `rtk proxy docker compose config --quiet` passou; `rtk proxy docker compose up -d --wait --wait-timeout 120` baixou a imagem fixada, criou volume/rede e atingiu estado healthy                                                                                                                           |
+| Banco real              | `SHOW server_version` retornou 17.11; imagem/digest igual ao Compose/CI versionados; bind restrito a 127.0.0.1:5434                                                                                                                                                                                       |
+| Inicialização dos apps  | `rtk proxy pnpm dev` iniciou Next/Nest e compilação compartilhada; web200/noindex e APIhealth200/up. A primeira sondagem antecipou a conclusão do startup da API e foi refeita após sua inicialização                                                                                                     |
+| Integração PostgreSQL   | `rtk proxy pnpm test:integration` passou: um teste Node/HTTP executou SELECT1 contra banco real; não houve skip ou adaptador simulado                                                                                                                                                                     |
+| Banco disponível        | GET /health200, corpo exato `{"status":"ok","database":"up"}`, no-store e UUID próprio; resposta em124ms na sondagem inicial                                                                                                                                                                              |
+| Banco parado            | `rtk proxy docker compose stop postgres`; GET /health503, corpo exato `{"status":"error","database":"down"}`, no-store; resposta em69ms, sem credenciais/stack                                                                                                                                            |
+| Recuperação             | `rtk proxy docker compose start postgres` e Compose up com espera; GET /health200/up em90ms, sem reiniciar API. Mesmo PID da API permaneceu atendendo                                                                                                                                                     |
+| Persistência            | Compose recriou o contêiner durante a subida; volume com mesmo nome/mount e identificador do cluster PostgreSQL antes/depois iguais. Nenhum volume removido ou dado resetado                                                                                                                              |
+| Web após recuperação    | Página da fundação200, conteúdo fictício explícito e header noindex preservados                                                                                                                                                                                                                           |
+| Checks da aplicação     | Os dez testes de configuração/HTTP, lint sem warnings, typecheck, build otimizado, Prisma validate, format/diff e audit de produção já passaram no RP-001 para o commit4e1cae8. Não houve alteração de aplicação nesta retomada; foram executados os checks pendentes do banco, sem repetir a suíte ampla |
+| Revisão independente    | Subagente realizou revisão estática de plano/README/docs/Turbo/CI/hook/config/health/logs/testes/fronteira web; nenhum achado impeditivo. Principal executou todo o runtime e integração; subagente não editou ou operou serviços                                                                         |
+
+O resultado agregado da F1 é **11 testes aprovados**: dez da preparação (RP-001) e um de integração real nesta retomada, além do smoke de disponibilidade/indisponibilidade/recuperação. As evidências visuais e de teclado em375/1440px estão no RP-001; interface não mudou e não foi alegada validação em outros navegadores/dispositivos.
+
+#### Operação, limites e próxima etapa
+
+- O bloqueio anterior de Docker/WSL2 foi resolvido no ambiente após o reinício informado pelo usuário. Não foi necessário alterar BIOS/boot/Windows por ferramenta nesta retomada.
+- Web/API permanecem em desenvolvimento local (127.0.0.1:3000/3001) e PostgreSQL saudável com volume persistente. O processo pnpm dev desta sessão usa o contexto de execução 77567; para iniciar outra sessão, encerrar/reutilizar a existente, evitando conflito de portas.
+- Toda a fundação prevista na F1 está implementada e seu aceite local comprovado. A ressalva de atualização do ESLint9 por compatibilidade de plugins, já registrada em RP-001, permanece; o audit de produção anterior não reportou vulnerabilidades conhecidas.
+- Workflow CI está versionado; não foi executado no GitHub nesta sessão. Fornecedores reais, auth/domínio, migrations e demais funcionalidades pertencem às fases futuras. Não há publicação ou aceite de produção.
+- Versão única 0.1.0 mantida. `pnpm format:check` e `git diff --check` passaram; o staging explícito do fechamento contém somente `plan.md` e `relate.md`. Não houve push, PR, merge, release, deploy ou envio externo.
+
+**Ponto de parada:** F1 concluída. **Próxima etapa:** F2 — banco, autenticação e API de domínio, somente após confirmação do usuário. Ao retomar, reler os três documentos, conferir Git/cwd, registrar SHA do fechamento e verificar os serviços locais existentes.
 
 ### RP-001 — 02/10/2026 — F1 — Fundação local; aceite PostgreSQL pendente
 

@@ -2,17 +2,17 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                            | Situação                                                                                                         |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Última atualização               | 02/10/2026 — F1: base local preparada; aguardando reinício/Docker                                                |
-| Último relatório                 | `RP-001`, em `relate.md`                                                                                         |
-| Última entrega técnica concluída | F0 documental; implementação local da F1 validada, com aceite de PostgreSQL/Compose pendente                     |
-| Versão de referência             | `0.1.0`, registrada no `package.json` raiz e nos workspaces privados                                             |
-| Etapa em execução                | **F1 parcial — aguardando reinício do computador e Docker disponível**                                           |
-| Próxima etapa                    | Concluir o aceite da F1 com PostgreSQL real; F2 permanece pendente                                               |
-| Autorização da próxima etapa     | Retomada da F1 já autorizada; F2 exige confirmação após a conclusão da F1                                        |
-| Git                              | `dev`, remoto `origin` em `samuel-dsev/filaretti`; baseline do usuário `6c84b6a`; commit local da base preparado |
-| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`; caminho antigo `Projeto` não existe                              |
+| Campo                            | Situação                                                                                                        |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Última atualização               | 02/10/2026 — F1 concluída com Docker/PostgreSQL reais                                                           |
+| Último relatório                 | `RP-002`, em `relate.md`                                                                                        |
+| Última entrega técnica concluída | **F1 — Fundação técnica e ambiente local; aceite integral aprovado**                                            |
+| Versão de referência             | `0.1.0`, registrada no `package.json` raiz e nos workspaces privados                                            |
+| Etapa em execução                | Nenhuma; F1 concluída                                                                                           |
+| Próxima etapa                    | **F2 — Banco, autenticação e API de domínio**                                                                   |
+| Autorização da próxima etapa     | **Aguardando confirmação do usuário para F2**                                                                   |
+| Git                              | `dev`, remoto `origin` em `samuel-dsev/filaretti`; base da retomada `4e1cae8`; fechamento local conforme RP-002 |
+| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                                  |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -65,19 +65,19 @@ Usar migrations versionadas, relações e políticas de exclusão explícitas. A
 
 ## 4. Grandes atualizações e ordem cronológica
 
-| Etapa | Versão prevista | Entrega principal                             | Dependência                  | Estado                                                       |
-| ----- | --------------- | --------------------------------------------- | ---------------------------- | ------------------------------------------------------------ |
-| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                 | **Concluída — RP-000**                                       |
-| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026     | **Parcial — RP-001; aceite Docker/PostgreSQL após reinício** |
-| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1                           | Pendente                                                     |
-| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2                           | Pendente                                                     |
-| F4    | 0.4.0           | Site institucional conectado à API            | F3                           | Pendente                                                     |
-| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4                           | Pendente                                                     |
-| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5                           | Pendente                                                     |
-| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6                           | Pendente                                                     |
-| F8    | 0.8.0           | Validação integrada e homologação             | F7                           | Pendente                                                     |
-| F9    | 0.9.0           | Migração e preparação da release              | F8 + materiais aprovados     | Pendente                                                     |
-| F10   | 1.0.0           | Publicação e validação operacional da V1      | F9 + autorização de produção | Pendente                                                     |
+| Etapa | Versão prevista | Entrega principal                             | Dependência                  | Estado                 |
+| ----- | --------------- | --------------------------------------------- | ---------------------------- | ---------------------- |
+| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                 | **Concluída — RP-000** |
+| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026     | **Concluída — RP-002** |
+| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1                           | Pendente               |
+| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2                           | Pendente               |
+| F4    | 0.4.0           | Site institucional conectado à API            | F3                           | Pendente               |
+| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4                           | Pendente               |
+| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5                           | Pendente               |
+| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6                           | Pendente               |
+| F8    | 0.8.0           | Validação integrada e homologação             | F7                           | Pendente               |
+| F9    | 0.9.0           | Migração e preparação da release              | F8 + materiais aprovados     | Pendente               |
+| F10   | 1.0.0           | Publicação e validação operacional da V1      | F9 + autorização de produção | Pendente               |
 
 Cada etapa termina com validação, documentação, commit local quando o Git estiver preparado, relatório e pausa. Os subpassos pertencem à mesma atualização; não autorizam executar a etapa seguinte. Segurança, testes e acessibilidade começam na fundação e acompanham todas as entregas.
 
@@ -223,4 +223,4 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 
 ## 8. Registro da última atualização
 
-**02/10/2026 — RP-001 — F1 parcial:** monorepo e documentação da arquitetura, apps/pacotes, ambiente local isolado, validação, health, erros/logs sanitizados e CI implementados. Install frozen, lint, typecheck, dez testes, build, Prisma e smoke web/API sem banco passaram. Docker/WSL2 não iniciam por hipervisor indisponível; PostgreSQL real, Compose e health 200 permanecem pendentes. O usuário pediu aguardar reinício. **Ponto de parada: retomar a F1 após Docker disponível, concluir seu aceite e somente então entregar conclusão; F2 não iniciada.**
+**02/10/2026 — RP-002 — F1 concluída:** Docker disponível após reinício; PostgreSQL 17.11 real iniciado pelo Compose, com healthcheck aprovado e volume persistente. Instalação frozen passou; web e API iniciaram por pnpm dev; teste de integração passou. Health verificado em 200 → 503 → 200, com recuperação sem reiniciar a API e preservação do volume/identificador do cluster após recriação do contêiner. Os dez testes e lint/typecheck/build aprovados em RP-001 continuam válidos para a mesma base, sem mudanças de aplicação nesta retomada. Versão permanece 0.1.0; documentação de fechamento não gera bump. **Ponto de parada: F1 entregue; aguardar autorização para F2.**
