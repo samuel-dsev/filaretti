@@ -1,6 +1,6 @@
 {
   "name": "filaretti",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "packageManager": "pnpm@11.25.0",
   "engines": {
@@ -14,6 +14,11 @@
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "test:integration": "pnpm --filter @filaretti/api test:integration",
+    "db:generate": "pnpm --filter @filaretti/api db:generate",
+    "db:migrate": "pnpm --filter @filaretti/api db:migrate",
+    "db:seed:development": "pnpm --filter @filaretti/api db:seed:development",
+    "db:seed:production": "pnpm --filter @filaretti/api db:seed:production",
+    "db:provision-admin": "pnpm --filter @filaretti/api db:provision-admin",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "setup:local": "node scripts/setup-local.mjs",

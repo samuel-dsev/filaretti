@@ -72,8 +72,22 @@ test('Swagger is available only in development and disabled for production', asy
       const response = await fetch(`${await app.getUrl()}/api/docs-json`);
       assert.equal(response.status, nodeEnvironment === 'development' ? 200 : 404);
       if (response.status === 200) {
-        const schema = (await response.json()) as { paths: Record<string, unknown> };
+        const schema = (await response.json()) as {
+          paths: Record<string, { get?: { security?: Record<string, string[]>[] } }>;
+          components?: { securitySchemes?: Record<string, { in?: string; name?: string }> };
+        };
         assert.ok(schema.paths['/health']);
+        assert.ok(schema.paths['/api/v1/auth/login']);
+        const security = schema.components?.securitySchemes?.filaretti_access;
+        assert.deepEqual(security && { in: security.in, name: security.name }, {
+          in: 'cookie',
+          name: 'filaretti_access',
+        });
+        assert.ok(
+          schema.paths['/api/v1/admin/articles']?.get?.security?.some((item) =>
+            Array.isArray(item.filaretti_access),
+          ),
+        );
       }
     } finally {
       await app.close();

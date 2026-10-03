@@ -1,4 +1,512 @@
-// Domínio e migrations serão adicionados somente na F2.
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  AUTHOR
+}
+
+enum PublicationStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ArticleType {
+  ARTICLE
+  UPDATE
+  GUIDE
+}
+
+enum MediaVisibility {
+  PUBLIC
+  PRIVATE
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  ARCHIVED
+}
+
+enum SubscriberStatus {
+  PENDING
+  ACTIVE
+  UNSUBSCRIBED
+}
+
+enum NewsletterTokenPurpose {
+  CONFIRM
+  UNSUBSCRIBE
+}
+
+enum TaskStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id                  String               @id @default(uuid()) @db.Uuid
+  email               String               @unique @db.VarChar(254)
+  name                String               @db.VarChar(160)
+  passwordHash        String               @map("password_hash")
+  role                UserRole
+  isActive            Boolean              @default(true) @map("is_active")
+  passwordChangedAt   DateTime?            @map("password_changed_at") @db.Timestamptz(3)
+  isMock              Boolean              @default(false) @map("is_mock")
+  createdAt           DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  sessions            Session[]
+  passwordResetTokens PasswordResetToken[]
+  createdArticles     Article[]            @relation("ArticleCreator")
+  updatedArticles     Article[]            @relation("ArticleUpdater")
+  media               Media[]
+  previewTokens       PreviewToken[]
+  auditEvents         AuditEvent[]
+
+  @@index([role, isActive])
+  @@map("users")
+}
+
+model Session {
+  id            String         @id @default(uuid()) @db.Uuid
+  userId        String         @map("user_id") @db.Uuid
+  csrfHash      String         @map("csrf_hash")
+  expiresAt     DateTime       @map("expires_at") @db.Timestamptz(3)
+  revokedAt     DateTime?      @map("revoked_at") @db.Timestamptz(3)
+  ipHash        String?        @map("ip_hash")
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+  @@map("sessions")
+}
+
+model RefreshToken {
+  id         String    @id @default(uuid()) @db.Uuid
+  sessionId  String    @map("session_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash")
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(3)
+  consumedAt DateTime? @map("consumed_at") @db.Timestamptz(3)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  session    Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, revokedAt])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash")
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(3)
+  usedAt    DateTime? @map("used_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, usedAt])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+model LoginRateLimit {
+  key          String    @id @db.VarChar(128)
+  count        Int       @default(0)
+  windowStart  DateTime  @map("window_start") @db.Timestamptz(3)
+  blockedUntil DateTime? @map("blocked_until") @db.Timestamptz(3)
+
+  @@index([windowStart])
+  @@map("login_rate_limits")
+}
+
+model Professional {
+  id            String                     @id @default(uuid()) @db.Uuid
+  slug          String                     @unique @db.VarChar(160)
+  name          String                     @db.VarChar(160)
+  title         String                     @db.VarChar(160)
+  bio           Json
+  education     Json
+  experience    Json
+  photoMediaId  String?                    @map("photo_media_id") @db.Uuid
+  isActive      Boolean                    @default(true) @map("is_active")
+  sortOrder     Int                        @default(0) @map("sort_order")
+  version       Int                        @default(1)
+  isMock        Boolean                    @default(false) @map("is_mock")
+  createdAt     DateTime                   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime                   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  photoMedia    Media?                     @relation("ProfessionalPhoto", fields: [photoMediaId], references: [id], onDelete: Restrict)
+  searchVector Unsupported("tsvector")? @map("search_vector")
+  practiceAreas ProfessionalPracticeArea[]
+  articles      Article[]
+
+  @@index([isActive, sortOrder])
+  @@index([photoMediaId])
+  @@map("professionals")
+}
+
+model PracticeArea {
+  id            String                     @id @default(uuid()) @db.Uuid
+  slug          String                     @unique @db.VarChar(160)
+  name          String                     @db.VarChar(160)
+  summary       String                     @db.VarChar(500)
+  description   Json
+  services      Json
+  isActive      Boolean                    @default(true) @map("is_active")
+  sortOrder     Int                        @default(0) @map("sort_order")
+  version       Int                        @default(1)
+  isMock        Boolean                    @default(false) @map("is_mock")
+  createdAt     DateTime                   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime                   @updatedAt @map("updated_at") @db.Timestamptz(3)
+  searchVector Unsupported("tsvector")? @map("search_vector")
+  professionals ProfessionalPracticeArea[]
+  articles      ArticlePracticeArea[]
+  faqs          Faq[]
+  contacts      Contact[]
+
+  @@index([isActive, sortOrder])
+  @@map("practice_areas")
+}
+
+model ProfessionalPracticeArea {
+  professionalId String       @map("professional_id") @db.Uuid
+  practiceAreaId String       @map("practice_area_id") @db.Uuid
+  professional   Professional @relation(fields: [professionalId], references: [id], onDelete: Cascade)
+  practiceArea   PracticeArea @relation(fields: [practiceAreaId], references: [id], onDelete: Restrict)
+
+  @@id([professionalId, practiceAreaId])
+  @@index([practiceAreaId])
+  @@map("professional_practice_areas")
+}
+
+model Article {
+  id                 String                   @id @default(uuid()) @db.Uuid
+  slug               String                   @unique @db.VarChar(200)
+  title              String                   @db.VarChar(200)
+  excerpt            String                   @db.VarChar(500)
+  content            Json
+  type               ArticleType              @default(ARTICLE)
+  status             PublicationStatus        @default(DRAFT)
+  authorId           String                   @map("author_id") @db.Uuid
+  createdById        String                   @map("created_by_id") @db.Uuid
+  updatedById        String?                  @map("updated_by_id") @db.Uuid
+  coverMediaId       String?                  @map("cover_media_id") @db.Uuid
+  pdfMediaId         String?                  @map("pdf_media_id") @db.Uuid
+  featured           Boolean                  @default(false)
+  readingTimeMinutes Int                      @default(1) @map("reading_time_minutes")
+  seoTitle           String?                  @map("seo_title") @db.VarChar(200)
+  seoDescription     String?                  @map("seo_description") @db.VarChar(300)
+  version            Int                      @default(1)
+  publishedAt        DateTime?                @map("published_at") @db.Timestamptz(3)
+  scheduledAt        DateTime?                @map("scheduled_at") @db.Timestamptz(3)
+  isMock             Boolean                  @default(false) @map("is_mock")
+  createdAt          DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  searchVector       Unsupported("tsvector")? @map("search_vector")
+  author             Professional             @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  createdBy          User                     @relation("ArticleCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedBy          User?                    @relation("ArticleUpdater", fields: [updatedById], references: [id], onDelete: Restrict)
+  coverMedia         Media?                   @relation("ArticleCover", fields: [coverMediaId], references: [id], onDelete: Restrict)
+  pdfMedia           Media?                   @relation("ArticlePdf", fields: [pdfMediaId], references: [id], onDelete: Restrict)
+  categories         ArticleCategory[]
+  tags               ArticleTag[]
+  practiceAreas      ArticlePracticeArea[]
+  previewTokens      PreviewToken[]
+
+  @@index([status, publishedAt(sort: Desc)])
+  @@index([status, featured, publishedAt(sort: Desc)])
+  @@index([type, status, publishedAt(sort: Desc)])
+  @@index([authorId, status])
+  @@index([createdById, status])
+  @@index([updatedById])
+  @@index([coverMediaId])
+  @@index([pdfMediaId])
+  @@index([status, scheduledAt])
+  @@map("articles")
+}
+
+model Category {
+  id        String            @id @default(uuid()) @db.Uuid
+  slug      String            @unique @db.VarChar(160)
+  name      String            @db.VarChar(160)
+  isActive  Boolean           @default(true) @map("is_active")
+  version   Int               @default(1)
+  isMock    Boolean           @default(false) @map("is_mock")
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  articles  ArticleCategory[]
+
+  @@index([isActive, name])
+  @@map("categories")
+}
+
+model Tag {
+  id        String       @id @default(uuid()) @db.Uuid
+  slug      String       @unique @db.VarChar(160)
+  name      String       @db.VarChar(160)
+  isActive  Boolean      @default(true) @map("is_active")
+  version   Int          @default(1)
+  isMock    Boolean      @default(false) @map("is_mock")
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime     @updatedAt @map("updated_at") @db.Timestamptz(3)
+  articles  ArticleTag[]
+
+  @@index([isActive, name])
+  @@map("tags")
+}
+
+model ArticleCategory {
+  articleId  String   @map("article_id") @db.Uuid
+  categoryId String   @map("category_id") @db.Uuid
+  article    Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+
+  @@id([articleId, categoryId])
+  @@index([categoryId, articleId])
+  @@map("article_categories")
+}
+
+model ArticleTag {
+  articleId String  @map("article_id") @db.Uuid
+  tagId     String  @map("tag_id") @db.Uuid
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Restrict)
+
+  @@id([articleId, tagId])
+  @@index([tagId, articleId])
+  @@map("article_tags")
+}
+
+model ArticlePracticeArea {
+  articleId      String       @map("article_id") @db.Uuid
+  practiceAreaId String       @map("practice_area_id") @db.Uuid
+  article        Article      @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  practiceArea   PracticeArea @relation(fields: [practiceAreaId], references: [id], onDelete: Restrict)
+
+  @@id([articleId, practiceAreaId])
+  @@index([practiceAreaId, articleId])
+  @@map("article_practice_areas")
+}
+
+model PreviewToken {
+  id          String    @id @default(uuid()) @db.Uuid
+  articleId   String    @map("article_id") @db.Uuid
+  createdById String    @map("created_by_id") @db.Uuid
+  tokenHash   String    @unique @map("token_hash")
+  expiresAt   DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt   DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  article     Article   @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  createdBy   User      @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@index([articleId, revokedAt])
+  @@index([expiresAt])
+  @@map("preview_tokens")
+}
+
+model Page {
+  id             String            @id @default(uuid()) @db.Uuid
+  slug           String            @unique @db.VarChar(160)
+  title          String            @db.VarChar(200)
+  sections       Json
+  status         PublicationStatus @default(DRAFT)
+  publishedAt    DateTime?         @map("published_at") @db.Timestamptz(3)
+  seoTitle       String?           @map("seo_title") @db.VarChar(200)
+  seoDescription String?           @map("seo_description") @db.VarChar(300)
+  version        Int               @default(1)
+  isMock         Boolean           @default(false) @map("is_mock")
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([status, publishedAt])
+  @@map("pages")
+}
+
+model Faq {
+  id             String        @id @default(uuid()) @db.Uuid
+  question       String        @db.VarChar(300)
+  answer         Json
+  practiceAreaId String?       @map("practice_area_id") @db.Uuid
+  isActive       Boolean       @default(true) @map("is_active")
+  sortOrder      Int           @default(0) @map("sort_order")
+  version        Int           @default(1)
+  isMock         Boolean       @default(false) @map("is_mock")
+  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+  practiceArea   PracticeArea? @relation(fields: [practiceAreaId], references: [id], onDelete: Restrict)
+
+  @@index([isActive, sortOrder])
+  @@index([practiceAreaId, isActive])
+  @@map("faqs")
+}
+
+model SiteSetting {
+  id          String   @id @default("site") @db.VarChar(40)
+  siteName    String   @map("site_name") @db.VarChar(160)
+  publicEmail String?  @map("public_email") @db.VarChar(254)
+  publicPhone String?  @map("public_phone") @db.VarChar(40)
+  whatsappUrl String?  @map("whatsapp_url") @db.VarChar(500)
+  address     Json
+  socialLinks Json     @map("social_links")
+  version     Int      @default(1)
+  isMock      Boolean  @default(false) @map("is_mock")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("site_settings")
+}
+
+model Media {
+  id                 String              @id @default(uuid()) @db.Uuid
+  ownerId            String              @map("owner_id") @db.Uuid
+  visibility         MediaVisibility     @default(PRIVATE)
+  storageKey         String              @unique @map("storage_key") @db.VarChar(500)
+  publicUrl          String?             @map("public_url") @db.VarChar(1000)
+  mimeType           String              @map("mime_type") @db.VarChar(100)
+  size               Int
+  alt                String?             @db.VarChar(300)
+  source             String?             @db.VarChar(500)
+  license            String?             @db.VarChar(300)
+  isMock             Boolean             @default(false) @map("is_mock")
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  owner              User                @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  professionals      Professional[]      @relation("ProfessionalPhoto")
+  articleCovers      Article[]           @relation("ArticleCover")
+  articlePdfs        Article[]           @relation("ArticlePdf")
+  contactAttachments ContactAttachment[]
+
+  @@index([ownerId, visibility])
+  @@map("media")
+}
+
+model Contact {
+  id             String              @id @default(uuid()) @db.Uuid
+  name           String              @db.VarChar(160)
+  email          String              @db.VarChar(254)
+  phone          String?             @db.VarChar(40)
+  state          String?             @db.VarChar(2)
+  subject        String              @db.VarChar(200)
+  message        String
+  practiceAreaId String?             @map("practice_area_id") @db.Uuid
+  status         ContactStatus       @default(NEW)
+  privacyVersion String              @map("privacy_version") @db.VarChar(80)
+  consentedAt    DateTime            @map("consented_at") @db.Timestamptz(3)
+  isMock         Boolean             @default(false) @map("is_mock")
+  createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  practiceArea   PracticeArea?       @relation(fields: [practiceAreaId], references: [id], onDelete: Restrict)
+  attachments    ContactAttachment[]
+
+  @@index([status, createdAt(sort: Desc)])
+  @@index([practiceAreaId])
+  @@map("contacts")
+}
+
+model ContactAttachment {
+  id        String   @id @default(uuid()) @db.Uuid
+  contactId String   @map("contact_id") @db.Uuid
+  mediaId   String   @unique @map("media_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  contact   Contact  @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  media     Media    @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@index([contactId])
+  @@map("contact_attachments")
+}
+
+model NewsletterSubscriber {
+  id             String            @id @default(uuid()) @db.Uuid
+  email          String            @unique @db.VarChar(254)
+  name           String?           @db.VarChar(160)
+  status         SubscriberStatus  @default(PENDING)
+  consentVersion String            @map("consent_version") @db.VarChar(80)
+  consentedAt    DateTime          @map("consented_at") @db.Timestamptz(3)
+  consentIpHash  String?           @map("consent_ip_hash")
+  confirmedAt    DateTime?         @map("confirmed_at") @db.Timestamptz(3)
+  unsubscribedAt DateTime?         @map("unsubscribed_at") @db.Timestamptz(3)
+  isMock         Boolean           @default(false) @map("is_mock")
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+  tokens         NewsletterToken[]
+
+  @@index([status, createdAt])
+  @@map("newsletter_subscribers")
+}
+
+model NewsletterToken {
+  id           String                 @id @default(uuid()) @db.Uuid
+  subscriberId String                 @map("subscriber_id") @db.Uuid
+  purpose      NewsletterTokenPurpose
+  tokenHash    String                 @unique @map("token_hash")
+  expiresAt    DateTime               @map("expires_at") @db.Timestamptz(3)
+  usedAt       DateTime?              @map("used_at") @db.Timestamptz(3)
+  createdAt    DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+  subscriber   NewsletterSubscriber   @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@index([subscriberId, purpose])
+  @@index([expiresAt])
+  @@map("newsletter_tokens")
+}
+
+model Redirect {
+  id         String   @id @default(uuid()) @db.Uuid
+  sourcePath String   @unique @map("source_path") @db.VarChar(500)
+  targetPath String   @map("target_path") @db.VarChar(500)
+  statusCode Int      @default(301) @map("status_code")
+  isActive   Boolean  @default(true) @map("is_active")
+  version    Int      @default(1)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([isActive])
+  @@map("redirects")
+}
+
+model OutboxTask {
+  id             String     @id @default(uuid()) @db.Uuid
+  idempotencyKey String     @unique @map("idempotency_key") @db.VarChar(200)
+  topic          String     @db.VarChar(100)
+  payload        Json
+  status         TaskStatus @default(PENDING)
+  attempts       Int        @default(0)
+  maxAttempts    Int        @default(5) @map("max_attempts")
+  availableAt    DateTime   @default(now()) @map("available_at") @db.Timestamptz(3)
+  lockedAt       DateTime?  @map("locked_at") @db.Timestamptz(3)
+  lockedBy       String?    @map("locked_by") @db.VarChar(160)
+  completedAt    DateTime?  @map("completed_at") @db.Timestamptz(3)
+  lastErrorCode  String?    @map("last_error_code") @db.VarChar(100)
+  createdAt      DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([status, availableAt])
+  @@map("outbox_tasks")
+}
+
+model AuditEvent {
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String?  @map("actor_id") @db.Uuid
+  action     String   @db.VarChar(100)
+  resource   String?  @db.VarChar(100)
+  resourceId String?  @map("resource_id") @db.VarChar(100)
+  metadata   Json?
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  actor      User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([actorId, createdAt(sort: Desc)])
+  @@index([action, createdAt(sort: Desc)])
+  @@map("audit_events")
 }

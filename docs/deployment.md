@@ -1,6 +1,6 @@
 # Ambiente local, CI e publicação
 
-Referência inicial: F1, 02/10/2026. A etapa entrega fundação local e pipeline de verificação. Hosting, homologação e produção são trabalhos futuros com gates próprios.
+Referência: F2, 03/10/2026. Fundação, migrations, seeds, autenticação e API são locais. Hosting, homologação e produção são trabalhos futuros com gates próprios.
 
 ## Pré-requisitos e configuração local
 
@@ -39,9 +39,15 @@ O procedimento de aceite é: instalar pelo lockfile, gerar/configurar ambiente l
 
 Conferir a porta antes de iniciar e diagnosticar conflito em vez de encerrar serviços alheios. Uma falha do PostgreSQL deve produzir health `503`, sem expor conexão/stack. Não registrar sucesso de banco real com base em mock ou somente em container iniciado.
 
-## Pipeline CI da F1
+## Migrations e testes da F2
 
-CI instala com `pnpm install --frozen-lockfile` e executa lint → typecheck → testes unitários → `pnpm test:integration` → build. Vitest cobre configuração; o runner nativo do Node verifica HTTP/erros da API e a integração de health executa o probe no PostgreSQL real. O ambiente de verificação usa configurações locais/de teste; nenhuma credencial de fornecedor externo é necessária. O relatório deve identificar o PostgreSQL e os checks efetivamente executados.
+Depois da subida saudável do Compose, executar `pnpm db:generate`, `pnpm db:migrate` e `pnpm db:seed:development`. O migrate deploy aplica somente migrations pendentes, sem reset. O seed preserva registros existentes e fica bloqueado fora de desenvolvimento. O procedimento de produção estrutural e primeiro ADMIN está em [database.md](database.md); nenhuma conta externa é criada pela F2.
+
+`pnpm test:integration` exige PostgreSQL real e uma conexão de desenvolvimento/CI com permissão de criar bancos. O runner cria um banco com nome aleatório `filaretti_test_*`, aplica migrations em banco novo, repete seeds e verifica contagens, executa HTTP/autorização e remove exclusivamente o banco criado por ele. Credenciais ficam no ambiente do processo e a saída do runner é sanitizada. Não usar credenciais de produção neste runner.
+
+## Pipeline CI
+
+CI instala com `pnpm install --frozen-lockfile`, gera o cliente Prisma e executa lint → typecheck → testes unitários → `pnpm test:integration` → build. Vitest cobre configuração; o runner nativo do Node verifica HTTP/erros, autenticação e domínio com PostgreSQL real. O ambiente de verificação usa configurações locais/de teste; nenhuma credencial de fornecedor externo é necessária. O relatório deve identificar o PostgreSQL e os checks efetivamente executados.
 
 Hooks locais e lint-staged dão feedback antes do commit, sem substituir CI. O pipeline não faz deploy, release, push nem publicação em registry. O commit local de uma fase é feito pelo agente principal após integração/revisão, conforme `../AGENTS.md`; ações remotas dependem de autorização própria.
 

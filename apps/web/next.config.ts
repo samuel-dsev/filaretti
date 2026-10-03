@@ -3,13 +3,21 @@ import type { NextConfig } from 'next';
 
 // Fail before serving or building when required configuration is invalid.
 // Server configuration is never copied into Next's public `env` option.
-validateWebEnvironment(process.env);
+const environment = validateWebEnvironment(process.env);
 
 const nextConfig: NextConfig = {
   agentRules: false,
   poweredByHeader: false,
   reactStrictMode: true,
   transpilePackages: ['@filaretti/ui'],
+  async rewrites() {
+    return [
+      {
+        source: '/api/v1/:path*',
+        destination: `${environment.apiInternalUrl.replace(/\/$/, '')}/api/v1/:path*`,
+      },
+    ];
+  },
   async headers() {
     return [
       {

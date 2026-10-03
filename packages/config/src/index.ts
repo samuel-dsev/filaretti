@@ -122,10 +122,10 @@ const apiSchema = z
           ctx.addIssue({ code: 'custom', path: [key], message: 'HTTPS required' });
       }
     }
-    // These fields reserve future contracts; F1 must never imply active vendor adapters.
+    // Vendor adapters remain deferred to F6/F7; configuration must not imply they exist.
     for (const key of ['R2_ENABLED', 'RESEND_ENABLED', 'TURNSTILE_ENABLED'] as const) {
       if (env[key])
-        ctx.addIssue({ code: 'custom', path: [key], message: 'Integration not implemented in F1' });
+        ctx.addIssue({ code: 'custom', path: [key], message: 'Integration pending F6/F7' });
     }
     if (env.STORAGE_DRIVER !== 'local')
       ctx.addIssue({ code: 'custom', path: ['STORAGE_DRIVER'], message: 'Adapter pending F6' });

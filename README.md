@@ -1,6 +1,6 @@
-# Filaretti — fundação local
+# Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.1.0**, definida pelo `package.json` raiz e alinhada nos oito workspaces privados. A F1 entrega scaffolding, configuração, health e CI; entidades, autenticação, CMS, site e integrações serão implementados nas etapas seguintes. Situação e validações reais: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.2.0**, definida pelo `package.json` raiz e alinhada nos oito workspaces privados. A F2 acrescenta schema, migrations, seeds fictícios, autenticação e API de domínio. Interface institucional, CMS, mídia e integrações completas seguem as fases seguintes. Situação e validações reais: [relate.md](relate.md).
 
 ## Pré-requisitos
 
@@ -19,12 +19,17 @@ Na raiz deste repositório (`C:\Users\Samuel\Documents\Projetos\Filaretti` nesta
 pnpm install --frozen-lockfile
 pnpm setup:local
 docker compose up -d --wait
+pnpm db:generate
+pnpm db:migrate
+pnpm db:seed:development
 pnpm dev
 ```
 
 `setup:local` gera `.env`, `apps/api/.env` e `apps/web/.env.local` ignorados pelo Git, com segredos aleatórios exclusivamente locais. Recusa sobrescrever qualquer um desses arquivos e não imprime valores. Exemplos versionados contêm placeholders; nunca usar esses placeholders em produção. Nenhuma conta externa é necessária. Os pacotes compartilhados são compilados automaticamente antes dos apps pelo Turbo, inclusive no primeiro `pnpm dev`.
 
-Abra `http://127.0.0.1:3000` para a página fictícia da fundação. API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. As URLs internas/externas são separadas; nenhuma conexão de banco ou segredo usa prefixo `NEXT_PUBLIC_`. Não há encaminhamento `/api/v1` no web ainda: o contrato de domínio entra na F2.
+Abra `http://127.0.0.1:3000` para a página fictícia da fundação. API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. A web encaminha `/api/v1/*` para a API por origem única; o navegador recebe cookies HttpOnly e envia o header CSRF nas mutações. Contratos e procedimentos: [docs/api.md](docs/api.md). Nenhuma conexão de banco ou segredo usa prefixo `NEXT_PUBLIC_`.
+
+O seed usa somente contas e conteúdo explicitamente fictícios. Credenciais locais e procedimento do primeiro ADMIN sem senha padrão em produção: [docs/database.md](docs/database.md). Não executar seed de desenvolvimento fora de `APP_ENV=development`; `seed-production` contém apenas configuração estrutural. Recuperação de senha já possui tokens e consumo seguro; a entrega por e-mail entra na F7.
 
 `APP_ENV` define o ambiente de dados; `NODE_ENV` define modo de execução/build. Build local otimizado usa `APP_ENV=development`, mesmo com `NODE_ENV=production`. `APP_ENV=production` rejeita mocks, cookies inseguros e URLs públicas sem HTTPS. Flags R2/Resend/Turnstile ficam desligadas e sua ativação é rejeitada na F1, pois os adaptadores ainda não existem.
 
@@ -40,7 +45,7 @@ pnpm format:check
 pnpm --filter @filaretti/api db:validate
 ```
 
-Testes de configuração usam Vitest. A API usa o test runner do Node com TypeScript previamente compilado e HTTP real; a integração exige PostgreSQL real e não pula a verificação caso esteja indisponível. `db:validate` verifica somente o datasource Prisma vazio; migrations e modelos estão reservados à F2. CI roda lint → typecheck → testes → integração PostgreSQL → build e não faz deploy.
+Testes de configuração usam Vitest. A API usa o test runner do Node com TypeScript previamente compilado e HTTP real. A integração exige PostgreSQL real e permissão local/CI de criar bancos: cria um banco temporário próprio, aplica migrations, repete o seed, verifica idempotência e executa testes de auth/domínio/health. Ao final remove somente esse banco temporário, preservando o banco de desenvolvimento e seu volume. Não pula checks se o banco estiver indisponível. `db:validate` verifica o schema; CI gera o cliente Prisma e roda lint → typecheck → testes → integração PostgreSQL → build, sem deploy.
 
 Consulte `http://127.0.0.1:3001/health`: banco disponível retorna HTTP **200** e `{"status":"ok","database":"up"}`; indisponível retorna **503** e `{"status":"error","database":"down"}`. Ambas as respostas têm `Cache-Control: no-store` e não mostram credenciais/stack. Para testar a mudança de estado somente no banco deste projeto:
 
@@ -55,19 +60,19 @@ O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset
 
 ## Estrutura e continuidade
 
-| Caminho                                       | Responsabilidade                                                                        |
-| --------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `apps/web`                                    | Next.js App Router/React/Tailwind; página local e tratamento inicial de erro/404        |
-| `apps/api`                                    | NestJS; validação, erros, logs sanitizados, Swagger de desenvolvimento e probe de banco |
-| `packages/ui`                                 | Primitivo inicial compartilhado; Design System completo na F3                           |
-| `packages/types`                              | Contratos públicos mínimos; sem modelos Prisma/dados internos                           |
-| `packages/config`                             | Configuração validada por ambiente; exclusivamente no servidor                          |
-| `packages/eslint-config`, `packages/tsconfig` | Regras e TypeScript estrito compartilhados                                              |
-| `docs`                                        | Decisões/contratos iniciais, futuros e gates por etapa                                  |
+| Caminho                                       | Responsabilidade                                                                       |
+| --------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `apps/web`                                    | Next.js App Router/React/Tailwind; página local e tratamento inicial de erro/404       |
+| `apps/api`                                    | NestJS; Prisma, autenticação/roles, API de domínio, logs sanitizados, Swagger e health |
+| `packages/ui`                                 | Primitivo inicial compartilhado; Design System completo na F3                          |
+| `packages/types`                              | Contratos de autenticação e domínio; sem modelos Prisma/segredos                       |
+| `packages/config`                             | Configuração validada por ambiente; exclusivamente no servidor                         |
+| `packages/eslint-config`, `packages/tsconfig` | Regras e TypeScript estrito compartilhados                                             |
+| `docs`                                        | Decisões/contratos iniciais, futuros e gates por etapa                                 |
 
 Todos os pacotes são privados. Não há publicação npm; bump funcional da etapa acontece na raiz e nos workspaces, acompanhado de plano/relatório e lockfile. Husky/lint-staged formatam arquivos staged; CI e checks completos continuam obrigatórios.
 
-Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização cobre somente F1 e seu commit local após verificações; F2, push, PR, homologação e produção dependem de autorização própria.
+Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F2, commit e push para `origin/dev`. F3, PR, homologação e produção dependem de autorização própria.
 
 ## Referências
 

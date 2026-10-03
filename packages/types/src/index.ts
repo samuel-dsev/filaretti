@@ -3,6 +3,9 @@ export interface HealthResponse {
   database: 'up' | 'down';
 }
 
+export * from './domain';
+export * from './auth';
+
 export interface ApiErrorResponse {
   error: {
     code: string;

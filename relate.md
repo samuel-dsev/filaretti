@@ -2,22 +2,146 @@
 
 ## Situação atual
 
-| Campo                | Estado                                                                                        |
-| -------------------- | --------------------------------------------------------------------------------------------- |
-| Última atualização   | 02/10/2026 — RP-002                                                                           |
-| Etapa                | **F1 concluída — aceite integral local aprovado**                                             |
-| Versão               | `0.1.0` no package.json raiz e workspaces privados                                            |
-| Código/aplicação     | Fundação web/API/pacotes/configuração/health/CI concluída; domínio/auth/CMS nas fases futuras |
-| Ambiente             | Web/API locais funcionando; PostgreSQL17.11 saudável no Compose, com volume persistente       |
-| Git                  | `dev`, remoto `origin`; base da retomada `4e1cae8`; fechamento local conforme RP-002          |
-| Commit desta entrega | `docs(foundation): conclui aceite local da F1 (v0.1.0)`; SHA real informado após commit       |
-| Próxima etapa        | **F2 — Banco, autenticação e API de domínio**                                                 |
-| Autorização          | **Aguardando confirmação para F2**                                                            |
-| Checkpoint           | RP-002 abaixo e quadro inicial de plan.md                                                     |
+| Campo                | Estado                                                                                                                 |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Última atualização   | 03/10/2026 — RP-003                                                                                                    |
+| Etapa                | **F2 concluída — aceite local aprovado**                                                                               |
+| Versão               | `0.2.0` no package.json raiz e nos sete workspaces privados                                                            |
+| Código/aplicação     | Banco, autenticação, autorização e APIs institucionais/editoriais implementados; interfaces visuais nas próximas fases |
+| Ambiente             | PostgreSQL 17.11 real no Compose, migrations/seed locais aplicados; HTTP direto e proxy web verificados                |
+| Git                  | `dev`, remoto `origin`; base F1 `1ffd195`; fechamento da F2 conforme RP-003                                            |
+| Commit desta entrega | `feat(api): implementa banco, autenticação e domínio (v0.2.0)`; SHA real informado após commit                         |
+| Próxima etapa        | **F3 — Design System e estrutura de interfaces**                                                                       |
+| Autorização          | Push da F2 para `origin/dev` autorizado; **aguardando confirmação para F3**                                            |
+| Checkpoint           | RP-003 abaixo e quadro inicial de plan.md                                                                              |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar este quadro em toda entrega ou interrupção e acrescentar uma entrada ao histórico, preservando as anteriores. Datas e horários informados ao usuário seguem America/Sao_Paulo.
 
 ## Histórico
+
+### RP-003 — 03/10/2026 — F2 — Banco, autenticação e API de domínio
+
+**Escopo autorizado:** “Inicie a F2 do desenvolvimento, não esqueça de ao final da fase, subir o projeto a branch dev remota”; retomada “continue de onde parou”. Implementação e fechamento da F2, commit local e push para `origin/dev` cobertos pela autorização. **Estado: concluída tecnicamente, com aceite local aprovado.** F3 aguarda autorização.
+
+**Versão:** `0.1.0` → `0.2.0`; raiz e sete workspaces privados alinhados (oito manifests). Prisma Client gerado em `node_modules`, sem código gerado no Git. Novas APIs são o primeiro contrato de domínio; não há consumidores de produção anteriores.
+
+**Git e continuidade:** cwd real `C:\Users\Samuel\Documents\Projetos\Filaretti`; o caminho antigo `Projeto` está ausente. Branch `dev` acompanha `origin/dev`; remoto existente `https://github.com/samuel-dsev/filaretti.git`. Base limpa da F1 confirmada: `1ffd1958d078fcf8390fb8f56da87557f0c750f3` — `docs(foundation): conclui aceite local da F1 (v0.1.0)`. Commit desta etapa previsto: `feat(api): implementa banco, autenticação e domínio (v0.2.0)`; SHA e confirmação do push serão informados após a operação e registrados na próxima retomada. Não criar commit circular somente para inserir o próprio hash.
+
+#### Arquivos criados e alterados
+
+Arquivos versionáveis criados (36):
+
+- `apps/api/prisma/migrations/202610020001_f2_domain/migration.sql`
+- `apps/api/prisma/migrations/202610020002_search_integrity/migration.sql`
+- `apps/api/prisma/migrations/migration_lock.toml`
+- `apps/api/prisma/provision-admin.ts`
+- `apps/api/prisma/seed-client.ts`
+- `apps/api/prisma/seed-development.ts`
+- `apps/api/prisma/seed-production.ts`
+- `apps/api/prisma/tsconfig.json`
+- `apps/api/scripts/run-integration.mjs`
+- `apps/api/scripts/verify-provision.mjs`
+- `apps/api/src/auth/auth.controller.ts`
+- `apps/api/src/auth/auth.module.ts`
+- `apps/api/src/auth/auth.service.ts`
+- `apps/api/src/auth/cookies.ts`
+- `apps/api/src/auth/dto.ts`
+- `apps/api/src/auth/guards.ts`
+- `apps/api/src/auth/password.ts`
+- `apps/api/src/auth/recovery.service.ts`
+- `apps/api/src/auth/responses.ts`
+- `apps/api/src/auth/types.ts`
+- `apps/api/src/auth/users.controller.ts`
+- `apps/api/src/database/database.module.ts`
+- `apps/api/src/database/prisma.service.ts`
+- `apps/api/src/domain/articles.service.ts`
+- `apps/api/src/domain/content.ts`
+- `apps/api/src/domain/domain.controllers.ts`
+- `apps/api/src/domain/domain.module.ts`
+- `apps/api/src/domain/dto.ts`
+- `apps/api/src/domain/institution.service.ts`
+- `apps/api/src/domain/responses.ts`
+- `apps/api/src/domain/shared.ts`
+- `apps/api/test/auth.integration.test.ts`
+- `apps/api/test/database.integration.test.ts`
+- `apps/api/test/domain.integration.test.ts`
+- `packages/types/src/auth.ts`
+- `packages/types/src/domain.ts`
+
+Arquivos versionáveis alterados (28):
+
+- `.github/workflows/ci.yml`
+- `README.md`
+- `apps/api/package.json`
+- `apps/api/prisma.config.ts`
+- `apps/api/prisma/schema.prisma`
+- `apps/api/src/app.ts`
+- `apps/api/src/common/http-exception.filter.ts`
+- `apps/api/test/foundation.test.ts`
+- `apps/web/next.config.ts`
+- `apps/web/package.json`
+- `docs/api.md`
+- `docs/architecture.md`
+- `docs/database.md`
+- `docs/deployment.md`
+- `docs/security.md`
+- `package.json`
+- `packages/config/package.json`
+- `packages/config/src/index.ts`
+- `packages/eslint-config/package.json`
+- `packages/tsconfig/package.json`
+- `packages/types/package.json`
+- `packages/types/src/index.ts`
+- `packages/ui/package.json`
+- `plan.md`
+- `pnpm-lock.yaml`
+- `pnpm-workspace.yaml`
+- `relate.md`
+- `turbo.json`
+
+Nenhum arquivo do baseline removido. AGENTS.md, relatórios anteriores e documentos de design/SEO preservados. Helpers/evidências em `.local/`, builds, dependências e ambientes privados permanecem ignorados; os scripts temporários de diagnóstico não integram a entrega. Senhas versionadas são exclusivamente a fixture fictícia local documentada, bloqueada para o provisionamento de produção.
+
+#### Implementação e decisões
+
+- **Persistência:** 26 modelos/tabelas Prisma, UUIDs, relações/FKs com exclusão explícita, slugs/e-mails únicos, datas UTC, checks de integridade e versões positivas. Duas migrations adicionam schema e Full Text Search PostgreSQL em português, com vetores atualizados por triggers e três índices GIN parciais. Referências de mídia editorial pública e anexos privados são protegidas no banco, inclusive contra alteração posterior de visibilidade.
+- **Seeds:** desenvolvimento exige APP_ENV/NODE_ENV de desenvolvimento e MOCK_CONTENT=true; cria 3 usuários de roles distintas, 4 profissionais, 5 áreas, 20 conteúdos (12 publicados, 4 drafts, 2 agendados, 2 arquivados), 6 categorias, 20 tags, 6 FAQ, 4 páginas, 3 contatos e 3 assinantes fictícios. Registros aplicáveis têm isMock=true. Repetição não duplica, sobrescreve edições nem redefine senhas. Produção cria somente configuração estrutural vazia, sem conteúdo ou senha padrão; não realiza limpeza implícita de mocks.
+- **Identidade:** Argon2id, access JWT de até 900 segundos, cookies HttpOnly/Secure em produção, CSRF assinado e validação de Origin. Refresh rotativo persiste hashes, tem expiração absoluta e revoga a família na reutilização; todas as requisições autenticadas verificam sessão e usuário no banco. Logout, desativação e troca/reset de senha revogam sessões. Rate limits persistidos e travas transacionais protegem múltiplas instâncias e concorrência. ADMIN cria/lista/desativa usuários; recuperação usa tokens expirantes de consumo único, sem entrega real nesta fase.
+- **Primeiro ADMIN:** ferramenta exige ambiente de produção configurado e senha por stdin, sem valor padrão; valida identidade, usa Argon2id e advisory lock, cria auditoria atomicamente e recusa novo provisionamento se ADMIN ativo existir. Seu comportamento foi comprovado somente em banco temporário local com identidade fictícia, sem operar produção.
+- **Domínio:** APIs públicas/administrativas de artigos, taxonomias, profissionais, áreas, páginas, FAQ, configurações e redirects. AUTHOR mantém apenas os próprios drafts; EDITOR/ADMIN publicam. DTOs rejeitam campos extras, respostas usam allowlists, paginação padrão 1/12 e limite 50, filtros editoriais combinados e conflitos de edição retornam códigos estáveis. TipTap admite somente nós/marks/URLs definidos e limitados; redirects internos são validados contra ciclos em transação serializável.
+- **Integração:** Next encaminha `/api/v1` para a API na mesma origem; regras permanecem no Nest. Swagger 0.2.0 descreve rotas/DTOs/schemas reais e autenticação por cookie. Pacotes de tipos exportam contratos públicos e interfaces para fluxos posteriores, sem modelos Prisma ou segredos. Configuração mantém fornecedores desabilitados até suas fases; CI gera Prisma Client antes dos checks e não publica automaticamente.
+- **Dependências:** Prisma Client/adapter 7.10.0, Nest JWT 12.0.2, Argon2 0.45.1 e tsx 4.23.15 fixados no lockfile; build nativo de Argon2 explicitamente permitido. DATABASE_URL é repassada somente a tarefas de servidor que exigem o Prisma config, sem inclusão em configuração pública da web.
+- **Revisão:** subagentes de banco, autenticação e domínio trabalharam com arquivos/responsabilidades separados; principal integrou, revisou e executou os checks completos. Correções de validação incluíram branches específicos nos triggers de mídia, ordenação Prisma com desempate separado, Swagger/cookie consistente, fixtures compatíveis com validação e verificação de parâmetros Argon2 independente da ordem textual.
+
+#### Validação executada
+
+| Check                           | Resultado/evidência                                                                                                                                                                                                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Instalação reproduzível         | `rtk proxy pnpm install --frozen-lockfile` passou, incluindo suporte nativo Argon2 verificado                                                                                                                                               |
+| Prisma                          | Schema validado e Client 7.10.0 gerado; seeds/provisionamento incluídos em TypeScript estrito e lint                                                                                                                                        |
+| Lint                            | `rtk proxy pnpm lint` passou nos oito tasks; lint da API repetido após os últimos ajustes de scripts/fixtures também passou                                                                                                                 |
+| Typecheck                       | `rtk proxy pnpm typecheck` passou nos oito tasks, incluindo testes e ferramentas Prisma                                                                                                                                                     |
+| Build                           | `rtk proxy pnpm build` passou nos cinco tasks; API compilada e Next otimizado                                                                                                                                                               |
+| Testes de configuração/fundação | `rtk proxy pnpm test` passou: sete casos de configuração e três de fundação/HTTP, incluindo rotas e scheme de cookie do Swagger                                                                                                             |
+| Integração completa             | `rtk proxy pnpm test:integration` terminou com exit 0: 27 entradas Node aprovadas (25 cenários e dois agrupamentos), zero falhas/skips, HTTP e PostgreSQL 17.11 reais                                                                       |
+| Migrations e seeds              | Dois bancos novos isolados receberam ambas as migrations; seed dev executado duas vezes e contagens de todas as tabelas preservadas; execução fora de dev recusada pelo código esperado; seed estrutural repetido criou somente um settings |
+| Banco/consultas                 | Relações e contagens, unicidade/FKs, exclusões em uso, stemming português, três GINs, atualização/retirada dos vetores e privacidade de vínculos de mídia comprovados                                                                       |
+| Autenticação/segurança          | Login, cookies/hashes, CSRF/origem, overposting, expiração/tampering, refresh/reuse concorrente, logout, roles, ADMIN/desativação concorrente, troca/reset de senha e limites compartilhados comprovados                                    |
+| Domínio                         | Visitante sem acesso administrativo/pessoal, ownership AUTHOR, conteúdo/URLs maliciosos rejeitados, filtros combinados, publicação/retirada, edição concorrente, CRUD institucional, settings/redirects e Swagger comprovados               |
+| Provisionamento isolado         | Primeiro ADMIN, hash/parâmetros Argon2id, auditoria, recusa da repetição e ausência de credenciais nas saídas comprovados em banco temporário local com flags de produção; nenhuma conta de produção real criada                            |
+| Ambiente local existente        | `rtk proxy pnpm db:migrate` e `rtk proxy pnpm db:seed:development` passaram no banco local existente, sem reset/exclusão de dados/volumes                                                                                                   |
+| Smoke mesma origem              | Web 200, health 200; leitura pública direta e proxy idênticas com 12 artigos publicados; admin anônimo 401; Swagger com versão 0.2.0 e 42 paths; CSRF → login ADMIN → me → logout 204 → sessão antiga 401                                   |
+| Git/segredos                    | Ambientes reais, .local, builds e dist-test ignorados; inventário versionável revisado explicitamente, sem arquivos temporários/credenciais reais                                                                                           |
+
+O runner cria e remove exclusivamente seus bancos temporários de nomes aleatórios, preservando o banco/volume de desenvolvimento. A execução integrada exibiu um aviso de depreciação do driver pg sobre consultas enfileiradas no mesmo client; não houve falha e a versão atual permanece fixada no lockfile. Compatibilidade com pg 9 não foi declarada.
+
+#### Limites, pendências e encerramento
+
+- O aceite é local com PostgreSQL e HTTP reais. Workflow GitHub atualizado, mas sua execução remota não foi observada nesta sessão; CLI `gh` indisponível. Nenhum deploy, merge, PR, release, DNS, contratação ou envio externo foi executado. O push do código para `origin/dev` é a ação remota expressamente solicitada.
+- Interfaces visuais/design entram na F3; páginas conectadas na F4/F5. Upload, preview, agendamento operacional e revalidação entram na F6; contato/newsletter/busca/envio real/antispam na F7. Entidades/interfaces/triggers preparadas não equivalem a esses fluxos concluídos. Agendados fictícios ficam fora da leitura pública; não há worker funcionando ainda.
+- Recuperação tem serviço e segurança testados com entrega injetada em memória, mas não envia e-mail nem permite concluir o fluxo pela interface nesta fase. R2/Resend/Turnstile e homologação/produção permanecem gates próprios. Materiais e identidades reais dependem de aprovação nas fases previstas.
+- `pnpm format:check` e `git diff --check` passaram no fechamento. Inventário dos 64 arquivos da fase revisado para staging explícito; commit coeso na branch dev e push conforme autorização. SHA local/remoto será conferido na entrega ao usuário, sem force push.
+
+**Ponto de parada:** F2 concluída, versão `0.2.0`. **Próxima etapa:** F3 — Design System e estrutura de interfaces, **somente após confirmação do usuário**. Ao retomar, reler AGENTS.md/plan.md/relate.md, verificar Git/cwd e serviços locais, registrar SHA real da F2 e então executar apenas a próxima etapa autorizada.
 
 ### RP-002 — 02/10/2026 — F1 — Aceite local concluído
 

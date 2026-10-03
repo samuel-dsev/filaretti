@@ -10,12 +10,22 @@ import { HealthController } from './health/health.controller';
 import { HealthService } from './health/health.service';
 import { HttpExceptionFilter } from './common/http-exception.filter';
 import { SanitizedLogger } from './common/sanitized-logger';
+import { DatabaseModule } from './database/database.module';
+import { AuthModule } from './auth/auth.module';
+import { DomainModule } from './domain/domain.module';
+import type { PasswordRecoveryDelivery } from './auth/types';
 
 export async function createApplication(
   environment: ApiEnvironment,
   logger = new SanitizedLogger(),
+  recoveryDelivery?: PasswordRecoveryDelivery,
 ) {
   @Module({
+    imports: [
+      DatabaseModule.register(environment),
+      AuthModule.register(environment, recoveryDelivery),
+      DomainModule.register(environment),
+    ],
     controllers: [HealthController],
     providers: [{ provide: HealthService, useFactory: () => new HealthService(environment) }],
   })
@@ -52,8 +62,11 @@ export async function createApplication(
       app,
       new DocumentBuilder()
         .setTitle('Filaretti — API local')
-        .setDescription('F1: apenas health. Contratos de domínio na F2.')
-        .setVersion('0.1.0')
+        .setDescription(
+          'F2: autenticação, conteúdo institucional e editorial. Dados locais fictícios.',
+        )
+        .setVersion('0.2.0')
+        .addCookieAuth('filaretti_access', { type: 'apiKey' }, 'filaretti_access')
         .build(),
     );
     SwaggerModule.setup('api/docs', app, document);

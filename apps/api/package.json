@@ -1,24 +1,33 @@
 {
   "name": "@filaretti/api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "tsc-watch --onSuccess \"node dist/main.js\"",
-    "build": "tsc -p tsconfig.json",
+    "dev": "prisma generate && tsc-watch --onSuccess \"node dist/main.js\"",
+    "build": "prisma generate && tsc -p tsconfig.json",
     "start": "node dist/main.js",
-    "lint": "eslint src test",
-    "typecheck": "tsc -p tsconfig.test.json --noEmit",
+    "lint": "eslint src test prisma scripts",
+    "typecheck": "prisma generate && tsc -p tsconfig.test.json --noEmit && tsc -p prisma/tsconfig.json --noEmit",
     "test": "tsc -p tsconfig.test.json && node --test dist-test/test/foundation.test.js",
-    "test:integration": "tsc -p tsconfig.test.json && node --test dist-test/test/health.integration.test.js",
-    "db:validate": "prisma validate"
+    "test:integration": "prisma generate && tsc -p tsconfig.test.json && node scripts/run-integration.mjs",
+    "db:validate": "prisma validate",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed:development": "tsx prisma/seed-development.ts",
+    "db:seed:production": "tsx prisma/seed-production.ts",
+    "db:provision-admin": "tsx prisma/provision-admin.ts"
   },
   "dependencies": {
     "@filaretti/config": "workspace:*",
     "@filaretti/types": "workspace:*",
     "@nestjs/common": "12.1.2",
     "@nestjs/core": "12.1.2",
+    "@nestjs/jwt": "12.0.2",
     "@nestjs/platform-express": "12.1.2",
     "@nestjs/swagger": "12.0.2",
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "argon2": "0.45.1",
     "class-transformer": "0.5.1",
     "class-validator": "0.15.1",
     "dotenv": "18.0.5",
@@ -27,11 +36,12 @@
     "rxjs": "7.8.2"
   },
   "devDependencies": {
-    "@filaretti/tsconfig": "workspace:*",
     "@filaretti/eslint-config": "workspace:*",
-    "@types/pg": "8.23.1",
+    "@filaretti/tsconfig": "workspace:*",
     "@types/express": "5.0.6",
+    "@types/pg": "8.23.1",
     "prisma": "7.10.0",
-    "tsc-watch": "7.2.0"
+    "tsc-watch": "7.2.0",
+    "tsx": "4.23.15"
   }
 }

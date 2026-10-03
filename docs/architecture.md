@@ -1,10 +1,10 @@
 # Arquitetura
 
-Referência inicial: F1, versão `0.1.0`, 02/10/2026. O estado da entrega e as evidências executadas ficam em `../relate.md`; este documento registra decisões e fronteiras de responsabilidade.
+Referência: F2, versão `0.2.0`, 03/10/2026. O estado da entrega e as evidências executadas ficam em `../relate.md`; este documento registra decisões e fronteiras de responsabilidade.
 
 ## Fundação F1
 
-A raiz do repositório é um monorepo pnpm + Turborepo. Web e API rodam como processos locais; o Compose contém somente PostgreSQL. A aplicação web inicial identifica o ambiente de desenvolvimento. O único fluxo de backend desta fase é a verificação de saúde com consulta real ao banco. Não há CMS, autenticação ou entidades de domínio nesta fase.
+A raiz do repositório é um monorepo pnpm + Turborepo. Web e API rodam como processos locais; o Compose contém somente PostgreSQL. A aplicação web inicial identifica o ambiente de desenvolvimento. A F2 acrescenta módulos de banco, autenticação e domínio na API; as telas públicas e administrativas seguem as fases F3–F6.
 
 | Caminho                  | Responsabilidade                                                       |
 | ------------------------ | ---------------------------------------------------------------------- |
@@ -35,23 +35,23 @@ As versões selecionadas para a fundação são fixadas nos manifests e no lockf
 | Prisma           | `7.10.0`, reservado para a persistência da F2                   |
 | PostgreSQL       | `17.11-alpine`; imagem oficial e digest fixados no Compose e CI |
 
-`package.json` raiz é a referência da versão do projeto. Apps e pacotes privados acompanham `0.1.0`; não são releases independentes nem são publicados em registry. Versões 0.x seguem os marcos do plano; correções incrementam PATCH e uma mudança funcional incrementa MINOR. A política segue o formato do [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+`package.json` raiz é a referência da versão do projeto. Apps e pacotes privados acompanham `0.2.0`; não são releases independentes nem são publicados em registry. Versões 0.x seguem os marcos do plano; correções incrementam PATCH e uma mudança funcional incrementa MINOR. A política segue o formato do [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## Fluxo local
 
 ```mermaid
 flowchart LR
   browser[Navegador local] --> web[Next.js — 127.0.0.1:3000]
-  web -. integração de domínio futura .-> api[NestJS — 127.0.0.1:3001]
+  web -->|encaminhamento /api/v1| api[NestJS — 127.0.0.1:3001]
   operator[Smoke local / CI] --> api
-  api -->|SELECT 1 no health| db[PostgreSQL — 127.0.0.1:5434]
+  api -->|Prisma e health| db[PostgreSQL — 127.0.0.1:5434]
 ```
 
-As portas são publicadas em loopback. O projeto Compose `filaretti-local` e seu volume persistente isolam esse banco de outros projetos. A comunicação futura navegador → API será encaminhada pela mesma origem da web; as leituras no servidor poderão consultar a API diretamente. O encaminhamento de rotas de domínio será implementado na etapa consumidora, sem regras duplicadas na web.
+As portas são publicadas em loopback. O projeto Compose `filaretti-local` e seu volume persistente isolam esse banco de outros projetos. O navegador usa `/api/v1` na origem da web; o rewrite encaminha a requisição e os cookies para a API. Leituras no servidor podem consultar a API diretamente. Regras e autorização permanecem no NestJS; o encaminhamento não as duplica.
 
 ## Contratos e configuração
 
-Os contratos de health e de erro são descritos em [api.md](api.md). O probe usa o driver PostgreSQL para executar `SELECT 1`, sem tabelas ou migrations de domínio. A modelagem e o uso de Prisma começam na F2.
+Os contratos de domínio, health e erro são descritos em [api.md](api.md). O probe usa o driver PostgreSQL para executar `SELECT 1` e permanece independente das tabelas. O DatabaseModule global fornece PrismaService com adapter PostgreSQL e desconexão no encerramento. AuthModule fornece guardas e sessões; DomainModule aplica DTOs, propriedade, relações e projeções públicas. O cliente Prisma é gerado nos scripts de build/typecheck/dev e explicitamente no CI; código gerado não é versionado.
 
 Cada processo valida sua configuração antes de iniciar. `APP_ENV` identifica o ambiente de dados/operação, independentemente de `NODE_ENV`, que também é usado pelo build do Next.js. Um build local de produção continua com `APP_ENV=development`; em `APP_ENV=production`, mocks são rejeitados e HTTPS/cookies seguros são obrigatórios.
 

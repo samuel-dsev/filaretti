@@ -16,6 +16,7 @@
     "@filaretti/ui#build": { "outputs": [] },
     "build": {
       "dependsOn": ["^build"],
+      "passThroughEnv": ["DATABASE_URL"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
       "env": [
         "NODE_ENV",
@@ -30,7 +31,7 @@
     },
     "dev": { "dependsOn": ["^build"], "cache": false, "persistent": true, "env": ["*"] },
     "lint": { "dependsOn": ["^build"] },
-    "typecheck": { "dependsOn": ["^build"] },
+    "typecheck": { "dependsOn": ["^build"], "passThroughEnv": ["DATABASE_URL"] },
     "test": { "dependsOn": ["^build"] }
   }
 }
