@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import '@filaretti/ui/styles.css';
 @import '../components/site/styles.css';
+@import '../components/institutional/styles.css';
 @import '../components/admin/styles.css';
 @import './dev/design-system/demo.css';
 

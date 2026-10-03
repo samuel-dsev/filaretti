@@ -1,0 +1,511 @@
+.institution-breadcrumb {
+  padding-block: 0.5rem;
+}
+
+.institution-section {
+  padding-block: clamp(3rem, 6vw, 6rem);
+  background: var(--f-color-surface);
+}
+
+.institution-section-soft {
+  background: var(--f-color-offwhite);
+}
+
+.institution-section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.institution-section-heading > div {
+  min-width: 0;
+}
+
+.institution-section-heading h2,
+.institution-copy-section > h2,
+.institution-profile-background h2 {
+  margin: 0.625rem 0 0;
+  color: var(--f-color-navy);
+  font-family: var(--f-font-display);
+  font-size: clamp(2.125rem, 3.6vw, 3.75rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
+}
+
+.institution-section-heading > .f-button {
+  flex-shrink: 0;
+  gap: 1rem;
+}
+
+.institution-section-description {
+  max-width: 58ch;
+  margin: 1rem 0 0;
+  color: var(--f-color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+
+.institution-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.institution-grid .site-eyebrow,
+.institution-grid .site-editorial-body > p,
+.institution-grid .site-practice-card > p,
+.institution-grid .site-professional-body > p {
+  overflow-wrap: anywhere;
+}
+
+.institution-page-content {
+  padding-block: clamp(2.5rem, 5vw, 5rem);
+}
+
+.institution-copy-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+  align-items: start;
+  gap: clamp(2rem, 5vw, 5rem);
+}
+
+.institution-copy-section + .institution-copy-section {
+  margin-top: 3rem;
+  padding-top: 3rem;
+  border-top: 1px solid #d4dce3;
+}
+
+.institution-copy-section > h2 {
+  margin-top: 0;
+  font-size: clamp(2rem, 3vw, 3rem);
+}
+
+.institution-copy-section-unheaded {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.institution-readable,
+.institution-office-summary,
+.institution-copy-section-unheaded > .public-content {
+  width: 100%;
+  max-width: var(--f-reading-max, 45rem);
+}
+
+.public-content {
+  min-width: 0;
+  color: var(--f-color-muted);
+  font-size: 1rem;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+.public-content > :first-child {
+  margin-top: 0;
+}
+
+.public-content > :last-child {
+  margin-bottom: 0;
+}
+
+.public-content p {
+  margin: 0 0 1.25rem;
+}
+
+.public-content h2,
+.public-content h3,
+.public-content h4,
+.public-content h5,
+.public-content h6 {
+  margin: 2rem 0 1rem;
+  color: var(--f-color-navy);
+  font-family: var(--f-font-display);
+  font-weight: 500;
+  line-height: 1.18;
+}
+
+.public-content h2 {
+  font-size: 2.125rem;
+}
+
+.public-content h3 {
+  font-size: 1.75rem;
+}
+
+.public-content h4,
+.public-content h5,
+.public-content h6 {
+  font-size: 1.5rem;
+}
+
+.public-content a {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 44px;
+  align-items: center;
+  color: var(--f-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.public-content ul,
+.public-content ol {
+  margin: 1rem 0 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.public-content ul {
+  list-style-type: disc;
+}
+
+.public-content ol {
+  list-style-type: decimal;
+}
+
+.public-content li + li {
+  margin-top: 0.5rem;
+}
+
+.public-content li > p {
+  margin-bottom: 0.5rem;
+}
+
+.public-content blockquote {
+  margin: 1.5rem 0;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  border-left: 3px solid var(--f-color-primary);
+  color: var(--f-color-navy);
+  font-family: var(--f-font-display);
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+.public-content blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.public-content code {
+  padding: 0.125rem 0.25rem;
+  color: var(--f-color-navy);
+  background: var(--f-color-offwhite);
+  font-family: ui-monospace, monospace;
+  font-size: 0.875em;
+}
+
+.public-content pre {
+  max-width: 100%;
+  overflow-x: auto;
+  padding: 1rem;
+  background: var(--f-color-offwhite);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.public-content pre code {
+  padding: 0;
+}
+
+.public-content hr {
+  margin-block: 2rem;
+  border: 0;
+  border-top: 1px solid #d4dce3;
+}
+
+.institution-availability-note {
+  margin: 1.25rem 0 0;
+  color: var(--f-color-muted);
+  font-size: 0.8125rem;
+  line-height: 1.8;
+}
+
+.institution-index-content {
+  padding-block: clamp(2.5rem, 5vw, 5rem);
+}
+
+.institution-result-count {
+  margin: 0 0 1.5rem;
+  color: var(--f-color-muted);
+  font-size: 0.8125rem;
+}
+
+.institution-pagination {
+  margin-top: 2.5rem;
+}
+
+.institution-service-list,
+.institution-background-list,
+.institution-relation-links,
+.institution-social-links ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.institution-service-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 2rem;
+}
+
+.institution-service-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding-block: 1.25rem;
+  border-bottom: 1px solid #d4dce3;
+  color: var(--f-color-ink);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.institution-service-number {
+  flex-shrink: 0;
+  color: var(--f-color-primary);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+}
+
+.institution-profile-photo {
+  overflow: hidden;
+  background: var(--f-color-pale);
+}
+
+.institution-profile-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 0.9;
+  object-fit: cover;
+}
+
+.institution-profile-placeholder {
+  display: flex;
+  min-height: 280px;
+  aspect-ratio: 1.1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  color: var(--f-color-navy);
+  background: var(--f-color-pale);
+}
+
+.institution-profile-placeholder > span {
+  font-family: var(--f-font-display);
+  font-size: clamp(5rem, 11vw, 10rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.institution-profile-placeholder > p {
+  margin: 0;
+  font-size: 0.75rem;
+}
+
+.institution-profile-background {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3rem;
+}
+
+.institution-profile-background h2 {
+  margin: 0 0 1.5rem;
+}
+
+.institution-background-list li {
+  position: relative;
+  padding: 0.875rem 0 0.875rem 1.25rem;
+  border-bottom: 1px solid #d4dce3;
+  color: var(--f-color-muted);
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.institution-background-list li::before {
+  position: absolute;
+  top: 1.5rem;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--f-color-primary);
+  content: '';
+}
+
+.institution-relation-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 2rem;
+}
+
+.institution-relation-links a {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #d4dce3;
+  color: var(--f-color-primary);
+  font-size: 1rem;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.institution-relation-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.institution-contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(2rem, 6vw, 6rem);
+}
+
+.institution-contact-list {
+  margin: 0 0 1.5rem;
+}
+
+.institution-contact-list > div {
+  margin-bottom: 1.25rem;
+}
+
+.institution-contact-list dt {
+  color: var(--f-color-muted);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.institution-contact-list dd {
+  margin: 0;
+  color: var(--f-color-navy);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.institution-contact-list a {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 44px;
+  align-items: center;
+  color: var(--f-color-primary);
+  text-decoration: none;
+}
+
+.institution-contact-list a:hover,
+.institution-social-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.institution-contact-list address {
+  margin-top: 0.625rem;
+  font-style: normal;
+  line-height: 1.8;
+}
+
+.institution-social-links {
+  margin-top: 1.5rem;
+}
+
+.institution-social-links ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.institution-social-links a {
+  display: inline-flex;
+  max-width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--f-color-primary);
+  font-size: 0.875rem;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.institution-newsletter {
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid #d4dce3;
+  background: var(--f-color-surface);
+}
+
+.institution-newsletter h3 {
+  margin: 0.875rem 0 1.25rem;
+  color: var(--f-color-navy);
+  font-family: var(--f-font-display);
+  font-size: 2.125rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.institution-newsletter > p:not(.site-eyebrow) {
+  color: var(--f-color-muted);
+  font-size: 0.875rem;
+  line-height: 1.8;
+}
+
+@media (max-width: 1023px) {
+  .institution-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .institution-copy-section:not(.institution-copy-section-unheaded) {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 2rem;
+  }
+
+  .institution-contact-grid {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .institution-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .institution-grid,
+  .institution-copy-section:not(.institution-copy-section-unheaded),
+  .institution-service-list,
+  .institution-profile-background,
+  .institution-relation-links,
+  .institution-contact-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .institution-copy-section:not(.institution-copy-section-unheaded),
+  .institution-copy-section-unheaded {
+    gap: 1.5rem;
+  }
+
+  .institution-profile-background,
+  .institution-contact-grid {
+    gap: 2.5rem;
+  }
+
+  .institution-profile-placeholder {
+    min-height: 240px;
+    aspect-ratio: 1.35;
+  }
+
+  .institution-profile-placeholder > span {
+    font-size: 5rem;
+  }
+}

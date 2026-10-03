@@ -85,7 +85,7 @@ Listagens retornam `{ data, meta: { page, limit, total, pages } }`, com padrão 
 | FAQ                 | `order`                     | `order`                                                  |
 | Redirects           | `newest`, `oldest`          | `newest`, pela data de criação                           |
 
-Artigos aceitam filtros combinados `area`, `category`, `professional`, `tag` por slug, `type=ARTICLE|UPDATE|GUIDE` e `year=1900..2100` pela data de publicação UTC. `author` é alias de `professional`, referente ao profissional público, nunca ao usuário administrativo; se ambos forem enviados devem concordar. FAQ aceita `area` por slug. Artigos administrativos também aceitam `status=DRAFT|SCHEDULED|PUBLISHED|ARCHIVED`. AUTHOR continua restrito aos próprios rascunhos mesmo ao fornecer outro status.
+Artigos aceitam filtros combinados `area`, `category`, `professional`, `tag` por slug, `type=ARTICLE|UPDATE|GUIDE` e `year=1900..2100` pela data de publicação UTC. Na F4, `featured=true|false` seleciona destaques diretamente no PostgreSQL; somente essas strings booleanas são convertidas no query, sem relaxar os booleanos do corpo. A seleção mantém os filtros de publicação/data/autor ativo. `author` é alias de `professional`, referente ao profissional público, nunca ao usuário administrativo; se ambos forem enviados devem concordar. FAQ aceita `area` por slug. Artigos administrativos também aceitam `status=DRAFT|SCHEDULED|PUBLISHED|ARCHIVED`. AUTHOR continua restrito aos próprios rascunhos mesmo ao fornecer outro status.
 
 ## Domínio público
 

@@ -53,6 +53,12 @@ DTOs recusam campos não previstos. Conteúdo TipTap e seções de página têm 
 
 Nenhum campo de exemplo é enviado ou persistido. Cookies/tokens continuam exclusivos dos contratos da F2; o layout administrativo não declara login concluído. Testes da allowlist e smokes do bundle otimizado validam ambientes e hosts negativos; detalhes em docs/design-system.md e RP-004.
 
+## Leituras institucionais da F4
+
+O cliente público Next é `server-only`, usa exclusivamente DTOs projetados, omite credenciais e mantém `API_INTERNAL_URL` no servidor. Timeout, resposta inválida e erro de transporte produzem mensagens fixas, sem corpo/causa do backend. O Proxy consulta apenas recursos públicos mapeados e não encaminha cookies, headers de autenticação ou regras administrativas. Retirada/inatividade continua decidida pelo Nest e produz 404 no site; falha da API produz 503.
+
+Textos institucionais TipTap recebem renderer JSX escapado e política de URLs permitidas, sem HTML bruto. Imagens ficam restritas a raster público local `/media/public/**`; fontes remotas, SVG, query e paths privados são excluídos. Upload/storage e renderização dos fluxos editoriais completos continuam F5/F6. As páginas não criam sessão nem executam inscrição, envio de contato ou busca. Detalhes, reprodução e limites: [public-site.md](public-site.md).
+
 ## Controles futuros e gates
 
 | Fase   | Controles pendentes                                                                                               |

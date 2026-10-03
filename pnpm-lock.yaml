@@ -108,6 +108,9 @@ importers:
       '@filaretti/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@filaretti/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@filaretti/ui':
         specifier: workspace:*
         version: link:../../packages/ui

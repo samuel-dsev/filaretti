@@ -171,6 +171,9 @@ test('domain permissions, publication, relations and conflicts use real PostgreS
           'sort=name',
           'status=DRAFT',
           'year=9999',
+          'featured=1',
+          'featured=yes',
+          'featured=true&featured=false',
           'unexpected=true',
         ])
           assert.equal((await visitor.request(`/articles?${query}`)).status, 400, query);
@@ -178,6 +181,37 @@ test('domain permissions, publication, relations and conflicts use real PostgreS
           await visitor.request('/articles?page=100000')
         ).json()) as PaginatedResponse<PublicArticleSummary>;
         assert.deepEqual(empty.data, []);
+      },
+    );
+    await t.test(
+      'featured selections are filtered in PostgreSQL and retain public visibility',
+      async () => {
+        const all = (await (
+          await visitor.request('/articles?limit=50')
+        ).json()) as PaginatedResponse<PublicArticleSummary>;
+        const highlighted = await visitor.request('/articles?featured=true&limit=50');
+        const regular = await visitor.request('/articles?featured=false&limit=50');
+        assert.equal(highlighted.status, 200);
+        assert.equal(regular.status, 200);
+        const featured = (await highlighted.json()) as PaginatedResponse<PublicArticleSummary>;
+        const nonFeatured = (await regular.json()) as PaginatedResponse<PublicArticleSummary>;
+        assert.deepEqual(
+          featured.data.map((row) => row.id),
+          all.data.filter((row) => row.featured).map((row) => row.id),
+        );
+        assert.deepEqual(
+          nonFeatured.data.map((row) => row.id),
+          all.data.filter((row) => !row.featured).map((row) => row.id),
+        );
+        assert.equal(featured.meta.total + nonFeatured.meta.total, all.meta.total);
+        const guides = (await (
+          await visitor.request('/articles?featured=true&type=GUIDE&limit=3')
+        ).json()) as PaginatedResponse<PublicArticleSummary>;
+        assert.ok(guides.data.every((row) => row.featured && row.type === 'GUIDE'));
+        assert.doesNotMatch(
+          JSON.stringify(featured),
+          /conteudo-ficticio-(?:13|14|15|16|17|18|19|20)/u,
+        );
       },
     );
     await t.test(

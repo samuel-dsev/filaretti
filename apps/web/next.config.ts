@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   transpilePackages: ['@filaretti/ui'],
+  images: {
+    // Only public raster assets served by this application. Storage hosts join in F6.
+    localPatterns: [{ pathname: '/media/public/**', search: '' }],
+    remotePatterns: [],
+    dangerouslyAllowSVG: false,
+  },
   async rewrites() {
     return [
       {

@@ -113,6 +113,7 @@ function filters(query: ArticleQueryDto): Prisma.ArticleWhereInput {
     ...(query.tag ? { tags: { some: { tag: { slug: query.tag, isActive: true } } } } : {}),
     ...(author ? { author: { slug: author, isActive: true } } : {}),
     ...(query.type ? { type: query.type } : {}),
+    ...(query.featured !== undefined ? { featured: query.featured } : {}),
     ...(query.year
       ? {
           publishedAt: {

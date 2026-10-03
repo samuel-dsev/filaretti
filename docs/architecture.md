@@ -1,6 +1,6 @@
 # Arquitetura
 
-Referência: F3, versão `0.3.0`, 03/10/2026. O estado da entrega e as evidências executadas ficam em `../relate.md`; este documento registra decisões e fronteiras de responsabilidade.
+Referência: F4, versão `0.4.0`, 03/10/2026. O estado da entrega e as evidências executadas ficam em `../relate.md`; este documento registra decisões e fronteiras de responsabilidade.
 
 ## Fundação F1
 
@@ -35,7 +35,7 @@ As versões selecionadas para a fundação são fixadas nos manifests e no lockf
 | Prisma           | `7.10.0`, reservado para a persistência da F2                   |
 | PostgreSQL       | `17.11-alpine`; imagem oficial e digest fixados no Compose e CI |
 
-`package.json` raiz é a referência da versão do projeto. Apps e pacotes privados acompanham `0.3.0`; não são releases independentes nem são publicados em registry. Versões 0.x seguem os marcos do plano; correções incrementam PATCH e uma mudança funcional incrementa MINOR. A política segue o formato do [Versionamento Semântico](https://semver.org/lang/pt-BR/).
+`package.json` raiz é a referência da versão do projeto. Apps e pacotes privados acompanham `0.4.0`; não são releases independentes nem são publicados em registry. Versões 0.x seguem os marcos do plano; correções incrementam PATCH e uma mudança funcional incrementa MINOR. A política segue o formato do [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
 ## Fluxo local
 
@@ -62,6 +62,8 @@ As tarefas de lint, typecheck, testes e build são orquestradas na raiz. Configu
 ## Evolução autorizada por fase
 
 Na F3, `@filaretti/ui` exporta componentes React e CSS sem dependências do backend. A web carrega Inter/Cormorant por next/font e contém layouts consumidores em `components/site` e `components/admin`. A demonstração local tem Proxy de acesso anterior ao streaming, guarda servidor e renderização dinâmica; não consome a API nem cria sessão. O pacote compartilhado e os layouts recebem dados/ações por props para integração nas F4–F6. Detalhes e limites: [design-system.md](design-system.md).
+
+Na F4, o grupo público `(institutional)` conecta Home, escritório, áreas e profissionais aos DTOs da API por um cliente marcado `server-only`. O servidor valida/projeta respostas e deduplica leituras na renderização, com `no-store`. O Proxy traduz status públicos antes do streaming, sem decidir publicação. A Home usa seleções próprias de recentes, destaques e guias; a API acrescenta somente o filtro booleano `featured`, sem alteração de schema/migrations. Texto institucional usa JSX seguro e mídia passa por allowlist local do Next Image. Contrato para cache futuro, estados e reprodução: [public-site.md](public-site.md).
 
 | Fase   | Próxima responsabilidade                                                  |
 | ------ | ------------------------------------------------------------------------- |

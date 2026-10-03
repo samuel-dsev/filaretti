@@ -1,6 +1,6 @@
 # SEO, cache e indexação
 
-Decisões iniciais da F1, 02/10/2026. A fundação não entrega páginas institucionais/editoriais, sitemap, analytics ou integração com Search Console. Domínio final e dados oficiais permanecem dependentes de aprovação.
+Atualizado na F4, versão `0.4.0`, 03/10/2026. As seis rotas institucionais possuem metadata básica e canonical configurado; sitemap, analytics e Search Console continuam nas fases seguintes. Domínio final e dados oficiais permanecem dependentes de aprovação.
 
 ## Entregas por fase
 
@@ -17,6 +17,8 @@ Decisões iniciais da F1, 02/10/2026. A fundação não entrega páginas institu
 ## Metadata e rotas
 
 Títulos, descrições e dados estruturados deverão refletir conteúdo aprovado da API. Cada recurso público terá URL consistente; slug inexistente deverá devolver 404 real. Canonical usará a URL pública configurada, sem copiar origem local ou staging. A implementação seguirá a [API de metadata do Next.js](https://nextjs.org/docs/app/api-reference/functions/generate-metadata).
+
+Na F4, títulos/descrições institucionais usam os dados publicados, ainda fictícios; listas usam rótulos de interface. Canonical usa `NEXT_PUBLIC_SITE_URL`, sem query/fragmento. Todas as rotas seguem `noindex, nofollow`, inclusive no header. O Proxy verifica HTTP público antes do streaming para emitir 404 real ou 503 em falha da API. O grupo é dinâmico, com fetch `no-store` e deduplicação restrita à renderização; mutações aparecem na próxima requisição. O contrato de dependências para cache/invalidação futuro está em [public-site.md](public-site.md).
 
 Sitemap conterá somente URLs públicas publicadas. Admin, preview e staging não serão indexáveis; staging também exigirá controle de acesso. `robots.txt` não protege conteúdo privado e não substitui autenticação. A política de busca interna e combinações de filtros será explicitada na F7 para evitar indexação indiscriminada.
 

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayUnique,
@@ -61,6 +61,13 @@ export class ArticleQueryDto extends PaginationDto {
   author?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() @MaxLength(120) tag?: string;
   @ApiPropertyOptional({ enum: ArticleType }) @IsOptional() @IsEnum(ArticleType) type?: ArticleType;
+  @ApiPropertyOptional({ type: Boolean, description: 'Filtra conteúdos destacados na Home.' })
+  @IsOptional()
+  @Transform(({ value }: { value: unknown }) =>
+    value === 'true' ? true : value === 'false' ? false : value,
+  )
+  @IsBoolean()
+  featured?: boolean;
   @ApiPropertyOptional()
   @IsOptional()
   @Type(() => Number)

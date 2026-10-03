@@ -13,9 +13,9 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: 'Filaretti — ambiente de desenvolvimento',
+  title: 'Filaretti — site institucional',
   description:
-    'Fundação técnica local. Conteúdo de demonstração sem material institucional aprovado.',
+    'Informações institucionais, áreas de atuação, profissionais e conteúdos publicados.',
   robots: { index: false, follow: false },
 };
 

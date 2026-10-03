@@ -2,6 +2,8 @@
 
 Referência: F3, versão `0.3.0`, 03/10/2026. Biblioteca implementada em `packages/ui/src`; layouts em `apps/web/src/components/site` e `admin`. A demonstração é um estudo fictício de interface. Materiais oficiais e identidade definitiva continuam sujeitos à aprovação do escritório até a F9.
 
+Na autorização da F4 em 03/10/2026, o usuário aprovou a estilização apresentada. A F4 preserva tokens, fontes e componentes, acrescentando templates institucionais alimentados pela API em `components/institutional`. A aprovação visual não autoriza biografias, contatos, fotos ou conteúdo oficial. Rotas e estados implementados: [public-site.md](public-site.md).
+
 ## Direção visual e tokens
 
 Linguagem institucional/editorial, com títulos serifados, espaços amplos, superfícies claras e navegação em azul. A referência [Silveiro](https://silveiro.com.br/) orienta o princípio editorial; composição, monograma e ilustrações desta demonstração são próprios e substituíveis. Não há fotografias nem identidades profissionais reais.

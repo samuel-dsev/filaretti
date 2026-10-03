@@ -2,22 +2,143 @@
 
 ## Situação atual
 
-| Campo                | Estado                                                                                          |
-| -------------------- | ----------------------------------------------------------------------------------------------- |
-| Última atualização   | 03/10/2026 — RP-004                                                                             |
-| Etapa                | **F3 concluída — aceite local aprovado**                                                        |
-| Versão               | `0.3.0` na raiz e nos sete workspaces privados                                                  |
-| Código/aplicação     | Design System, componentes e layouts público/administrativo; demonstrações locais fictícias     |
-| Ambiente             | Edge 154 em build otimizado local, cinco larguras e teclado revisados; API/banco F2 preservados |
-| Git                  | `dev`, remoto `origin`; base F2 `93ac520`; commit local F3 conforme RP-004                      |
-| Commit desta entrega | `feat(ui): implementa design system e layouts (v0.3.0)`; SHA real informado após commit         |
-| Próxima etapa        | **F4 — Site institucional conectado à API**                                                     |
-| Autorização          | **Aguardando confirmação para F4; push F3 não autorizado**                                      |
-| Checkpoint           | RP-004 abaixo e quadro inicial de plan.md                                                       |
+| Campo                | Estado                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| Última atualização   | 03/10/2026 — RP-005                                                                         |
+| Etapa                | **F4 concluída — aceite local aprovado**                                                    |
+| Versão               | `0.4.0` na raiz e nos sete workspaces privados                                              |
+| Código/aplicação     | Seis rotas institucionais SSR sobre a API real; visual F3 aprovado e preservado             |
+| Ambiente             | PostgreSQL local saudável; API 3001 e Next otimizado 3000 em loopback; Edge 154 revisado    |
+| Git                  | `dev`, remoto `origin`; base F3 `cf5dedc`; commit local F4 conforme RP-005                  |
+| Commit desta entrega | `feat(site): conecta páginas institucionais à API (v0.4.0)`; SHA real informado após commit |
+| Próxima etapa        | **F5 — Portal editorial e leitura de conteúdos**                                            |
+| Autorização          | **Aguardando confirmação para F5; push F3/F4 não autorizado**                               |
+| Checkpoint           | RP-005 abaixo e quadro inicial de plan.md                                                   |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo.
 
 ## Histórico
+
+### RP-005 — 03/10/2026 — F4 — Site institucional conectado à API
+
+**Escopo autorizado:** “Design aprovado, ficou ótima estilização, prossiga para f4”. Aprovação visual da F3 e execução da F4, incluindo commit local conforme AGENTS.md. **Estado: concluída tecnicamente; aceite local aprovado.** F5, push, PR e publicação exigem autorização própria. Materiais oficiais continuam pendentes até F9.
+
+**Versão:** `0.3.0` → `0.4.0`; oito manifests privados alinhados. Web passou a declarar somente a dependência local `@filaretti/types`; lockfile recebeu três linhas desse vínculo. Nenhuma biblioteca externa nova, alteração de schema, migration, seed ou dados de desenvolvimento.
+
+**Git e continuidade:** cwd real `C:\Users\Samuel\Documents\Projetos\Filaretti`, pois o caminho antigo `Projeto` está ausente. Branch `dev` inicialmente limpa; base F3 real `cf5dedcd358c474d17cf3287238aca20c5bb629d`, um commit à frente de origin/dev. A autorização de push anterior cobria F2. Commit F4 previsto: `feat(site): conecta páginas institucionais à API (v0.4.0)`; SHA real informado na entrega e registrado na próxima retomada, sem commit circular.
+
+#### Arquivos criados, alterados e removidos
+
+Criados (32):
+
+- `apps/web/src/app/(institutional)/areas-de-atuacao/[slug]/page.tsx`
+- `apps/web/src/app/(institutional)/areas-de-atuacao/page.tsx`
+- `apps/web/src/app/(institutional)/error.tsx`
+- `apps/web/src/app/(institutional)/layout.tsx`
+- `apps/web/src/app/(institutional)/loading.tsx`
+- `apps/web/src/app/(institutional)/not-found.tsx`
+- `apps/web/src/app/(institutional)/o-escritorio/page.tsx`
+- `apps/web/src/app/(institutional)/page.tsx`
+- `apps/web/src/app/(institutional)/profissionais/[slug]/page.tsx`
+- `apps/web/src/app/(institutional)/profissionais/page.tsx`
+- `apps/web/src/components/institutional/area-views.tsx`
+- `apps/web/src/components/institutional/home-view.tsx`
+- `apps/web/src/components/institutional/index.ts`
+- `apps/web/src/components/institutional/office-view.tsx`
+- `apps/web/src/components/institutional/professional-views.tsx`
+- `apps/web/src/components/institutional/shared.tsx`
+- `apps/web/src/components/institutional/styles.css`
+- `apps/web/src/components/institutional/types.ts`
+- `apps/web/src/lib/public-api-core.ts`
+- `apps/web/src/lib/public-api.ts`
+- `apps/web/src/lib/public-content-core.ts`
+- `apps/web/src/lib/public-content.tsx`
+- `apps/web/src/lib/public-media.ts`
+- `apps/web/src/lib/public-metadata.ts`
+- `apps/web/src/lib/public-routing.ts`
+- `apps/web/src/lib/public-status.ts`
+- `apps/web/test/public-api.test.mjs`
+- `apps/web/test/public-content.test.mjs`
+- `apps/web/test/public-metadata.test.mjs`
+- `apps/web/test/public-routing.test.mjs`
+- `docs/public-site.md`
+- `scripts/test-institutional.mjs`
+
+Alterados (25):
+
+- `README.md`
+- `apps/api/package.json`
+- `apps/api/src/domain/articles.service.ts`
+- `apps/api/src/domain/dto.ts`
+- `apps/api/test/domain.integration.test.ts`
+- `apps/web/next.config.ts`
+- `apps/web/package.json`
+- `apps/web/src/app/globals.css`
+- `apps/web/src/app/layout.tsx`
+- `apps/web/src/app/not-found.tsx`
+- `apps/web/src/proxy.ts`
+- `docs/api.md`
+- `docs/architecture.md`
+- `docs/design-system.md`
+- `docs/security.md`
+- `docs/seo.md`
+- `package.json`
+- `packages/config/package.json`
+- `packages/eslint-config/package.json`
+- `packages/tsconfig/package.json`
+- `packages/types/package.json`
+- `packages/ui/package.json`
+- `plan.md`
+- `pnpm-lock.yaml`
+- `relate.md`
+
+Removidos (1):
+
+- `apps/web/src/app/page.tsx`
+
+A página raiz inicial foi substituída pela Home dentro do grupo institucional. Inventário de 58 arquivos revisto para staging explícito. Helpers, ambientes, builds, JSONs e PNGs de evidência em `.local/` continuam ignorados.
+
+#### Implementação e decisões
+
+- Rotas `/`, `/o-escritorio`, `/areas-de-atuacao`, `/areas-de-atuacao/[slug]`, `/profissionais` e `/profissionais/[slug]` renderizadas no servidor com contratos reais da API. Header/footer e templates preservam o visual aprovado; menu, marca, conteúdo institucional, serviços, bio, formação, experiência, canais e relações recebem DTOs públicos. A única ilustração permanente é o artwork CSS substituível da F3; fotos ausentes usam iniciais.
+- Home apresenta introdução, destaques, áreas, escritório, recentes, profissionais, guias, contato e newsletter. Recentes/destaques/guias usam consultas próprias de três itens, com filtro booleano `featured` acrescentado à API e seleção GUIDE já existente. Isso impede falso vazio quando há mais de cinquenta artigos recentes. O Nest/Prisma filtra publicações, datas e autores ativos; query inválida ou repetida é recusada. Nenhuma regra de publicação foi duplicada na interface.
+- Índices usam paginação real de 12 itens; query `pagina` é limitada e traduzida ao backend. Detalhes renderizam serviços, relações e resumos de artigos publicados vinculados. Não há link de leitura para rotas F5 ainda ausentes; newsletter indica disponibilidade futura sem formulário/sucesso simulado. Canais vêm somente de settings.
+- Cliente `server-only` com timeout cinco segundos, `no-store`, credenciais omitidas, redirecionamentos recusados, projeção/checagem de DTOs e erros fixos. React.cache deduplica por renderização, sem cache persistente. Mudanças aparecem na nova requisição. Dependências para futura invalidação estão documentadas em docs/public-site.md; F5/F6 definirão cache e revalidação operacional.
+- PublicContent renderiza o subset institucional permitido pela API como JSX escapado, com headings/listas/marcas/URLs seguras. HTML bruto não é inserido. O renderer foi necessário para Page.sections, bios e descrições desta fase; não implementa páginas editoriais, sumário, compartilhamento ou PDF da F5.
+- Metadata básica usa títulos/SEO/textos públicos e canonical da configuração pública, sem query/fragmento ou Host do visitante. Desenvolvimento continua noindex/nofollow. Next Image admite apenas raster público local em /media/public/**; rejeita origem externa, SVG, query, traversal e caminho privado. Storage/upload/hosts de fornecedor seguem F6.
+- Proxy verifica o status do recurso público antes do streaming: inexistência/retirada retorna HTTP404 navegável; erro da API retorna HTTP503 com Retry-After30/no-store e mensagem sanitizada. Guardas servidor, loading, error boundary e estados vazios também existem. Há uma consulta adicional por rota; não é um snapshot transacional entre Proxy e renderização.
+- Três subagentes apoiaram cliente/renderer, views e QA com propriedade de arquivos distinta; principal revisou, integrou e verificou resultados. Revisão corrigiu anchor Conteúdos, consultas independentes da Home, especificidade CSS em 320px, quebra de palavras longas e tipos gerados antigos após a mudança da rota raiz.
+- Runner versionado test:institutional cria banco PostgreSQL, processos e raster próprios; não migra/reseeda/reset o banco existente. Exige desenvolvimento, loopback, portas livres e navegador já instalado. Smoke visual fica local; CI existente mantém os checks de API/monorepo e não foi apresentado como navegador executado remotamente.
+
+#### Validação executada
+
+| Check                   | Resultado/evidência                                                                                                                                                                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Continuidade/instalação | RTK.md, AGENTS.md, plan inteiro, RP-004 e docs aplicáveis lidos; Git/cwd/base/serviços verificados; pnpm install --frozen-lockfile passou                                                                                                                 |
+| Lint/typecheck          | pnpm lint e pnpm typecheck passaram após integração final                                                                                                                                                                                                 |
+| Testes                  | pnpm test: 29 aprovados (19 web, 7 config, 3 API/fundação); sem falhas/skips                                                                                                                                                                              |
+| PostgreSQL/API          | pnpm test:integration: 28 aprovados em banco real isolado; featured true/false/combinação GUIDE, query inválida, visibilidade, auth/CSRF/roles, integridade e health. Migrations/seeds/idempotência/gate de seed e provisionamento isolado passaram       |
+| Build                   | pnpm build passou; seis rotas institucionais dinâmicas, demos preservadas, Proxy e icon.svg; nenhum backend necessário para pré-renderizar conteúdo institucional                                                                                         |
+| Contraste               | pnpm test:design-system: 44 combinações aprovadas; browser analisou 2033 amostras de texto sólido, zero abaixo de 4,5:1 e zero ignoradas                                                                                                                  |
+| Smoke integrado         | test:institutional em Edge `154.0.4258.53` headless: 43 checks aprovados, 30 layouts em 320/768/1024/1440/1920, 62 PNG, zero falhas/console/overflow. Um h1/main por template, labels, skip, alt/imagens e foco/teclado foram verificados                 |
+| Dados mutáveis          | Banco/API/SSR real: alteração de settings, área/serviços, perfil/bio/formação/experiência e seções/SEO do escritório refletida sem rebuild. Rich document preservou semântica e exibiu script como texto, sem execução                                    |
+| Seleções Home           | Catálogo de teste com 67 publicados, sendo 55 ARTICLE novos não destacados: destaques e guias antigos continuaram na Home; drafts/scheduled/archived marcados featured permaneceram ocultos                                                               |
+| Estados e privacidade   | Slugs ausentes, área/perfil inativo e escritório draft: HTTP404 real; listas vazias e página distante:200 com estado vazio; API interrompida:503 em seis rotas com no-store/Retry-After30; recuperação:200. Erros/corpos SSR sem segredos/campos internos |
+| Imagem                  | PNG fictício owned 512×384 em mídia pública da API, relacionado a foto/capa: Next Image respondeu200 e redimensionou para256×192; origens/path inseguros protegidos por unitários/allowlist                                                               |
+| Limpeza e ambiente      | Banco temporário, raster e processos de teste removidos; confirmação independente em pg_database/arquivo/portas3004–3005. API3001/Next3000 existentes continuaram200 e PostgreSQL permaneceu saudável                                                     |
+| Formato/diff            | Prettier e git diff --check passaram; inventário revisado, sem ambientes/artefatos privados staged                                                                                                                                                        |
+
+Houve correção de referência stale em .next/dev/types após mover a raiz; somente esse diretório gerado foi removido e regenerado, sem alterar fonte/dados. A integração herdada emitiu aviso de depreciação pg sobre consultas concorrentes; não causou falha e não representa teste pendente desta entrega.
+
+Evidências ignoradas: .local/f4-smoke.json, .local/f4-cleanup.json, .local/f4-qa.md e .local/f4-evidence/*.png. O principal inspecionou imagens de todos os seis templates e do documento rico, além da inspeção do QA. Os screenshots usam dados/raster do banco temporário, sem identidade ou fotografia real.
+
+#### Limites e ponto de parada
+
+- Aceite local de desenvolvimento com PostgreSQL/API reais. Não certifica dispositivos físicos, Firefox/Safari, leitor de tela, WCAG completa, Lighthouse/metas de desempenho, storage R2, e-mails, Turnstile ou produção; esses gates permanecem F6–F10.
+- Fotos/identidade/textos oficiais, contatos aprovados, domínio e política jurídica continuam pendentes. Aprovação da estilização foi registrada, sem carga de material real. Leitura editorial completa/cache F5, CMS F6 e busca/relacionamento/SEO completo F7 não foram antecipados.
+- Nenhum push, PR, merge, deploy, túnel, DNS, cadastro externo ou envio real foi executado. Commit local está incluído na autorização da etapa. Preview atual em loopback3000; API3001 e PostgreSQL5434. Processos desta sessão: API90853 e Next85062; revalidar portas/PIDs ao retomar.
+
+**Ponto de parada:** F4 concluída, versão `0.4.0`. **Próxima etapa:** F5 — Portal editorial e leitura de conteúdos, somente após confirmação do usuário. Reler documentos e verificar Git/serviços antes de prosseguir; registrar SHA real da F4 na próxima retomada.
 
 ### RP-004 — 03/10/2026 — F3 — Design System e estrutura de interfaces
 

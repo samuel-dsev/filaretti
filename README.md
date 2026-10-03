@@ -1,6 +1,6 @@
 # Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.3.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. A F2 implementa banco e API; a F3 acrescenta Design System, componentes acessíveis e layouts público/administrativo com demonstração fictícia local. Páginas conectadas, CMS e integrações completas seguem as próximas fases. Situação e validações reais: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.4.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. A F4 conecta Home, escritório, áreas e profissionais à API, preservando o Design System aprovado da F3. O portal editorial completo, CMS e integrações seguem as próximas fases. Situação e validações reais: [relate.md](relate.md).
 
 ## Pré-requisitos
 
@@ -27,7 +27,7 @@ pnpm dev
 
 `setup:local` gera `.env`, `apps/api/.env` e `apps/web/.env.local` ignorados pelo Git, com segredos aleatórios exclusivamente locais. Recusa sobrescrever qualquer um desses arquivos e não imprime valores. Exemplos versionados contêm placeholders; nunca usar esses placeholders em produção. Nenhuma conta externa é necessária. Os pacotes compartilhados são compilados automaticamente antes dos apps pelo Turbo, inclusive no primeiro `pnpm dev`.
 
-Abra `http://127.0.0.1:3000` para a página de desenvolvimento e `/dev/design-system` para a biblioteca visual; `/dev/design-system/admin` apresenta o layout administrativo. As demonstrações exigem `APP_ENV=development` e Host de loopback, retornando 404 fora dessas condições. O build otimizado local também permite a revisão com `APP_ENV=development`. Fonte e contratos dos componentes: [docs/design-system.md](docs/design-system.md).
+Abra `http://127.0.0.1:3000` para o site institucional com dados fictícios da API e `/dev/design-system` para a biblioteca visual; `/dev/design-system/admin` apresenta o layout administrativo. As demonstrações exigem `APP_ENV=development` e Host de loopback, retornando 404 fora dessas condições. O build otimizado local também permite a revisão com `APP_ENV=development`. Fonte e contratos dos componentes: [docs/design-system.md](docs/design-system.md). Rotas, dados, estados e cache: [docs/public-site.md](docs/public-site.md).
 
 API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. A web encaminha `/api/v1/*` para a API por origem única; o contrato de sessão usa cookies HttpOnly e header CSRF nas mutações. A demonstração da F3 não autentica nem chama endpoints administrativos. Contratos e procedimentos: [docs/api.md](docs/api.md). Nenhuma conexão de banco ou segredo usa prefixo `NEXT_PUBLIC_`.
 
@@ -44,11 +44,14 @@ pnpm test
 pnpm test:integration
 pnpm test:design-system
 pnpm build
+pnpm test:institutional
 pnpm format:check
 pnpm --filter @filaretti/api db:validate
 ```
 
 Testes de configuração usam Vitest. A API usa o test runner do Node com TypeScript previamente compilado e HTTP real. A integração exige PostgreSQL real e permissão local/CI de criar bancos: cria um banco temporário próprio, aplica migrations, repete o seed, verifica idempotência e executa testes de auth/domínio/health. Ao final remove somente esse banco temporário, preservando o banco de desenvolvimento e seu volume. Não pula checks se o banco estiver indisponível. `db:validate` verifica o schema; CI gera o cliente Prisma e roda lint → typecheck → testes → integração PostgreSQL → build, sem deploy.
+
+`test:institutional` exige build existente, PostgreSQL local e Playwright já disponível (configurar `PLAYWRIGHT_MODULE_PATH` se necessário), com Edge por padrão. Usa outro banco temporário, API/Next em portas próprias, fixture raster substituível e revisão de seis templates em cinco larguras, sem modificar o banco de desenvolvimento. Não instala navegador/pacotes; detalhes e opção explícita de alcance HTTP em [docs/public-site.md](docs/public-site.md). O smoke visual é local, não foi acrescentado ao CI sem infraestrutura de navegador correspondente.
 
 Consulte `http://127.0.0.1:3001/health`: banco disponível retorna HTTP **200** e `{"status":"ok","database":"up"}`; indisponível retorna **503** e `{"status":"error","database":"down"}`. Ambas as respostas têm `Cache-Control: no-store` e não mostram credenciais/stack. Para testar a mudança de estado somente no banco deste projeto:
 
@@ -65,7 +68,7 @@ O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset
 
 | Caminho                                       | Responsabilidade                                                                       |
 | --------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `apps/web`                                    | Next.js App Router/React/Tailwind; página local e tratamento inicial de erro/404       |
+| `apps/web`                                    | Next.js App Router/React/Tailwind; páginas institucionais SSR e estados de erro/404    |
 | `apps/api`                                    | NestJS; Prisma, autenticação/roles, API de domínio, logs sanitizados, Swagger e health |
 | `packages/ui`                                 | Tokens CSS, controles, formulários, diálogos e estados compartilhados da F3            |
 | `packages/types`                              | Contratos de autenticação e domínio; sem modelos Prisma/segredos                       |

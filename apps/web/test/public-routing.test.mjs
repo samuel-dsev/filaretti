@@ -1,0 +1,59 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { publicRouteResource, publicPageNumber } from '../src/lib/public-routing.ts';
+import { publicImage } from '../src/lib/public-media.ts';
+import { publicStatusHtml } from '../src/lib/public-status.ts';
+
+test('status gate restricts backend requests to known public resources and slugs', () => {
+  assert.deepEqual(publicRouteResource('/areas-de-atuacao/area-ficticia-1'), {
+    endpoint: '/practice-areas/area-ficticia-1',
+    isDetail: true,
+  });
+  assert.equal(publicRouteResource('/api/v1/admin/users'), null);
+  for (const path of [
+    '/profissionais/%2e%2e',
+    '/profissionais/segredo?token=1',
+    '/profissionais/' + 'a'.repeat(121),
+  ]) {
+    assert.equal(publicRouteResource(path).endpoint, '');
+  }
+  assert.equal(publicRouteResource('/areas-de-atuacao').isDetail, false);
+});
+
+test('invalid pagination is bounded without forwarding arbitrary query values', () => {
+  for (const value of [undefined, ['1', '2'], '0', '-1', '1e3', '100001', 'javascript:x'])
+    assert.equal(publicPageNumber(value), 1);
+  assert.equal(publicPageNumber('100000'), 100000);
+});
+
+test('image allowlist excludes executable, external, private and ambiguous assets', () => {
+  const media = {
+    id: 'fixture',
+    alt: 'Ilustração fictícia',
+    size: 1234,
+    mimeType: 'image/png',
+    url: '/media/public/fixture.png',
+  };
+  assert.deepEqual(publicImage(media), { src: media.url, alt: media.alt });
+  for (const url of [
+    'https://example.test/photo.png',
+    '/api/v1/admin/photo.png',
+    '//example.test/photo.png',
+    '/media/public/../private.png',
+    '/media/public/fixture.png?token=abc',
+    '/media/public/a%2fb.png',
+    '/media/public/a.svg',
+    '/media/public/a\\b.png',
+  ])
+    assert.equal(publicImage({ ...media, url }), undefined);
+  assert.equal(publicImage({ ...media, mimeType: 'image/svg+xml' }), undefined);
+});
+
+test('status pages provide accessible navigation and noindex without backend diagnostics', () => {
+  for (const status of [404, 503]) {
+    const html = publicStatusHtml(status);
+    assert.match(html, /<main id="conteudo"/);
+    assert.match(html, /noindex,nofollow/);
+    assert.doesNotMatch(html, /API_INTERNAL_URL|postgres|stack|token/i);
+  }
+});
