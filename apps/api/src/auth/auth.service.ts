@@ -66,11 +66,10 @@ export class AuthService {
     const allowed = await this.prisma.$transaction(async (tx) => {
       let allAllowed = true;
       for (const counter of counters) {
-        await tx.loginRateLimit.upsert({
-          where: { key: counter.key },
-          create: { key: counter.key, count: 0, windowStart: now },
-          update: {},
-        });
+        // PostgreSQL handles concurrent first use before the counter is row-locked.
+        await tx.$executeRaw(
+          Prisma.sql`INSERT INTO login_rate_limits (key, count, window_start) VALUES (${counter.key}, 0, ${now}) ON CONFLICT (key) DO NOTHING`,
+        );
         await tx.$queryRaw(
           Prisma.sql`SELECT key FROM login_rate_limits WHERE key = ${counter.key} FOR UPDATE`,
         );

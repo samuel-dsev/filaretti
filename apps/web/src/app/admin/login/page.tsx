@@ -63,6 +63,9 @@ export default function LoginPage() {
         <Button type="submit" disabled={pending}>
           {pending ? 'Entrando…' : 'Entrar'}
         </Button>
+        <Link href="/admin/recuperar-senha" prefetch={false}>
+          Esqueci minha senha
+        </Link>
       </form>
     </main>
   );

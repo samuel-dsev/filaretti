@@ -46,11 +46,35 @@ const webSchema = z
     NEXT_PUBLIC_SITE_URL: httpUrl,
     NEXT_PUBLIC_API_BASE_PATH: z.literal('/api/v1').default('/api/v1'),
     MOCK_CONTENT: flag(true),
+    NEXT_PUBLIC_MOCK_INTEGRATIONS: flag(false),
+    GA4_ENABLED: flag(false),
+    GA4_ENHANCED_MEASUREMENT_DISABLED: flag(false),
+    SEO_INDEXING_ENABLED: flag(false),
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: optionalText,
     NEXT_PUBLIC_GA4_ID: optionalText,
     NEXT_PUBLIC_SENTRY_DSN: optionalText,
   })
   .superRefine((env, ctx) => {
+    if (env.NEXT_PUBLIC_MOCK_INTEGRATIONS && env.APP_ENV !== 'development')
+      ctx.addIssue({
+        code: 'custom',
+        path: ['NEXT_PUBLIC_MOCK_INTEGRATIONS'],
+        message: 'Local only',
+      });
+    if (env.GA4_ENABLED && !/^G-[A-Z0-9]+$/u.test(env.NEXT_PUBLIC_GA4_ID ?? ''))
+      ctx.addIssue({
+        code: 'custom',
+        path: ['NEXT_PUBLIC_GA4_ID'],
+        message: 'Required analytics ID',
+      });
+    if (env.GA4_ENABLED && !env.GA4_ENHANCED_MEASUREMENT_DISABLED)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['GA4_ENHANCED_MEASUREMENT_DISABLED'],
+        message: 'Automatic collection must be disabled in provider',
+      });
+    if (env.SEO_INDEXING_ENABLED && env.APP_ENV !== 'production')
+      ctx.addIssue({ code: 'custom', path: ['SEO_INDEXING_ENABLED'], message: 'Production only' });
     if (env.APP_ENV === 'production') {
       if (env.MOCK_CONTENT)
         ctx.addIssue({ code: 'custom', path: ['MOCK_CONTENT'], message: 'Mocks forbidden' });
@@ -60,13 +84,19 @@ const webSchema = z
   });
 
 export function validateWebEnvironment(input: EnvironmentInput) {
-  const env = readConfiguration(webSchema, input);
+  const env = readConfiguration(webSchema, {
+    NEXT_PUBLIC_MOCK_INTEGRATIONS: input.APP_ENV === 'development',
+    ...input,
+  });
   return {
     appEnvironment: env.APP_ENV,
     apiInternalUrl: env.API_INTERNAL_URL,
     publicSiteUrl: env.NEXT_PUBLIC_SITE_URL,
     publicApiBasePath: env.NEXT_PUBLIC_API_BASE_PATH,
     mockContent: env.MOCK_CONTENT,
+    mockIntegrations: env.NEXT_PUBLIC_MOCK_INTEGRATIONS,
+    analyticsEnabled: env.GA4_ENABLED,
+    seoIndexingEnabled: env.SEO_INDEXING_ENABLED,
     turnstileSiteKey: env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
     analyticsId: env.NEXT_PUBLIC_GA4_ID,
     sentryDsn: env.NEXT_PUBLIC_SENTRY_DSN,
@@ -84,6 +114,17 @@ const apiSchema = z
     WEB_PUBLIC_URL: httpUrl,
     API_PUBLIC_URL: httpUrl,
     MOCK_CONTENT: flag(true),
+    MOCK_INTEGRATIONS: flag(false),
+    RELATIONSHIP_ENABLED: flag(true),
+    RELATIONSHIP_WORKER_ENABLED: flag(true),
+    CONTACT_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(180),
+    SUBSCRIBER_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(365),
+    PRIVACY_VERSION: z.string().min(1).max(80).default('development-v1'),
+    NEWSLETTER_CONSENT_VERSION: z.string().min(1).max(80).default('development-v1'),
+    CONTACT_NOTIFICATION_EMAIL: optionalText,
+    MAIL_ENCRYPTION_KEY: optionalText,
+    MAIL_LOCAL_PATH: z.string().default('../../.local/mail'),
+    RESEND_TEST_RECIPIENTS: optionalText,
     COOKIE_SECURE: flag(false),
     COOKIE_SAME_SITE: z.enum(['lax', 'strict']).default('lax'),
     JWT_SECRET: z.string().min(32),
@@ -125,9 +166,61 @@ const apiSchema = z
           ctx.addIssue({ code: 'custom', path: [key], message: 'HTTPS required' });
       }
     }
-    for (const key of ['RESEND_ENABLED', 'TURNSTILE_ENABLED'] as const) {
-      if (env[key])
-        ctx.addIssue({ code: 'custom', path: [key], message: 'Integration pending F6/F7' });
+    if (
+      env.MOCK_INTEGRATIONS &&
+      (env.APP_ENV !== 'development' ||
+        env.API_HOST !== '127.0.0.1' ||
+        !['localhost', '127.0.0.1', '[::1]'].includes(new URL(env.WEB_PUBLIC_URL).hostname))
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['MOCK_INTEGRATIONS'],
+        message: 'Loopback development only',
+      });
+    if (env.MOCK_INTEGRATIONS && (env.RESEND_ENABLED || env.TURNSTILE_ENABLED))
+      ctx.addIssue({
+        code: 'custom',
+        path: ['MOCK_INTEGRATIONS'],
+        message: 'Choose one adapter mode',
+      });
+    if (env.MAIL_ENCRYPTION_KEY && !/^[a-f0-9]{64}$/u.test(env.MAIL_ENCRYPTION_KEY))
+      ctx.addIssue({
+        code: 'custom',
+        path: ['MAIL_ENCRYPTION_KEY'],
+        message: '32 byte hex required',
+      });
+    if (env.RESEND_ENABLED) {
+      for (const key of [
+        'RESEND_API_KEY',
+        'RESEND_FROM_EMAIL',
+        'RESEND_WEBHOOK_SECRET',
+        'MAIL_ENCRYPTION_KEY',
+      ] as const)
+        if (!env[key]?.trim()) ctx.addIssue({ code: 'custom', path: [key], message: 'Required' });
+      if (env.APP_ENV === 'staging' && !env.RESEND_TEST_RECIPIENTS?.trim())
+        ctx.addIssue({
+          code: 'custom',
+          path: ['RESEND_TEST_RECIPIENTS'],
+          message: 'Test recipients required',
+        });
+    }
+    if (env.TURNSTILE_ENABLED) {
+      for (const key of ['TURNSTILE_SECRET_KEY', 'TURNSTILE_EXPECTED_HOSTNAME'] as const)
+        if (!env[key]?.trim()) ctx.addIssue({ code: 'custom', path: [key], message: 'Required' });
+    }
+    if (env.RELATIONSHIP_ENABLED && !env.MOCK_INTEGRATIONS) {
+      for (const key of ['RESEND_ENABLED', 'TURNSTILE_ENABLED'] as const)
+        if (!env[key])
+          ctx.addIssue({ code: 'custom', path: [key], message: 'Required for relationship' });
+      if (!z.email().safeParse(env.CONTACT_NOTIFICATION_EMAIL).success)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['CONTACT_NOTIFICATION_EMAIL'],
+          message: 'Required recipient',
+        });
+      for (const key of ['PRIVACY_VERSION', 'NEWSLETTER_CONSENT_VERSION'] as const)
+        if (env[key].startsWith('development'))
+          ctx.addIssue({ code: 'custom', path: [key], message: 'Approved version required' });
     }
     if (env.R2_ENABLED !== (env.STORAGE_DRIVER === 'r2'))
       ctx.addIssue({ code: 'custom', path: ['R2_ENABLED'], message: 'Driver mismatch' });
@@ -153,7 +246,11 @@ const apiSchema = z
   });
 
 export function validateApiEnvironment(input: EnvironmentInput) {
-  return readConfiguration(apiSchema, input);
+  return readConfiguration(apiSchema, {
+    MOCK_INTEGRATIONS: input.APP_ENV === 'development',
+    RELATIONSHIP_ENABLED: input.APP_ENV === 'development',
+    ...input,
+  });
 }
 
 export type ApiEnvironment = ReturnType<typeof validateApiEnvironment>;

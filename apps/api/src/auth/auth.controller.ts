@@ -107,7 +107,7 @@ export class AuthController {
   @ApiHeader({ name: 'Origin', required: true })
   @ApiHeader({ name: 'X-CSRF-Token', required: true })
   @ApiOperation({
-    summary: 'Cria recuperação sem revelar cadastro; entrega de e-mail pendente da F7',
+    summary: 'Enfileira recuperação transacional sem revelar cadastro',
   })
   async recover(@Body() body: RecoveryRequestDto, @Req() request: Request) {
     await this.auth.consumeAttempt('recovery', request.ip ?? 'unknown', body.email);

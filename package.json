@@ -1,6 +1,6 @@
 {
   "name": "filaretti",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "packageManager": "pnpm@11.25.0",
   "engines": {
@@ -27,7 +27,9 @@
     "format:check": "prettier --check .",
     "setup:local": "node scripts/setup-local.mjs",
     "setup:cms-local": "node scripts/setup-cms-local.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:relationship": "node scripts/test-relationship.mjs",
+    "mail:local": "node scripts/local-mail.mjs"
   },
   "devDependencies": {
     "@types/node": "24.19.1",

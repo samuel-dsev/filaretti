@@ -4,7 +4,7 @@ import type { ApiEnvironment } from '@filaretti/config';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { AuthenticationGuard, PreloginMutationGuard, RolesGuard } from './guards';
-import { DeferredRecoveryDelivery, PasswordRecoveryService } from './recovery.service';
+import { PasswordRecoveryService } from './recovery.service';
 import { AUTH_ENVIRONMENT, RECOVERY_DELIVERY, type PasswordRecoveryDelivery } from './types';
 import { UsersController } from './users.controller';
 
@@ -13,7 +13,7 @@ import { UsersController } from './users.controller';
 export class AuthModule {
   static register(
     environment: ApiEnvironment,
-    recoveryDelivery: PasswordRecoveryDelivery = new DeferredRecoveryDelivery(),
+    recoveryDelivery?: PasswordRecoveryDelivery,
   ): DynamicModule {
     return {
       module: AuthModule,
@@ -21,7 +21,7 @@ export class AuthModule {
       controllers: [AuthController, UsersController],
       providers: [
         { provide: AUTH_ENVIRONMENT, useValue: environment },
-        { provide: RECOVERY_DELIVERY, useValue: recoveryDelivery },
+        { provide: RECOVERY_DELIVERY, useValue: recoveryDelivery ?? null },
         AuthService,
         PasswordRecoveryService,
         AuthenticationGuard,

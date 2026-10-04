@@ -35,6 +35,7 @@ export function ShareLinks({ title, url }: { title: string; url: string }) {
     <div className="editorial-share">
       <div className="editorial-share-links">
         <a
+          data-analytics-event="article_share"
           href={`https://wa.me/?text=${encodeURIComponent(`${title}\n${url}`)}`}
           target="_blank"
           rel="noopener noreferrer"
@@ -43,6 +44,7 @@ export function ShareLinks({ title, url }: { title: string; url: string }) {
           <span aria-hidden="true">↗</span>
         </a>
         <a
+          data-analytics-event="article_share"
           href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}
           target="_blank"
           rel="noopener noreferrer"
@@ -50,10 +52,14 @@ export function ShareLinks({ title, url }: { title: string; url: string }) {
           LinkedIn <span className="f-sr-only">(abre em nova aba)</span>
           <span aria-hidden="true">↗</span>
         </a>
-        <a href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`}>
+        <a
+          data-analytics-event="article_share"
+          href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(url)}`}
+        >
           E-mail <span aria-hidden="true">↗</span>
         </a>
         <Button
+          data-analytics-event="article_share"
           variant="secondary"
           size="sm"
           onClick={copyLink}

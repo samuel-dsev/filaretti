@@ -9,6 +9,7 @@ import {
 } from '../../lib/public-api';
 import { contentText } from '../../lib/public-content-core';
 import { publicMetadata } from '../../lib/public-metadata';
+import { JsonLd, legalServiceSchema } from '@/components/seo/structured-data';
 
 export async function generateMetadata() {
   const page = await getPage('home');
@@ -34,15 +35,18 @@ export default async function HomePage() {
     ]);
   if (!page) notFound();
   return (
-    <HomeView
-      page={page}
-      office={office}
-      settings={settings}
-      areas={areas.data}
-      professionals={professionals.data}
-      articles={articles.data}
-      featuredArticles={featured.data}
-      guides={guides.data}
-    />
+    <>
+      <JsonLd data={legalServiceSchema(settings)} />
+      <HomeView
+        page={page}
+        office={office}
+        settings={settings}
+        areas={areas.data}
+        professionals={professionals.data}
+        articles={articles.data}
+        featuredArticles={featured.data}
+        guides={guides.data}
+      />
+    </>
   );
 }

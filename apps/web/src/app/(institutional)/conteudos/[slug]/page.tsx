@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { EditorialDetailView } from '@/components/editorial/detail-view';
 import { getArticle, getArticles, getProfessional } from '@/lib/public-api';
 import { publicMetadata } from '@/lib/public-metadata';
+import { JsonLd, articleSchema, breadcrumbSchema } from '@/components/seo/structured-data';
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -12,6 +13,8 @@ export async function generateMetadata({ params }: Props) {
     title: article.seoTitle ?? article.title,
     description: article.seoDescription ?? article.excerpt,
     path: `/conteudos/${encodeURIComponent(article.slug)}`,
+    image: article.cover,
+    article: { publishedAt: article.publishedAt, updatedAt: article.updatedAt },
   });
 }
 
@@ -28,11 +31,23 @@ export default async function ArticlePage({ params }: Props) {
   });
   const canonical = metadata.alternates?.canonical;
   return (
-    <EditorialDetailView
-      article={article}
-      author={author}
-      related={related.data.filter((candidate) => candidate.id !== article.id).slice(0, 3)}
-      shareUrl={typeof canonical === 'string' ? canonical : undefined}
-    />
+    <>
+      <JsonLd
+        data={[
+          articleSchema(article),
+          breadcrumbSchema([
+            { name: 'Início', path: '/' },
+            { name: 'Conteúdos', path: '/conteudos' },
+            { name: article.title, path: `/conteudos/${article.slug}` },
+          ]),
+        ]}
+      />
+      <EditorialDetailView
+        article={article}
+        author={author}
+        related={related.data.filter((candidate) => candidate.id !== article.id).slice(0, 3)}
+        shareUrl={typeof canonical === 'string' ? canonical : undefined}
+      />
+    </>
   );
 }

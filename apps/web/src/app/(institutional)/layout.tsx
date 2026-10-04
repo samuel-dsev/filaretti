@@ -28,7 +28,7 @@ export default async function InstitutionalLayout({ children }: { children: Reac
           },
           { id: 'professionals', label: 'Profissionais', href: '/profissionais' },
           { id: 'contents', label: 'Conteúdos', href: '/conteudos' },
-          { id: 'contact', label: 'Contato', href: '/#contato' },
+          { id: 'contact', label: 'Contato', href: '/contato' },
         ],
       }}
       footer={{
@@ -48,8 +48,8 @@ export default async function InstitutionalLayout({ children }: { children: Reac
             title: 'Informações',
             links: [
               { label: 'Conteúdos publicados', href: '/conteudos' },
-              { label: 'Contato', href: '/#contato' },
-              { label: 'Newsletter', href: '/#newsletter' },
+              { label: 'Contato', href: '/contato' },
+              { label: 'Newsletter', href: '/newsletter' },
             ],
           },
         ],

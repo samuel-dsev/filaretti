@@ -5,11 +5,12 @@ import type { NextConfig } from 'next';
 // Server configuration is never copied into Next's public `env` option.
 const environment = validateWebEnvironment(process.env);
 const qaBuildId = process.env.FILARETTI_QA_BUILD_ID;
+const qaPhase = process.env.FILARETTI_QA_PHASE === 'f7' ? 'f7' : 'f6';
 const qaDistDir =
   process.env.APP_ENV === 'development' &&
   qaBuildId &&
   /^[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}$/u.test(qaBuildId)
-    ? `.local/f6-qa-build-${qaBuildId}`
+    ? `.local/${qaPhase}-qa-build-${qaBuildId}`
     : undefined;
 
 const nextConfig: NextConfig = {
@@ -17,7 +18,7 @@ const nextConfig: NextConfig = {
   ...(qaDistDir
     ? {
         distDir: qaDistDir,
-        typescript: { tsconfigPath: `.local/f6-qa-tsconfig-${qaBuildId}.json` },
+        typescript: { tsconfigPath: `.local/${qaPhase}-qa-tsconfig-${qaBuildId}.json` },
       }
     : {}),
   agentRules: false,
@@ -52,7 +53,9 @@ const nextConfig: NextConfig = {
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+          ...(!environment.seoIndexingEnabled
+            ? [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }]
+            : []),
         ],
       },
     ];

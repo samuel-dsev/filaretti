@@ -2,22 +2,196 @@
 
 ## Situação atual
 
-| Campo                | Estado                                                                                      |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| Última atualização   | 04/10/2026 — RP-007                                                                         |
-| Etapa                | **F6 concluída — aceite local aprovado**                                                    |
-| Versão               | `0.6.0` na raiz e nos sete workspaces privados                                              |
-| Código/aplicação     | CMS com TipTap, mídia, preview, agendamento, publicação, outbox e redirects                 |
-| Ambiente             | PostgreSQL saudável; API 3001/Next otimizado 3000 em loopback; Edge 154 revisado            |
-| Git                  | `dev`, remoto `origin`; base F5 real `a0bf265`; commit local F6 conforme RP-007             |
-| Commit desta entrega | `feat(cms): implementa gestão de conteúdo e publicação (v0.6.0)`; SHA informado após commit |
-| Próxima etapa        | **F7 — Relacionamento, busca, SEO e privacidade**                                           |
-| Autorização          | **Aguardando confirmação para F7; push, PR e deploy não autorizados**                       |
-| Checkpoint           | RP-007 abaixo e quadro inicial de plan.md                                                   |
+| Campo                | Estado                                                                                                      |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Última atualização   | 04/10/2026 — RP-008                                                                                         |
+| Etapa                | **F7 concluída — aceite local aprovado**                                                                    |
+| Versão               | `0.7.0` na raiz e nos sete workspaces privados                                                              |
+| Código/aplicação     | Contato privado, newsletter, busca/FAQ/SEO, outbox/recuperação, retenção e cookies                          |
+| Ambiente             | PostgreSQL saudável; API3001/Next otimizado3000 em loopback; Edge154 revisado                               |
+| Git                  | `dev`, remoto `origin`; base F6 real `51f496c`; commit local F7 conforme RP-008                             |
+| Commit desta entrega | `feat(relationship): implementa contato newsletter busca e privacidade (v0.7.0)`; SHA informado após commit |
+| Próxima etapa        | **F8 — Validação integrada e homologação**                                                                  |
+| Autorização          | **Aguardando confirmação para F8; push, PR e deploy não autorizados**                                       |
+| Checkpoint           | RP-008 abaixo e quadro inicial de plan.md                                                                   |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo.
 
 ## Histórico
+
+### RP-008 — 04/10/2026 — F7 — Relacionamento, busca, SEO e privacidade
+
+**Escopo autorizado:** “Inicie a F7 seguindo a ordem de desenvolvimento corretamente”, com retomada “continue de onde parou”, em 04/10/2026. Implementar somente F7 e seu commit local conforme AGENTS.md. **Estado: concluída tecnicamente; aceite local aprovado.** F8, push, PR, homologação externa, deploy e produção aguardam autorização própria.
+
+**Versão:** `0.6.0` → `0.7.0`, oito manifests privados alinhados. SDK de verificação Svix `2.6.1` fixado; Resend usa API HTTP no adaptador, Turnstile usa Siteverify. Lockfile/frozen install e audit de produção aprovados; nenhuma conta/integração externa ativada.
+
+**Git e continuidade:** checkout real `C:\Users\Samuel\Documents\Projetos\Filaretti`; caminho inicial `Projeto` ausente. Branch `dev`, base F6 real `51f496c584dee73a57c9830d9229180f71f1fd81`, inicialmente limpa antes da F7. A retomada preservou as alterações da própria fase. Commit previsto: `feat(relationship): implementa contato newsletter busca e privacidade (v0.7.0)`. SHA real será informado depois do commit e registrado na próxima retomada, sem commit circular.
+
+#### Arquivos criados, alterados e removidos
+
+Criados (57):
+
+- `apps/api/prisma/migrations/202610040002_f7_relationship/migration.sql`
+- `apps/api/src/relationship/dto.ts`
+- `apps/api/src/relationship/email-outbox.ts`
+- `apps/api/src/relationship/email-worker.service.ts`
+- `apps/api/src/relationship/public.guard.ts`
+- `apps/api/src/relationship/rate-limit.service.ts`
+- `apps/api/src/relationship/relationship.controllers.ts`
+- `apps/api/src/relationship/relationship.service.ts`
+- `apps/api/src/relationship/turnstile.service.ts`
+- `apps/api/src/relationship/webhook.controller.ts`
+- `apps/api/src/search/dto.ts`
+- `apps/api/src/search/search.controller.ts`
+- `apps/api/src/search/search.module.ts`
+- `apps/api/src/search/search.service.ts`
+- `apps/api/test/mail.integration.test.ts`
+- `apps/api/test/relationship.integration.test.ts`
+- `apps/api/test/search.integration.test.ts`
+- `apps/web/src/app/(institutional)/busca/page.tsx`
+- `apps/web/src/app/(institutional)/contato/page.tsx`
+- `apps/web/src/app/(institutional)/cookies/page.tsx`
+- `apps/web/src/app/(institutional)/newsletter/confirmar/page.tsx`
+- `apps/web/src/app/(institutional)/newsletter/descadastrar/page.tsx`
+- `apps/web/src/app/(institutional)/newsletter/page.tsx`
+- `apps/web/src/app/(institutional)/perguntas-frequentes/page.tsx`
+- `apps/web/src/app/(institutional)/privacidade/page.tsx`
+- `apps/web/src/app/admin/recuperar-senha/page.tsx`
+- `apps/web/src/app/admin/redefinir-senha/page.tsx`
+- `apps/web/src/app/api/relationship/[...path]/route.ts`
+- `apps/web/src/app/robots.ts`
+- `apps/web/src/app/sitemap.ts`
+- `apps/web/src/components/admin/contacts.tsx`
+- `apps/web/src/components/admin/subscribers.tsx`
+- `apps/web/src/components/privacy/consent-provider.tsx`
+- `apps/web/src/components/privacy/styles.css`
+- `apps/web/src/components/relationship/antispam.tsx`
+- `apps/web/src/components/relationship/configuration.ts`
+- `apps/web/src/components/relationship/contact-form.tsx`
+- `apps/web/src/components/relationship/newsletter-form.tsx`
+- `apps/web/src/components/relationship/password-recovery.tsx`
+- `apps/web/src/components/relationship/private-download.ts`
+- `apps/web/src/components/relationship/styles.css`
+- `apps/web/src/components/relationship/token-action.tsx`
+- `apps/web/src/components/search/faq-list.tsx`
+- `apps/web/src/components/search/search-form.tsx`
+- `apps/web/src/components/search/search.module.css`
+- `apps/web/src/components/seo/structured-data.tsx`
+- `apps/web/src/lib/consent.ts`
+- `apps/web/src/lib/relationship-api.ts`
+- `apps/web/src/lib/relationship-routing.ts`
+- `apps/web/test/consent.test.mjs`
+- `apps/web/test/relationship-api.test.mjs`
+- `apps/web/test/relationship-routing.test.mjs`
+- `docs/relationship.md`
+- `packages/types/src/relationship.ts`
+- `packages/types/src/search.ts`
+- `scripts/local-mail.mjs`
+- `scripts/test-relationship.mjs`
+
+Alterados (63):
+
+- `README.md`
+- `apps/api/.env.example`
+- `apps/api/package.json`
+- `apps/api/prisma/schema.prisma`
+- `apps/api/src/app.ts`
+- `apps/api/src/auth/auth.controller.ts`
+- `apps/api/src/auth/auth.module.ts`
+- `apps/api/src/auth/auth.service.ts`
+- `apps/api/src/auth/recovery.service.ts`
+- `apps/api/src/common/http-exception.filter.ts`
+- `apps/api/src/domain/domain.module.ts`
+- `apps/api/test/auth.integration.test.ts`
+- `apps/api/test/domain.integration.test.ts`
+- `apps/api/test/helpers.ts`
+- `apps/web/.env.example`
+- `apps/web/eslint.config.mjs`
+- `apps/web/next.config.ts`
+- `apps/web/package.json`
+- `apps/web/src/app/(institutional)/areas-de-atuacao/[slug]/page.tsx`
+- `apps/web/src/app/(institutional)/areas-de-atuacao/page.tsx`
+- `apps/web/src/app/(institutional)/conteudos/[slug]/page.tsx`
+- `apps/web/src/app/(institutional)/conteudos/page.tsx`
+- `apps/web/src/app/(institutional)/layout.tsx`
+- `apps/web/src/app/(institutional)/o-escritorio/page.tsx`
+- `apps/web/src/app/(institutional)/page.tsx`
+- `apps/web/src/app/(institutional)/profissionais/[slug]/page.tsx`
+- `apps/web/src/app/(institutional)/profissionais/page.tsx`
+- `apps/web/src/app/admin/login/page.tsx`
+- `apps/web/src/components/admin/cms-page.tsx`
+- `apps/web/src/components/admin/session.tsx`
+- `apps/web/src/components/editorial/detail-view.tsx`
+- `apps/web/src/components/editorial/share-links.tsx`
+- `apps/web/src/components/institutional/area-views.tsx`
+- `apps/web/src/components/institutional/types.ts`
+- `apps/web/src/components/site/public-layout.tsx`
+- `apps/web/src/components/site/search-overlay.tsx`
+- `apps/web/src/components/site/site-footer.tsx`
+- `apps/web/src/lib/admin-api.ts`
+- `apps/web/src/lib/public-api-core.ts`
+- `apps/web/src/lib/public-api.ts`
+- `apps/web/src/lib/public-metadata.ts`
+- `apps/web/src/lib/public-routing.ts`
+- `apps/web/src/proxy.ts`
+- `apps/web/test/public-api.test.mjs`
+- `apps/web/test/public-metadata.test.mjs`
+- `docs/api.md`
+- `docs/database.md`
+- `docs/deployment.md`
+- `docs/security.md`
+- `docs/seo.md`
+- `package.json`
+- `packages/config/package.json`
+- `packages/config/src/index.ts`
+- `packages/config/test/environment.test.ts`
+- `packages/eslint-config/package.json`
+- `packages/tsconfig/package.json`
+- `packages/types/package.json`
+- `packages/types/src/index.ts`
+- `packages/ui/package.json`
+- `plan.md`
+- `pnpm-lock.yaml`
+- `relate.md`
+- `turbo.json`
+
+Removidos: nenhum. Total: 120 arquivos versionados da F7. Ambientes reais, mailbox, relatórios JSON/PNG, scripts auxiliares e builds próprios ficam ignorados. Migrations anteriores e seeds foram preservados.
+
+#### Funcionalidades e decisões
+
+- Ordem de desenvolvimento: contratos/configuração e migration estabilizados antes dos consumidores; backend/persistência precederam formulários/admin; integração real local, segurança, revisão visual e otimização encerraram a etapa. Subagentes atuaram em backend, frontend, busca/SEO e revisões isoladas de e-mail, analytics e documentação; principal integrou, validou e registrou a entrega.
+- Contato: `/contato` sobre BFF público sem sessão e API Nest. Nome, e-mail, assunto, mensagem e ciência de privacidade obrigatórios; telefone/UF/área opcionais como decisão local sujeita ao escritório. UUID idempotente e hash de campos/arquivos conservam a solicitação em retries e recusam chave reutilizada com outros dados. Contato e notificação cifrada entram na mesma transação antes do ACK; falha de entrega não apaga contato. Newsletter tem consentimento/fluxo próprios; API aceita opção separada, interface direciona para inscrição dedicada.
+- Anexos: até três/15 MiB total, imagem até5/PDF até10 MiB, validação F6 de bytes/MIME/extensão e decode/reencode. `ContactFile` fica separado da biblioteca editorial; metadados temporários persistem antes dos bytes, com expiração1h/limpeza durável. Documentos reais entram QUARANTINED. ADMIN precisa de ticket opaco60s, mesmo usuário/sessão, uso único e arquivo VERIFIED; LOCAL_VERIFIED é aceito apenas no adaptador de desenvolvimento. Não há URL pública permanente. Scanner real é gateF8; arquivos não verificados permanecem bloqueados.
+- Antispam/limites: backend verifica sucesso, hostname/action de Turnstile e indisponibilidade controlada. Widget trata ausência/erro/timeout e retry. Mock explícito usa loopback+development; configuração rejeita mocks fora desse ambiente ou misturados a fornecedores reais. Limites PostgreSQL por IP/e-mail são compartilhados entre instâncias e precedem intake de anexos; login também usa INSERT ON CONFLICT e lock para primeira tentativa concorrente. BFF/API reafirmam origem configurada. Antes de hosting real, configurar/comprovar proxy confiável e endereço de cliente; o BFF local é visto como IP de origem pela API.
+- Newsletter: consentimento versionado, PENDING até token de confirmação24h/uso único, depois ACTIVE. Reenvio10min, quotas e resposta uniforme. Descadastro com token próprio funcional e confirmação transacional; nova inscrição exige confirmação novamente. ACTIVE pode renovar link de preferências vencido sem mudar prova/status. ADMIN gerencia contatos/status e assinantes/exclusão; controle de versão impede sobrescrita. CSV autenticado com filtros, limite10000 e neutralização de fórmulas/caracteres de controle.
+- E-mail/recuperação: AES-256-GCM com IV aleatório e chave idempotente como AAD protege destinatários/tokens da outbox. Worker a cada minuto/início, SKIP LOCKED, lease5min/fencing, backoff e tentativas limitadas; entrega real usa a mesma chave e para antes23h para preservar deduplicação do fornecedor. Revalida token/contato/status antes de entregar; payload é redigido ao completar. Contato notifica apenas link do painel, sem solicitação/anexos. Mock grava captura criptografada local. `pnpm mail:local` lista UUID/tipo/data; seleção explícita gera HTML local escapado/no-referrer para abrir a ação, sem token/PII no stdout. Recuperação integra outbox atomicamente e mantém resposta uniforme, inclusive envio desativado; redefinição revoga sessões. Webhook verifica assinatura/timestamp sobre bytes brutos antes do JSON e deduplica somente metadados mínimos. Svix desta versão verifica por exceção e não retorna JSON; parse ocorre depois da verificação.
+- Retenção: contatos180dias, PENDING/UNSUBSCRIBED365dias da última alteração, ACTIVE preservado enquanto inscrito; prazos configuráveis e ainda não aprovados para operação. Exclusão de bytes privada usa outbox; lotes100 e lock compartilhado. Tokens/tickets/contadores vencidos limpos; e-mails finalizados/falhos e capturas próprias JSON/HTML7dias, eventos webhook30dias. Capturas locais não são servidas pelo site. Rotação/backup de chave e recuperação de arquivos exigem comprovaçãoF8.
+- Busca/FAQ: `/busca` e overlay consultam PostgreSQL Full Text Search português, ranking, filtros/paginação estáveis, somente publicados com data atingida/autor ativo, áreas/profissionais ativos. Produção exclui mocks/autores mock. Resultados projetam campos públicos; nenhum contato/assinante/anexo/draft/preview participa. FAQ global/por área usa API e renderer seguro; detalhes de área incluem perguntas relacionadas.
+- SEO: metadata/canonical/social e JSON-LD LegalService/Article/Person/BreadcrumbList/FAQPage usam dados públicos realmente exibidos; serialização segura, sem credenciais/avaliações inventadas. Sitemap paginado só URLs públicas elegíveis e sem mocks em produção. Gate explícito mantém desenvolvimento/staging noindex, robots bloqueado e sitemap vazio. Busca, filtros, admin, preview e token têm política própria. Indexação e Search Console não foram ativados.
+- Privacidade: páginas publicadas do CMS, textos fictícios sinalizados, banner/preferences no rodapé. Hidratação inicia negada; GA4 exige produção/flag/ID/consentimento e confirmação externa de medidas automáticas desabilitadas. Somente seis nomes de evento, sem parâmetros livres, conteúdo ou query/token; localização raiz/referrer vazio, ads/signals negados. Revogação síncrona bloqueia envio, remove script/cookies/fila, sincroniza abas; admin/preview/tokens excluídos. Armazenamento indisponível mantém default deny e permite escolha explícita nesta visita.
+
+#### Validações executadas e resultados
+
+- `pnpm install --frozen-lockfile`, `pnpm audit --prod`: passaram; zero vulnerabilidade conhecida de produção no lockfile atual.
+- `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm format:check`, `git diff --check`: passaram na base integrada final. Build normal otimizado separado do QA. Lint ignora artefatos `.local`; efeitos de interface/hidratação corrigidos. Typecheck foi repetido depois do build para evitar disputa por tipos `.next` gerados; resultado final verde.
+- `pnpm test`: **63 testes aprovados**,50web,10configuração,3fundação, zero falha/skip. Inclui gate SEO/projeção, mutações públicas sem cookies/referrer, downloads/tokens bounded e consentimento. Nove testes de consentimento: três de política e seis executando o componente real transpilado em VM com hooks/DOM simulados, inclusive production+enabled, hidratação, carga após aceite, allowlist sem dados livres, revogação, abas e storage indisponível. Não acessaram Google.
+- `pnpm test:integration`: **66 testes aprovados**, PostgreSQL/HTTP reais, zero falha/skip; quatro migrations em databases próprias, seeds repetidos, bloqueio do seed fictício em produção e provisão isolada de ADMIN passaram. Casos novos: intake idempotente/privado, roles/status/conflito, ticket sessão/expiração/uso único/quarentena, inválidos/quota/antispam, double opt-in/reenvio/renovação/descadastro concorrentes, CSV, limites compartilhados/primeira chave login, retenção/orfãos, criptografia/tamper, recuperação uniforme/outbox, spool7d, leases/retries/webhook bruto/deduplicação, busca/ranking/stemming/projeção/retirada/sitemap. Bancos próprios removidos. Aviso de depreciação `pg` em consulta concorrente permanece não impeditivo na versão fixada; nenhuma migração para release candidate.
+- `pnpm --filter @filaretti/api db:validate`, `pnpm db:migrate`: passaram. Migration aditiva `202610040002_f7_relationship` aplicada ao `filaretti_dev`, sem reset/reseed/remover volume.
+- `pnpm test:design-system`: **44 combinações semânticas de contraste aprovadas**.
+- `pnpm test:relationship`, Playwright existente+Edge **154.0.4258.53**: **19 verificações aprovadas**,70layouts:12templates×cinco larguras375/768/1024/1440/1920 + cinco estados×375/1440 (confirmação/descadastro/reset válidos, preferências e detalhe de contato). **2603 amostras sólidas ≥4,5:1, zero ignoradas**, zero overflow global/erros JS, controles com labels/nomes/IDs/imagens válidos. Contato por teclado com arquivo privado/consentimento separado, PENDING/confirmar/descadastrar, remoção de fragmentos, overlay, preferências locais, recuperação/login com senha redefinida, papel AUTHOR, ADMINdownload/status/CSV passaram. GA4 estava desligado nesse navegador; VM prova comportamento habilitado simulado separadamente.
+- Revisão visual manual: folhas dos12templates nas cinco larguras, detalhe de contato375/1440 e estados válidos de token/preferences/reset. Evidência estática/navegador local não equivale a WCAG completo, leitor de tela, dispositivo físico ou outros motores.
+- QA/cleanup em `.local/f7-qa-smoke.json`: processos, banco, storage, mailbox/fixtures, build e tsconfig próprios removidos; portas3026/3027 liberadas. PNGs/folhas em `.local/f7-qa-evidence`; inventário em `.local/f7-files.json`. Porta3000/3001 e dados de desenvolvimento preservados. Fixture local escolhida de `mail:local` renderizou link fragmento/CSP/no-referrer sem token/recipient em stdout; JSON/HTML próprios removidos.
+- Preview **0.7.0** iniciado em loopback após verificar portas livres: API3001/Next3000, health/contato/adminHTTP200. URLs http://localhost:3000/contato e http://localhost:3000/admin/login; dados/storage/fornecedores exclusivamente locais/fictícios. PIDs/checks sanitizados em `.local/f7-preview.json`. Abertura do contato no painel Codex solicitada; ferramenta retornou queued.
+
+Falhas intermediárias de SQL advisory lock/SDK webhook, configuração de origem/seletor/readiness do harness, efeitos lint e disputa de tipos gerados foram corrigidas antes dos resultados finais. Não houve aceite baseado em fornecedor simulado como externo nem em porta fechada.
+
+#### Limitações e próximo passo
+
+R2/Resend/Turnstile/GA4 reais, scanner/quarentena, endereço do cliente/proxy confiável, CI remoto, backup/restauração/rotacão de secrets, Lighthouse, leitores de tela/navegadores adicionais e homologação não foram comprovados. A F7 permite desenvolvimento com adaptadores explicitamente simulados; não representa aceite operacional. Para habilitar relacionamento real, configurar destinatário/segredos e versões aprovadas; liberar anexos reais exige scanner VERIFIED. Defaults são seguros e integrações/indexação permanecem desligadas fora do desenvolvimento até configurar gates.
+
+Conteúdo/identidades, políticas de privacidade, destinatários, campos opcionais e prazos de retenção seguem fictícios/sujeitos à aprovação do escritório. Newsletter V1 não inclui campanhas; worker precisa permanecer ativo. Search Console/indexação dependem do ambiente/domínio/corte autorizado; medidas automáticas da propriedade GA4 precisam ser verificadas remotamente antes da flag. Sitemap acima50000 URLs exige particionamento.
+
+**F7 entregue; aguardar autorização para F8 — Validação integrada e homologação.** Commit local previsto acima; sem push, PR, release, deploy, DNS ou publicação.
 
 ### RP-007 — 04/10/2026 — F6 — CMS, mídia e publicação ponta a ponta
 

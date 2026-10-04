@@ -1,7 +1,7 @@
 'use client';
 
 import { useId, useRef, useState } from 'react';
-import { Dialog, EmptyState, Input } from '@filaretti/ui';
+import { Button, Dialog, Input } from '@filaretti/ui';
 
 export interface SearchOverlayProps {
   open: boolean;
@@ -23,25 +23,29 @@ export function SearchOverlay({ open, onClose, title = 'Buscar no site' }: Searc
       initialFocusRef={inputRef}
       className="site-search-dialog"
     >
-      <div className="site-search-field">
-        <label htmlFor={fieldId}>O que você procura?</label>
-        <Input
-          ref={inputRef}
-          id={fieldId}
-          type="search"
-          autoComplete="off"
-          placeholder="Digite uma palavra ou assunto"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          aria-describedby={`${fieldId}-status`}
-        />
-      </div>
-      <div id={`${fieldId}-status`} className="site-search-status" role="status">
-        <EmptyState
-          title={query.trim() ? 'A busca ainda está em preparação' : 'Comece por uma palavra'}
-          description="Esta demonstração apresenta a interface de busca. A consulta a conteúdos estará disponível em uma próxima etapa."
-        />
-      </div>
+      <form action="/busca" method="get" data-analytics-event="search">
+        <div className="site-search-field">
+          <label htmlFor={fieldId}>O que você procura?</label>
+          <Input
+            ref={inputRef}
+            id={fieldId}
+            type="search"
+            name="q"
+            minLength={2}
+            maxLength={120}
+            required
+            autoComplete="off"
+            placeholder="Digite uma palavra ou assunto"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            aria-describedby={`${fieldId}-status`}
+          />
+        </div>
+        <p id={`${fieldId}-status`} className="site-search-status">
+          Use ao menos duas letras para pesquisar conteúdos, áreas e profissionais publicados.
+        </p>
+        <Button type="submit">Ver resultados</Button>
+      </form>
     </Dialog>
   );
 }

@@ -1,4 +1,6 @@
 import { EmptyState, Pagination } from '@filaretti/ui';
+import Link from 'next/link';
+import { FaqList } from '@/components/search/faq-list';
 import { Breadcrumb, Hero } from '@/components/site';
 import { PublicContent } from '@/lib/public-content';
 import { ArticlePreviewGrid, AreaGrid, InstitutionalSection, ProfessionalGrid } from './shared';
@@ -27,7 +29,7 @@ export function AreaIndexView({ areas, pagination }: AreaIndexViewProps) {
   );
 }
 
-export function AreaDetailView({ area, articles }: AreaDetailViewProps) {
+export function AreaDetailView({ area, articles, faqs = [], faqTotal = 0 }: AreaDetailViewProps) {
   return (
     <>
       <div className="f-container institution-breadcrumb">
@@ -74,6 +76,23 @@ export function AreaDetailView({ area, articles }: AreaDetailViewProps) {
           articles={articles}
           emptyTitle="Nenhum conteúdo relacionado publicado"
         />
+      </InstitutionalSection>
+      <InstitutionalSection
+        id="perguntas-frequentes"
+        title="Perguntas frequentes"
+        eyebrow="Sobre esta área"
+      >
+        <FaqList faqs={faqs} />
+        {faqTotal > faqs.length ? (
+          <p>
+            <Link
+              href={`/perguntas-frequentes?area=${encodeURIComponent(area.slug)}`}
+              prefetch={false}
+            >
+              Ver todas as perguntas desta área
+            </Link>
+          </p>
+        ) : null}
       </InstitutionalSection>
     </>
   );

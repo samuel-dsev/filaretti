@@ -11,6 +11,8 @@ export function publicRouteResource(pathname: string): PublicRouteResource | nul
     return { endpoint: '/professionals?limit=1', isDetail: false };
   }
   if (pathname === '/conteudos') return { endpoint: '/articles?limit=1', isDetail: false };
+  if (pathname === '/busca') return { endpoint: '/public/search?q=site&limit=1', isDetail: false };
+  if (pathname === '/perguntas-frequentes') return { endpoint: '/faqs?limit=1', isDetail: false };
   const match = /^\/(areas-de-atuacao|profissionais|conteudos)\/([^/]+)$/u.exec(pathname);
   if (!match) return null;
   const slug = match[2];

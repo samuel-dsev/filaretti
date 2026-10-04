@@ -9,6 +9,10 @@ import type {
   PublicPage,
   PublicPracticeArea,
   PublicProfessional,
+  PublicFaq,
+  PublicSearchQuery,
+  PublicSearchResult,
+  PublicSitemapEntry,
   PublicSiteSettings,
   TaxonomySummary,
   TipTapDocument,
@@ -46,6 +50,9 @@ export interface ArticleQuery extends PaginationQuery {
   sort?: 'newest' | 'oldest' | 'title';
   type?: ArticleType;
   featured?: boolean;
+}
+export interface FaqQuery extends PaginationQuery {
+  area?: string;
 }
 
 export interface PublicApiClientOptions {
@@ -203,6 +210,39 @@ function articleDetail(value: unknown): PublicArticle {
     seoDescription: nullableText(item.seoDescription),
   };
 }
+function faq(value: unknown): PublicFaq {
+  const item = record(value);
+  return {
+    id: text(item.id),
+    question: text(item.question),
+    answer: document(item.answer),
+    practiceArea: item.practiceArea === null ? null : taxonomy(item.practiceArea),
+  };
+}
+function searchResult(value: unknown): PublicSearchResult {
+  const item = record(value);
+  const kind = text(item.kind);
+  if (kind !== 'article' && kind !== 'area' && kind !== 'professional') return invalid();
+  const slug = text(item.slug);
+  const collection =
+    kind === 'article' ? 'conteudos' : kind === 'area' ? 'areas-de-atuacao' : 'profissionais';
+  const href = `/${collection}/${slugPath(slug)}`;
+  if (item.href !== href) return invalid();
+  return { kind, slug, title: text(item.title), excerpt: text(item.excerpt), href };
+}
+function sitemapEntry(value: unknown): PublicSitemapEntry {
+  const item = record(value);
+  const path = text(item.path);
+  if (
+    !/^\/(?:|o-escritorio|contato|privacidade|cookies|perguntas-frequentes|(?:conteudos|areas-de-atuacao|profissionais)(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?)$/u.test(
+      path,
+    )
+  )
+    return invalid();
+  const updatedAt = text(item.updatedAt);
+  if (!Number.isFinite(Date.parse(updatedAt))) return invalid();
+  return { path, updatedAt };
+}
 function editorialFilters(value: unknown): PublicEditorialFilters {
   const item = record(value);
   // Facets describe the whole catalog; never truncate them to the list page size.
@@ -324,6 +364,24 @@ export function createPublicApiClient({
     }
   }
   return {
+    search: (query: PublicSearchQuery) => {
+      const q = query.q.trim();
+      if (q.length < 2 || q.length > 120 || /[\u0000-\u001f\u007f]/u.test(q)) return invalid();
+      const params = queryString(query);
+      params.set('q', q);
+      if (query.kind !== undefined) {
+        if (!['all', 'article', 'area', 'professional'].includes(query.kind)) return invalid();
+        params.set('kind', query.kind);
+      }
+      return request(`public/search?${params}`, (value) => paginated(value, searchResult));
+    },
+    getSitemap: (query: PaginationQuery = {}) =>
+      request(`public/sitemap?${queryString(query)}`, (value) => paginated(value, sitemapEntry)),
+    getFaqs: (query: FaqQuery = {}) => {
+      const params = queryString(query);
+      if (query.area !== undefined) params.set('area', slugPath(query.area));
+      return request(`faqs?${params}`, (value) => paginated(value, faq));
+    },
     getSettings: () => request('settings', settings),
     getPage: (slug: string) => single(`pages/${slugPath(slug)}`, page),
     getPracticeAreas: (query: PaginationQuery = {}) =>

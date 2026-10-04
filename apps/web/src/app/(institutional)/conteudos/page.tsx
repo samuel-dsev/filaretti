@@ -2,13 +2,21 @@ import { EditorialIndexView } from '@/components/editorial/index-view';
 import { getArticles, getEditorialFilters } from '@/lib/public-api';
 import { parseEditorialQuery } from '@/lib/editorial-query';
 import { publicMetadata } from '@/lib/public-metadata';
+import { JsonLd, breadcrumbSchema } from '@/components/seo/structured-data';
 
-export const metadata = publicMetadata({
-  title: 'Conteúdos',
-  description:
-    'Explore artigos, atualizações e guias por área de atuação, categoria, autor e assunto.',
-  path: '/conteudos',
-});
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  return publicMetadata({
+    title: 'Conteúdos',
+    description:
+      'Explore artigos, atualizações e guias por área de atuação, categoria, autor e assunto.',
+    path: '/conteudos',
+    noIndex: Object.keys(await searchParams).length > 0,
+  });
+}
 
 export default async function EditorialPage({
   searchParams,
@@ -21,11 +29,19 @@ export default async function EditorialPage({
     getEditorialFilters(),
   ]);
   return (
-    <EditorialIndexView
-      articles={articles.data}
-      pagination={articles.meta}
-      filters={filters}
-      query={query}
-    />
+    <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: 'Início', path: '/' },
+          { name: 'Conteúdos', path: '/conteudos' },
+        ])}
+      />
+      <EditorialIndexView
+        articles={articles.data}
+        pagination={articles.meta}
+        filters={filters}
+        query={query}
+      />
+    </>
   );
 }

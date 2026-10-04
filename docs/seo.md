@@ -1,6 +1,6 @@
 # SEO, cache e indexação
 
-Atualizado na F5, versão `0.5.0`, 03/10/2026. Rotas institucionais/editoriais possuem metadata básica e canonical configurado; sitemap, analytics e Search Console continuam nas fases seguintes. Domínio final e dados oficiais permanecem dependentes de aprovação.
+Atualizado na F7, versão `0.7.0`, 04/10/2026. Busca PostgreSQL em português, FAQ, metadata social, dados estruturados, sitemap e robots implementados. Indexação permanece desligada no desenvolvimento/homologação e depende de habilitação explícita em produção. Domínio final e dados oficiais permanecem dependentes de aprovação.
 
 ## Entregas por fase
 
@@ -39,3 +39,25 @@ Search Console exigirá conta/verificação do domínio no ambiente autorizado. 
 ## Metas e evidências
 
 Na F8, medir templates públicos em build de produção e condições reproduzíveis: Lighthouse Performance ≥ 90, Accessibility ≥ 90, Best Practices ≥ 90 e SEO ≥ 95. Valores são metas, não resultados desta fase. Lighthouse não certifica sozinho acessibilidade nem experiência real de usuários; as evidências devem registrar URL, ambiente e condições de medição.
+
+## Implementação F7
+
+### Busca e FAQ
+
+`GET /api/v1/public/search?q=...&kind=all|article|area|professional&page=1&limit=12` consulta os vetores/GIN da F2 com `websearch_to_tsquery('portuguese', ...)` e `ts_rank_cd(..., 32)`. Título/nome, resumo e corpo recebem os pesos A/B/C já mantidos pelos triggers. Termo entre 2 e 120 caracteres, páginas até 100000 e limite máximo 50; entrada é validada e parâmetros SQL são vinculados pelo Prisma. Stopwords sem lexemas devolvem zero resultados. Ranking decrescente seguido por título/tipo/slug estabiliza a paginação. Dados e contagem compartilham uma transação Repeatable Read.
+
+Somente PUBLISHED com data já atingida e autor ativo, áreas ativas e profissionais ativos participam. Produção exclui mocks, incluindo o autor do artigo, independentemente da flag de conteúdo. Resultado projeta apenas `kind`, `slug`, `title`, `excerpt` e `href`; nenhum contato, assinante, mídia privada, rascunho ou preview é consultado. A página `/busca` preserva termo/tipo/página na URL, tem estados inicial/vazio/erro e o overlay submete a busca por GET. Consultas não são enviadas em eventos de analytics. [Funções de busca do PostgreSQL 17](https://www.postgresql.org/docs/17/textsearch-controls.html).
+
+`/perguntas-frequentes` usa o catálogo paginado da API; `?area=<slug>` filtra por área. Detalhes de áreas mostram até 12 perguntas relacionadas e link para a listagem completa quando necessário. FAQ inativo e FAQ de área inativa são excluídos pelo backend. Os documentos TipTap usam o renderizador público seguro. FAQPage corresponde exclusivamente às perguntas/respostas visíveis na página atual.
+
+### Indexação, sitemap e metadata
+
+`SEO_INDEXING_ENABLED=false` é o padrão. A configuração só aceita ativar a flag em `APP_ENV=production`; mesmo nessa condição é necessário `MOCK_CONTENT=false` e URL HTTPS. Desenvolvimento e staging seguem noindex/nofollow, robots com `Disallow: /` e sitemap vazio. Ativar a flag pertence ao corte de produção autorizado na F10; não foi ativada na F7.
+
+Busca, admin, preview, rotas de token e URLs públicas com filtros/paginação permanecem noindex. Listagens com parâmetros fazem canonical para a listagem base; buscas fazem canonical para `/busca`. Robots bloqueia caminhos internos mas nunca substitui autenticação. Open Graph e Twitter/X Cards usam título/descrição sanitizados, URL canônica configurada e imagem pública quando existente; publicações incluem datas reais da API.
+
+`GET /api/v1/public/sitemap?page=1&limit=50` oferece URLs públicas projetadas/paginadas. Inclui somente templates institucionais conhecidos com página publicada e data atingida, artigos publicados com autor ativo, áreas/profissionais ativos, listagens com catálogo e FAQ ativo. Exclui mocks e autores mock em produção, caminhos arbitrários do CMS, dados pessoais, filtros, busca, admin e preview. O sitemap Next é `force-dynamic`, lê todas as páginas via `no-store` e não devolve uma lista parcial quando a API falha. Teto de 50000 URLs por sitemap; catálogo maior exige particionamento antes da publicação, sem truncamento silencioso. [Sitemap do Next.js](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap).
+
+JSON-LD: LegalService na Home usa somente nome/contato/endereço/redes configurados; Article na leitura; Person no perfil; BreadcrumbList nas páginas institucionais/editoriais; FAQPage quando perguntas estão presentes. Não acrescenta avaliações, registro profissional, preços, promessa de resultado nem identidade inventada fora dos dados explícitos da API. Dados locais continuam fictícios e não indexáveis. JSON serializado escapa delimitadores HTML e separadores Unicode para impedir que texto publicado feche o elemento script. [Schema.org](https://schema.org/docs/full.html).
+
+Retirada de publicação/inativação afeta busca e catálogo sitemap na consulta seguinte, sem rebuild; não há cache público persistente. Testes PostgreSQL/HTTP verificam ranking/stemming, filtros/paginação, projeção, negativos de entrada, exclusão de drafts/agendados/futuros, autor inativo, retirada e sitemap público. Checks de metadata verificam gate explícito, noindex de filtros e campos sociais. Essas validações locais não comprovam indexação, Search Console ou recursos especiais de buscadores.

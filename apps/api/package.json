@@ -1,6 +1,6 @@
 {
   "name": "@filaretti/api",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "dev": "prisma generate && tsc-watch --onSuccess \"node dist/main.js\"",
@@ -36,7 +36,8 @@
     "pg": "8.23.1",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
-    "sharp": "0.35.5"
+    "sharp": "0.35.5",
+    "svix": "2.6.1"
   },
   "devDependencies": {
     "@filaretti/eslint-config": "workspace:*",

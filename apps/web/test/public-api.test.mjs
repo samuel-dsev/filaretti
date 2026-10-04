@@ -69,6 +69,61 @@ const envelope = (data, limit = 12) => ({
   data,
   meta: { page: 1, limit, total: data.length, pages: data.length ? 1 : 0 },
 });
+
+test('public search and sitemap decode allowlists and reject private or external paths', async () => {
+  let payload = envelope([
+    {
+      kind: 'article',
+      slug: 'ficticio',
+      title: 'Publicação fictícia',
+      excerpt: 'Resumo',
+      href: '/conteudos/ficticio',
+      administrative: 'must-not-leak',
+    },
+  ]);
+  const seen = [];
+  const client = createPublicApiClient({
+    baseUrl,
+    fetcher: async (url, init) => {
+      seen.push({ url: String(url), init });
+      return Response.json(payload);
+    },
+  });
+  const results = await client.search({ q: 'direito', kind: 'article', page: 2 });
+  assert.equal('administrative' in results.data[0], false);
+  assert.ok(seen[0].url.includes('public/search?'));
+  assert.equal(seen[0].init.cache, 'no-store');
+  assert.equal(seen[0].init.credentials, 'omit');
+  payload = envelope([
+    {
+      kind: 'article',
+      slug: 'ficticio',
+      title: 'Título',
+      excerpt: '',
+      href: 'https://external.invalid',
+    },
+  ]);
+  await assert.rejects(
+    client.search({ q: 'direito' }),
+    (error) => error instanceof PublicApiError && error.code === 'INVALID_RESPONSE',
+  );
+  payload = envelope([{ path: '/preview/private-token', updatedAt: '2026-01-01T00:00:00Z' }]);
+  await assert.rejects(
+    client.getSitemap(),
+    (error) => error instanceof PublicApiError && error.code === 'INVALID_RESPONSE',
+  );
+  payload = envelope([
+    { path: '/conteudos/ficticio', updatedAt: '2026-01-01T00:00:00Z', token: 'must-not-leak' },
+  ]);
+  assert.deepEqual((await client.getSitemap()).data, [
+    { path: '/conteudos/ficticio', updatedAt: '2026-01-01T00:00:00Z' },
+  ]);
+  for (const q of ['x', 'a'.repeat(121), 'a\u0000b'])
+    assert.throws(
+      () => client.search({ q }),
+      (error) => error instanceof PublicApiError,
+    );
+});
 const response = (value) =>
   new Response(JSON.stringify(value), { headers: { 'Content-Type': 'application/json' } });
 const code = (expected) => (error) => error instanceof PublicApiError && error.code === expected;

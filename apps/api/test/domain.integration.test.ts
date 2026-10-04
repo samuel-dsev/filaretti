@@ -141,15 +141,11 @@ test('domain permissions, publication, relations and conflicts use real PostgreS
           '/admin/faqs',
           '/admin/settings',
           '/admin/redirects',
+          '/admin/contacts',
+          '/admin/subscribers',
         ])
           assert.equal((await visitor.request(path)).status, 401, path);
-        for (const path of [
-          '/contacts',
-          '/newsletter',
-          '/media',
-          '/admin/contacts',
-          '/admin/newsletter',
-        ])
+        for (const path of ['/contacts', '/newsletter', '/media', '/admin/newsletter'])
           assert.equal((await visitor.request(path)).status, 404, path);
         const response = await visitor.request('/articles');
         assert.equal(response.status, 200);

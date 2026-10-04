@@ -105,6 +105,8 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
     ...(user.role === 'ADMIN'
       ? [
           { label: 'Usuários', href: '/admin/usuarios' },
+          { label: 'Contatos', href: '/admin/contatos' },
+          { label: 'Assinantes', href: '/admin/assinantes' },
           { label: 'Configurações', href: '/admin/configuracoes' },
         ]
       : []),

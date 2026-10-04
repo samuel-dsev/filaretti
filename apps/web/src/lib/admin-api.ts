@@ -16,6 +16,7 @@ export class AdminApiError extends Error {
 }
 
 const messages: Record<string, string> = {
+  INVALID_TOKEN: 'Este link expirou ou já foi utilizado. Solicite um novo link.',
   VERSION_CONFLICT:
     'Este registro foi alterado por outra pessoa. Seu texto foi preservado. Recarregue o registro antes de reaplicar as alterações.',
   RESOURCE_IN_USE: 'Este registro está em uso e não pode ser excluído.',

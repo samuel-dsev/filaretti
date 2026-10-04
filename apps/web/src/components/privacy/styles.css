@@ -1,0 +1,88 @@
+.privacy-banner {
+  position: fixed;
+  inset: auto 1rem 1rem;
+  z-index: 60;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  background: var(--f-color-white, #fff);
+  color: #102a43;
+  padding: 1.5rem;
+  box-shadow: 0 8px 35px #102a4333;
+  border: 1px solid #c5d2df;
+  max-width: 86rem;
+  margin: auto;
+  border-radius: 0.5rem;
+}
+.privacy-banner h2 {
+  font-family: var(--f-font-body, sans-serif);
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+.privacy-banner p {
+  max-width: 45rem;
+  margin: 0;
+  line-height: 1.6;
+}
+.privacy-banner a {
+  color: #1d4e89;
+  text-decoration: underline;
+}
+.privacy-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 1rem;
+}
+.privacy-banner .privacy-actions {
+  margin-top: 0;
+  flex-shrink: 0;
+  max-width: 30rem;
+}
+.privacy-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin: 1.5rem 0;
+  line-height: 1.5;
+}
+.privacy-option input {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-top: 0.2rem;
+  accent-color: #1d4e89;
+}
+.privacy-option strong,
+.privacy-option small {
+  display: block;
+}
+.privacy-footer-button {
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: 0.5rem 0;
+  text-underline-offset: 0.2em;
+}
+.privacy-footer-links {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 1.5rem;
+}
+@media (max-width: 767px) {
+  .privacy-banner {
+    display: block;
+    inset: auto 0.5rem 0.5rem;
+    padding: 1rem;
+    max-height: 75dvh;
+    overflow: auto;
+  }
+  .privacy-banner .privacy-actions {
+    margin-top: 1rem;
+  }
+}

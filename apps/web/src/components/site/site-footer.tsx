@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Brand } from './brand';
 import type { SiteFooterProps } from './types';
+import { CookiePreferencesButton } from '../privacy/consent-provider';
 
 export function SiteFooter({ brand, description, groups, note, copyright }: SiteFooterProps) {
   return (
@@ -25,6 +26,11 @@ export function SiteFooter({ brand, description, groups, note, copyright }: Site
           ))}
         </div>
         {note ? <p className="site-footer-note">{note}</p> : null}
+        <nav className="privacy-footer-links" aria-label="Privacidade e preferências">
+          <Link href="/privacidade">Privacidade</Link>
+          <Link href="/cookies">Cookies</Link>
+          <CookiePreferencesButton />
+        </nav>
         <div className="site-footer-bottom">
           <p>{copyright}</p>
           <Link href="#conteudo">

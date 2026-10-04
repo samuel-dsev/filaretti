@@ -5,6 +5,8 @@ import test from 'node:test';
 const moduleUrl = new URL('../src/lib/public-metadata.ts', import.meta.url).href;
 registerHooks({
   resolve(specifier, context, nextResolve) {
+    if (context.parentURL === moduleUrl && specifier === './public-content-core')
+      return nextResolve('./public-content-core.ts', context);
     if (context.parentURL === moduleUrl && specifier === 'server-only')
       return { url: 'data:text/javascript,export%20%7B%7D', shortCircuit: true };
     return nextResolve(specifier, context);
@@ -43,5 +45,62 @@ test('invalid canonical origins are omitted without exposing their configured va
   } finally {
     if (previous === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
     else process.env.NEXT_PUBLIC_SITE_URL = previous;
+  }
+});
+
+test('indexing requires production and an explicit flag; filtered pages remain noindex and OG uses public media', () => {
+  const keys = [
+    'APP_ENV',
+    'MOCK_CONTENT',
+    'API_INTERNAL_URL',
+    'NEXT_PUBLIC_SITE_URL',
+    'SEO_INDEXING_ENABLED',
+  ];
+  const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  Object.assign(process.env, {
+    APP_ENV: 'production',
+    MOCK_CONTENT: 'false',
+    API_INTERNAL_URL: 'https://api.example.test',
+    NEXT_PUBLIC_SITE_URL: 'https://example.test',
+    SEO_INDEXING_ENABLED: 'true',
+  });
+  try {
+    const metadata = publicMetadata({
+      title: 'Publicação fictícia',
+      description: 'Resumo fictício',
+      path: '/conteudos/exemplo',
+      image: {
+        id: 'ficticio',
+        alt: 'Imagem fictícia',
+        url: '/media/public/exemplo.webp',
+        mimeType: 'image/webp',
+        size: 100,
+      },
+      article: { publishedAt: '2026-01-01T00:00:00Z', updatedAt: '2026-01-02T00:00:00Z' },
+    });
+    assert.deepEqual(metadata.robots, { index: true, follow: true });
+    assert.equal(metadata.openGraph.type, 'article');
+    assert.equal(metadata.openGraph.url, 'https://example.test/conteudos/exemplo');
+    assert.equal(
+      metadata.openGraph.images[0].url,
+      'https://example.test/media/public/exemplo.webp',
+    );
+    assert.equal(metadata.twitter.card, 'summary_large_image');
+    assert.deepEqual(
+      publicMetadata({ title: 'Filtros', path: '/conteudos', noIndex: true }).robots,
+      { index: false, follow: false },
+    );
+    process.env.SEO_INDEXING_ENABLED = 'false';
+    assert.equal(publicMetadata({ title: 'Página', path: '/' }).robots.index, false);
+    process.env.SEO_INDEXING_ENABLED = 'true';
+    for (const appEnv of ['development', 'staging']) {
+      process.env.APP_ENV = appEnv;
+      assert.equal(publicMetadata({ title: 'Página', path: '/' }).robots.index, false);
+    }
+  } finally {
+    for (const [key, value] of Object.entries(previous)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
   }
 });

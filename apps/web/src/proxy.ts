@@ -32,7 +32,11 @@ export async function proxy(request: NextRequest) {
     }
     return NextResponse.next();
   }
-  if (isPrivateCmsPath(pathname)) {
+  if (
+    isPrivateCmsPath(pathname) ||
+    pathname === '/newsletter' ||
+    pathname.startsWith('/newsletter/')
+  ) {
     if (pathname.startsWith('/preview/')) {
       const token = previewTokenPath(pathname);
       let status = 404;
@@ -145,6 +149,8 @@ export async function proxy(request: NextRequest) {
     });
   }
   const response = NextResponse.next();
+  if (pathname === '/busca' || (pathname === '/conteudos' && request.nextUrl.search))
+    response.headers.set('X-Robots-Tag', 'noindex, follow');
   // Revalidate every editorial request. No public payload may survive withdrawal in a CDN cache.
   if (
     request.nextUrl.pathname === '/conteudos' ||

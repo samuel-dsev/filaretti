@@ -137,7 +137,7 @@ export function EditorialDetailView({
                 <p className="site-eyebrow">Guia</p>
                 <h2 id="download-heading">Leve o conteúdo com você</h2>
                 <p>Consulte o guia completo em PDF.</p>
-                <LinkButton href={pdf.href} download>
+                <LinkButton href={pdf.href} download data-analytics-event="download_guide">
                   Baixar guia · PDF · {pdf.sizeLabel}
                   <span aria-hidden="true">↓</span>
                 </LinkButton>

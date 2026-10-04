@@ -456,6 +456,54 @@ test('authentication, revocation, CSRF and roles use real PostgreSQL and HTTP', 
         assert.ok(!stored.key.includes(email));
       },
     );
+    await t.test(
+      'concurrent first-use login counters are shared without unique-key failures',
+      async () => {
+        const other = await createApplication(environment, new SanitizedLogger(() => undefined));
+        await other.init();
+        try {
+          const independent = other.get(AuthService);
+          const ip = `fictitious-first-use-${randomUUID()}`;
+          const email = `${prefix}-first-use@example.invalid`;
+          const scope = 'test-first-use';
+          const emailKey = `${scope}:email:${tokenHash(environment, email)}`;
+          const ipKey = `${scope}:ip:${tokenHash(environment, ip)}`;
+          assert.equal(
+            await prisma.loginRateLimit.count({ where: { key: { in: [emailKey, ipKey] } } }),
+            0,
+          );
+          const outcomes = await Promise.allSettled(
+            Array.from({ length: 8 }, (_, index) =>
+              (index % 2 ? independent : auth).consumeAttempt(scope, ip, email),
+            ),
+          );
+          assert.equal(outcomes.filter((outcome) => outcome.status === 'fulfilled').length, 5);
+          const rejected = outcomes.filter((outcome) => outcome.status === 'rejected');
+          assert.equal(rejected.length, 3);
+          for (const outcome of rejected) {
+            const error: unknown = outcome.reason;
+            assert.ok(
+              error &&
+                typeof error === 'object' &&
+                'getStatus' in error &&
+                typeof error.getStatus === 'function',
+            );
+            assert.equal(error.getStatus(), 429);
+          }
+          const emailCounter = await prisma.loginRateLimit.findUniqueOrThrow({
+            where: { key: emailKey },
+          });
+          const ipCounter = await prisma.loginRateLimit.findUniqueOrThrow({
+            where: { key: ipKey },
+          });
+          assert.equal(emailCounter.count, 6);
+          assert.ok(emailCounter.blockedUntil);
+          assert.equal(ipCounter.count, 8);
+        } finally {
+          await other.close();
+        }
+      },
+    );
   } finally {
     // These identities belong exclusively to this test; seeded/other data is preserved.
     await prisma.user.deleteMany({ where: { email: { startsWith: prefix } } });

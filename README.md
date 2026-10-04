@@ -1,6 +1,6 @@
 # Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.6.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F6 acrescenta login/admin, TipTap, biblioteca de mídia, preview e publicação agendada. Relacionamento e integrações reais seguem as próximas fases. Situação e validações: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.7.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F7 acrescenta contato com anexos privados, newsletter com confirmação/descadastro, recuperação de senha, busca em português, FAQ, SEO e preferências de cookies. E-mails e antispam são explicitamente simulados no desenvolvimento local; fornecedores reais e homologação pertencem à F8 autorizada. Situação e validações efetivamente executadas: [relate.md](relate.md).
 
 ## Pré-requisitos
 
@@ -31,9 +31,9 @@ Abra `http://127.0.0.1:3000` para o site institucional com dados fictícios da A
 
 API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. `/admin/login` abre o CMS. A web encaminha suas chamadas por `/api/cms/*`, preservando cookies HttpOnly e header CSRF nas mutações; a origem do navegador deve corresponder a `WEB_PUBLIC_URL`. Em checkout anterior à F6, executar `pnpm setup:cms-local` uma vez para alinhar o segredo de revalidação ignorado e reiniciar os apps. Contratos e procedimentos: [docs/api.md](docs/api.md) e [docs/cms.md](docs/cms.md). Nenhuma conexão de banco ou segredo usa prefixo `NEXT_PUBLIC_`.
 
-O seed usa somente contas e conteúdo explicitamente fictícios. Credenciais locais e procedimento do primeiro ADMIN sem senha padrão em produção: [docs/database.md](docs/database.md). Não executar seed de desenvolvimento fora de `APP_ENV=development`; `seed-production` contém apenas configuração estrutural. Recuperação de senha já possui tokens e consumo seguro; a entrega por e-mail entra na F7.
+O seed usa somente contas e conteúdo explicitamente fictícios. Credenciais locais e procedimento do primeiro ADMIN sem senha padrão em produção: [docs/database.md](docs/database.md). Não executar seed de desenvolvimento fora de `APP_ENV=development`; `seed-production` contém apenas configuração estrutural. Confirmação da newsletter, descadastro e recuperação usam tokens de uso único e entrega transacional persistida. No desenvolvimento, o worker salva a mensagem criptografada em `.local/mail`, sem envio externo ou tokens em logs. Com a API compilada, `pnpm mail:local` lista UUID/tipo/data das capturas; `pnpm mail:local <UUID>` cria um HTML local da mensagem escolhida para abrir o link. Procedimento e limites em [docs/relationship.md](docs/relationship.md).
 
-`APP_ENV` define o ambiente de dados; `NODE_ENV` define modo de execução/build. Build local otimizado usa `APP_ENV=development`, mesmo com `NODE_ENV=production`. `APP_ENV=production` rejeita mocks, cookies inseguros e URLs públicas sem HTTPS. R2 tem adaptador implementado e configuração validada, com teste real pendente na F8; Resend/Turnstile continuam bloqueados até a F7. Desenvolvimento usa storage local e nenhum fornecedor externo é ativado automaticamente.
+`APP_ENV` define o ambiente de dados; `NODE_ENV` define modo de execução/build. Build local otimizado usa `APP_ENV=development`, mesmo com `NODE_ENV=production`. `APP_ENV=production` rejeita mocks, cookies inseguros e URLs públicas sem HTTPS. R2, Resend e Turnstile têm adaptadores implementados e configuração validada; a comprovação externa fica na F8. Desenvolvimento usa storage local, `MOCK_INTEGRATIONS`/`NEXT_PUBLIC_MOCK_INTEGRATIONS` em loopback e nenhum fornecedor externo é ativado automaticamente. Relacionamento fica desabilitado por padrão fora do desenvolvimento até configurar seus gates. Analytics e indexação também começam desabilitados.
 
 ## Verificação
 
@@ -47,6 +47,7 @@ pnpm build
 pnpm test:institutional
 pnpm test:editorial
 pnpm test:cms
+pnpm test:relationship
 pnpm format:check
 pnpm --filter @filaretti/api db:validate
 ```
@@ -70,6 +71,8 @@ O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset
 
 O smoke `test:cms` usa PostgreSQL/HTTP/Edge reais em banco temporário, storage isolado e portas 3024/3025; verifica login, upload, preview, publicação/retirada e permissões. Pré-requisitos e limites: [docs/cms.md](docs/cms.md). Os testes de integração cobrem concorrência/recovery do worker, conflito de edição, arquivos inválidos, mídia em uso e redirects. O teste local não comprova R2 real.
 
+`test:relationship` usa banco PostgreSQL temporário próprio, API/Next em 3027/3026, storage/mailbox/fixtures e build de QA isolados. Exige build, banco e Playwright/Edge já disponíveis; não instala navegador nem acessa fornecedores reais. Verifica contato/anexo privado, confirmação/descadastro, recuperação, busca/FAQ, políticas públicas e administração, com telas nas cinco larguras do Design System. O ambiente é development com GA4 desabilitado: negação local e testes de política não comprovam GA4 habilitado ou configuração da conta externa. A evidência do último run fica em `.local/f7-qa-smoke.json`; resultados e limitações no relatório da fase.
+
 ## Estrutura e continuidade
 
 | Caminho                                       | Responsabilidade                                                                       |
@@ -84,7 +87,7 @@ O smoke `test:cms` usa PostgreSQL/HTTP/Edge reais em banco temporário, storage 
 
 Todos os pacotes são privados. Não há publicação npm; bump funcional da etapa acontece na raiz e nos workspaces, acompanhado de plano/relatório e lockfile. Husky/lint-staged formatam arquivos staged; CI e checks completos continuam obrigatórios.
 
-Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F6 e commit local. F7, push, PR, homologação e produção dependem de autorização própria.
+Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F7 e commit local. F8, push, PR, homologação externa e produção dependem de autorização própria.
 
 ## Referências
 

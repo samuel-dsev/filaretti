@@ -4,6 +4,7 @@ import type {
   PublicPage,
   PublicPracticeArea,
   PublicProfessional,
+  PublicFaq,
   PublicSiteSettings,
 } from '@filaretti/types';
 
@@ -32,6 +33,8 @@ export interface AreaIndexViewProps {
 export interface AreaDetailViewProps {
   area: PublicPracticeArea;
   articles: PublicArticleSummary[];
+  faqs?: PublicFaq[];
+  faqTotal?: number;
 }
 
 export interface ProfessionalIndexViewProps {

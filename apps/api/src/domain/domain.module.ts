@@ -20,6 +20,18 @@ import {
 import { StorageService } from '../cms/storage.service';
 import { MediaService } from '../cms/media.service';
 import { CmsWorker } from '../cms/worker.service';
+import {
+  PublicRelationshipController,
+  AdminContactsController,
+  AdminContactDownloadsController,
+  AdminSubscribersController,
+} from '../relationship/relationship.controllers';
+import { RelationshipService } from '../relationship/relationship.service';
+import { TurnstileService } from '../relationship/turnstile.service';
+import { RelationshipRateLimiter } from '../relationship/rate-limit.service';
+import { RelationshipPublicGuard } from '../relationship/public.guard';
+import { RelationshipWorker } from '../relationship/email-worker.service';
+import { ResendWebhookController } from '../relationship/webhook.controller';
 
 @Module({
   controllers: [
@@ -33,8 +45,24 @@ import { CmsWorker } from '../cms/worker.service';
     AdminMediaController,
     PublicMediaController,
     PublicPreviewController,
+    PublicRelationshipController,
+    AdminContactsController,
+    AdminContactDownloadsController,
+    AdminSubscribersController,
+    ResendWebhookController,
   ],
-  providers: [ArticlesService, InstitutionService, StorageService, MediaService, CmsWorker],
+  providers: [
+    ArticlesService,
+    InstitutionService,
+    StorageService,
+    MediaService,
+    CmsWorker,
+    RelationshipService,
+    TurnstileService,
+    RelationshipRateLimiter,
+    RelationshipPublicGuard,
+    RelationshipWorker,
+  ],
 })
 export class DomainModule {
   static register(environment: ApiEnvironment): DynamicModule {

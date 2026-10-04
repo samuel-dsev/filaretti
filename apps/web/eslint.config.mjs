@@ -5,7 +5,7 @@ const config = [
   ...base,
   ...next,
   {
-    ignores: ['.next/**', 'out/**', 'next-env.d.ts'],
+    ignores: ['.next/**', '.local/**', 'out/**', 'next-env.d.ts'],
   },
 ];
 

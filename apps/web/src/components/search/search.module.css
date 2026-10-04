@@ -1,0 +1,55 @@
+.form {
+  display: flex;
+  gap: var(--f-space-4);
+  flex-wrap: wrap;
+  align-items: end;
+}
+.field {
+  display: grid;
+  gap: var(--f-space-2);
+  flex: 1 1 250px;
+  min-width: 0;
+}
+.kind {
+  flex: 0 1 220px;
+}
+.form label {
+  font-weight: 600;
+}
+.form select {
+  min-height: 48px;
+  padding: 10px 14px;
+  color: var(--f-color-ink);
+  background: var(--f-color-surface);
+  border: 1px solid var(--f-color-border);
+  border-radius: var(--f-radius-sm);
+  width: 100%;
+}
+.results {
+  margin-block: var(--f-space-7);
+  display: grid;
+  gap: var(--f-space-6);
+  padding: 0;
+  list-style: none;
+}
+.result {
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid var(--f-color-border);
+  padding-block: var(--f-space-6);
+}
+.result h2 {
+  font-family: var(--f-font-display);
+  font-size: var(--f-text-xl);
+  margin-block: var(--f-space-2);
+}
+.result p {
+  max-width: 75ch;
+}
+.kindLabel {
+  color: var(--f-color-muted);
+  font-size: var(--f-text-sm);
+}
+.help {
+  color: var(--f-color-muted);
+  margin-block: var(--f-space-4);
+}

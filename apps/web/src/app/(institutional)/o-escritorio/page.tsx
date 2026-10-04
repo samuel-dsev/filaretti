@@ -3,6 +3,7 @@ import { OfficeView } from '../../../components/institutional';
 import { getPage, getProfessionals, getSettings } from '../../../lib/public-api';
 import { contentText } from '../../../lib/public-content-core';
 import { publicMetadata } from '../../../lib/public-metadata';
+import { JsonLd, breadcrumbSchema } from '@/components/seo/structured-data';
 
 export async function generateMetadata() {
   const page = await getPage('o-escritorio');
@@ -21,5 +22,15 @@ export default async function OfficePage() {
     getProfessionals({ limit: 6 }),
   ]);
   if (!page) notFound();
-  return <OfficeView page={page} settings={settings} professionals={professionals.data} />;
+  return (
+    <>
+      <JsonLd
+        data={breadcrumbSchema([
+          { name: 'Início', path: '/' },
+          { name: page.title, path: '/o-escritorio' },
+        ])}
+      />
+      <OfficeView page={page} settings={settings} professionals={professionals.data} />
+    </>
+  );
 }

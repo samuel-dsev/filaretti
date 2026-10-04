@@ -4,14 +4,14 @@
 
 | Campo                            | Situação                                                                  |
 | -------------------------------- | ------------------------------------------------------------------------- |
-| Última atualização               | 04/10/2026 — F6 concluída; aceite local aprovado                          |
-| Último relatório                 | `RP-007`, em `relate.md`                                                  |
-| Última entrega técnica concluída | **F6 — CMS, mídia e publicação ponta a ponta**                            |
-| Versão de referência             | `0.6.0` na raiz e nos sete workspaces privados                            |
-| Etapa em execução                | Nenhuma; F6 entregue                                                      |
-| Próxima etapa                    | **F7 — Relacionamento, busca, SEO e privacidade**                         |
-| Autorização da próxima etapa     | **Aguardando confirmação para F7; push, PR e deploy não autorizados**     |
-| Git                              | `dev`, remoto `origin`; base F5 real `a0bf265`; commit F6 conforme RP-007 |
+| Última atualização               | 04/10/2026 — F7 concluída; aceite local aprovado                          |
+| Último relatório                 | `RP-008`, em `relate.md`                                                  |
+| Última entrega técnica concluída | **F7 — Relacionamento, busca, SEO e privacidade**                         |
+| Versão de referência             | `0.7.0` na raiz e nos sete workspaces privados                            |
+| Etapa em execução                | Nenhuma; F7 entregue localmente                                           |
+| Próxima etapa                    | **F8 — Validação integrada e homologação**                                |
+| Autorização da próxima etapa     | **Aguardando confirmação para F8; push, PR e deploy não autorizados**     |
+| Git                              | `dev`, remoto `origin`; base F6 real `51f496c`; commit F7 conforme RP-008 |
 | Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                            |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -74,7 +74,7 @@ Usar migrations versionadas, relações e políticas de exclusão explícitas. A
 | F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026 | **Concluída — RP-005** |
 | F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026 | **Concluída — RP-006** |
 | F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5; autorizada em 03/10/2026 | **Concluída — RP-007** |
-| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6                           | Pendente               |
+| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6; autorizada em 04/10/2026 | **Concluída — RP-008** |
 | F8    | 0.8.0           | Validação integrada e homologação             | F7                           | Pendente               |
 | F9    | 0.9.0           | Migração e preparação da release              | F8 + materiais aprovados     | Pendente               |
 | F10   | 1.0.0           | Publicação e validação operacional da V1      | F9 + autorização de produção | Pendente               |
@@ -223,4 +223,4 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 
 ## 8. Registro da última atualização
 
-**04/10/2026 — RP-007 — F6 concluída:** autorização “Prossiga para a versão F6 do desenvolvimento do projeto”, retomada “continue de onde parou”; versão `0.6.0`. CMS com sessão/roles, TipTap e formulários estruturados, metadados/SEO, relacionamentos, mídia local/R2, preview expirante/revogável, publicação/agendamento/retirada, outbox com retry e redirects internos. Conteúdo privado não gera redirect público; ativos CMS não passam pelo cache do otimizador. Instalação frozen, lint, typecheck, 45 testes básicos, 39 integrações PostgreSQL, build, schema, audit de produção e 44 contrastes passaram. Smoke Edge 154: 25 verificações, 81 layouts nas cinco larguras, 4415 amostras sólidas com contraste ≥ 4,5:1/zero ignoradas, zero falhas/overflow/erros inesperados. Revisão visual dos 16 templates, editor móvel completo e conflito; temporários próprios removidos. Migration aditiva aplicada ao banco de desenvolvimento; preview local atualizado. R2 real e homologação permanecem na F8. Commit local previsto no RP-007. **Ponto de parada: F6 entregue; aguardar autorização para F7.**
+**04/10/2026 — RP-008 — F7 concluída:** autorização “Inicie a F7 seguindo a ordem de desenvolvimento corretamente”, retomada “continue de onde parou”; versão `0.7.0`. Contratos/persistência/API precederam componentes e integração. Contato idempotente com ciência e anexos privados, quarentena/tickets ADMIN, newsletter double opt-in/descadastro, recuperação por outbox criptografada, adaptadores Resend/Turnstile e webhook assinado, limites compartilhados, retenção, administração/CSV, busca portuguesa, FAQ, metadata/JSON-LD/sitemap/robots e consentimento de analytics. Frozen install, lint, typecheck, build, 63 testes básicos, 66 integrações PostgreSQL, schema/migration, audit de produção, format e 44 contrastes passaram. Smoke Edge 154: 19 verificações, 70 layouts, 2603 amostras sólidas com contraste ≥ 4,5:1/zero ignoradas, zero falhas/overflow/erros JS; arquivos/banco/build/processos próprios removidos. Revisão visual nas cinco larguras e estados de token/modal. Migration aditiva aplicada ao banco local sem reset; preview 3000/3001 em loopback atualizado. GA4 habilitado foi verificado com runtime simulado do componente; navegador local usou GA4 desligado. Fornecedores reais, scanner, proxy confiável, backup/restauração e homologação permanecem na F8 autorizada; materiais/textos/prazos seguem sujeitos à aprovação. Commit local previsto no RP-008. **Ponto de parada: F7 entregue; aguardar autorização para F8.**

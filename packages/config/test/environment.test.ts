@@ -62,10 +62,39 @@ describe('configuration boundaries', () => {
     }
     throw new Error('Expected validation failure');
   });
-  it('requires R2 credentials and still blocks F7 integrations', () => {
+  it('requires provider credentials and an explicit adapter mode', () => {
     for (const field of ['R2_ENABLED', 'RESEND_ENABLED', 'TURNSTILE_ENABLED']) {
-      expect(() => validateApiEnvironment({ ...api, [field]: 'true' })).toThrow(field);
+      expect(() =>
+        validateApiEnvironment({
+          ...api,
+          MOCK_INTEGRATIONS: false,
+          RELATIONSHIP_ENABLED: false,
+          [field]: 'true',
+        }),
+      ).toThrow();
     }
+  });
+  it('rejects simulated integrations outside loopback development', () => {
+    expect(() =>
+      validateApiEnvironment({ ...api, MOCK_INTEGRATIONS: true, API_HOST: '0.0.0.0' }),
+    ).toThrow('MOCK_INTEGRATIONS');
+    expect(() =>
+      validateApiEnvironment({ ...api, APP_ENV: 'staging', MOCK_INTEGRATIONS: true }),
+    ).toThrow('MOCK_INTEGRATIONS');
+    expect(() =>
+      validateWebEnvironment({ ...web, APP_ENV: 'staging', NEXT_PUBLIC_MOCK_INTEGRATIONS: true }),
+    ).toThrow('NEXT_PUBLIC_MOCK_INTEGRATIONS');
+  });
+  it('requires consent infrastructure before enabling real relationship', () => {
+    expect(() =>
+      validateApiEnvironment({ ...api, MOCK_INTEGRATIONS: false, RELATIONSHIP_ENABLED: true }),
+    ).toThrow('RESEND_ENABLED');
+    expect(() => validateWebEnvironment({ ...web, GA4_ENABLED: true })).toThrow(
+      'NEXT_PUBLIC_GA4_ID',
+    );
+    expect(() => validateWebEnvironment({ ...web, SEO_INDEXING_ENABLED: true })).toThrow(
+      'SEO_INDEXING_ENABLED',
+    );
   });
   it('allows a configured R2 adapter only with separate buckets', () => {
     const r2 = {

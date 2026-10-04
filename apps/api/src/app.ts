@@ -14,6 +14,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { DomainModule } from './domain/domain.module';
 import type { PasswordRecoveryDelivery } from './auth/types';
+import { SearchModule } from './search/search.module';
 
 export async function createApplication(
   environment: ApiEnvironment,
@@ -25,6 +26,7 @@ export async function createApplication(
       DatabaseModule.register(environment),
       AuthModule.register(environment, recoveryDelivery),
       DomainModule.register(environment),
+      SearchModule.register(environment),
     ],
     controllers: [HealthController],
     providers: [{ provide: HealthService, useFactory: () => new HealthService(environment) }],
@@ -34,6 +36,7 @@ export async function createApplication(
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger,
     bodyParser: false,
+    rawBody: true,
   });
   app.use((request: Request & { requestId: string }, response: Response, next: NextFunction) => {
     request.requestId = randomUUID();
@@ -62,10 +65,8 @@ export async function createApplication(
       app,
       new DocumentBuilder()
         .setTitle('Filaretti — API local')
-        .setDescription(
-          'F6: autenticação, CMS, mídia e publicação editorial. Dados locais fictícios.',
-        )
-        .setVersion('0.6.0')
+        .setDescription('F7: CMS, relacionamento, busca e publicação. Dados locais fictícios.')
+        .setVersion('0.7.0')
         .addCookieAuth('filaretti_access', { type: 'apiKey' }, 'filaretti_access')
         .build(),
     );

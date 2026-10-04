@@ -1,6 +1,6 @@
 # API e contratos
 
-Complemento F6 (`0.6.0`): [cms.md](cms.md) documenta painel, mídia, preview, agendamento, outbox e resolução de redirects. As interfaces de relacionamento continuam reservadas à F7. O Swagger local reflete os endpoints efetivamente implementados.
+Referência atual F7 (`0.7.0`): [cms.md](cms.md) documenta painel, mídia, preview, agendamento e redirects; [relationship.md](relationship.md) descreve contato, newsletter, entrega transacional, privacidade e seus gates. O Swagger local reflete os endpoints implementados. Resultados dos checks ficam em `../relate.md`.
 
 Referência: F2, 03/10/2026. As rotas abaixo existem na API NestJS; interface administrativa e páginas conectadas entram nas fases seguintes. A validação integrada usa HTTP e PostgreSQL reais em banco de teste isolado.
 
@@ -70,7 +70,7 @@ Todos os caminhos desta seção e das próximas usam o prefixo `/api/v1`. Antes 
 
 Usuário permitido contém exclusivamente `id`, `name`, `email`, `role`, `isActive`. E-mail é normalizado e único. Senha nova tem 12–128 caracteres. Desativação própria e remoção do último ADMIN são impedidas. Não existe cadastro administrativo público.
 
-Access JWT HS256 dura até 900 segundos, configurável entre 60–900. A família de refresh tem expiração absoluta, padrão 7 dias, configurável entre 1 hora–30 dias; o refresh anterior consumido revoga a família em caso de reutilização. Hashes HMAC dos tokens e CSRF ficam persistidos, nunca o token bruto. Recuperação expira em 30 minutos e consome o token atomicamente. O adaptador de entrega fica inativo na F2: nenhum e-mail é enviado e o token não é retornado ou logado; envio transacional entra na F7.
+Access JWT HS256 dura até 900 segundos, configurável entre 60–900. A família de refresh tem expiração absoluta, padrão 7 dias, configurável entre 1 hora–30 dias; o refresh anterior consumido revoga a família em caso de reutilização. Hashes HMAC dos tokens e CSRF ficam persistidos, nunca o token bruto. Recuperação expira em 30 minutos e consome o token atomicamente. Na F7, token e tarefa `mail.send` criptografada são criados na mesma transação; o worker entrega por captura local ou Resend configurado. O token não é retornado nem logado. Sem adaptador configurado, o pedido conserva a resposta pública genérica sem emitir token.
 
 Login contabiliza tentativas inclusive bem-sucedidas: 5 por e-mail e 20 por IP a cada 15 minutos, com bloqueio de 15 minutos ao exceder; PostgreSQL compartilha os contadores entre instâncias. Recuperação e reset usam buckets separados. O primeiro ADMIN de produção exige o provisionamento seguro descrito em `security.md`, sem senha padrão.
 
@@ -150,10 +150,50 @@ O backend aceita JSON estruturado, sem HTML bruto, embeds, imagem inline, script
 
 Limites por documento: profundidade 24, 2000 nós, 50000 caracteres de texto e até 6 marks distintos por trecho. Propriedades desconhecidas e relações inválidas entre nós são rejeitadas. Esse contrato é compartilhado por artigo, bio, descrição de área, resposta FAQ e corpo de seção. O renderer da F5 projeta nós permitidos e gera JSX escapado no servidor, sem inserir HTML bruto; URLs são verificadas novamente. A API rejeita payloads executáveis na entrada. Sumário e controles de arquivo em [editorial.md](editorial.md).
 
-## Interfaces preparadas e limites da fase
+## Relacionamento público da F7
 
-`packages/types` contém portas tipadas de storage (public/private), submissão de contato, newsletter (confirmação/descadastro) e tarefas idempotentes. Schema/migrations persistem as entidades necessárias. Essas interfaces não registram rotas fictícias nem executam fornecedores: upload/preview/worker/revalidação pertencem à F6; contato/newsletter/busca/envio/antispam/retenção pertencem à F7. O índice de busca PostgreSQL é preparado na F2, sem endpoint de busca pública ainda.
+Os caminhos abaixo usam `/api/v1`. As mutações públicas exigem `Origin` igual à origem de `WEB_PUBLIC_URL`, rejeitam `Sec-Fetch-Site: cross-site` e ficam indisponíveis quando `RELATIONSHIP_ENABLED=false`. Não usam a sessão administrativa. O BFF público `/api/relationship/*` aceita somente esses quatro POSTs e omite credenciais. Contato e inscrição verificam Turnstile no backend; confirmar/descadastrar exigem o token recebido por e-mail.
+
+| Método/caminho                        | Entrada                                                                                                                                                                                                             | Resultado                                                                            |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| POST `/public/contact`                | multipart; `name`, `email`, `subject`, `message`, `privacyAccepted=true`, `turnstileToken`, UUID v4 `idempotencyKey`; `phone`, UF `state`, `practiceAreaId`, `newsletterConsent` e arquivos `attachments` opcionais | 202 `{ accepted: true, message }`; contato e notificação persistidos atomicamente    |
+| POST `/public/newsletter/subscribe`   | JSON `email`, `name?`, `consent: true`, `turnstileToken`                                                                                                                                                            | 202 genérico; cria PENDING ou reenvia confirmação/preferências respeitando intervalo |
+| POST `/public/newsletter/confirm`     | JSON `{ token }`, hex de 64 caracteres                                                                                                                                                                              | 200 genérico; PENDING → ACTIVE e emite link de descadastro                           |
+| POST `/public/newsletter/unsubscribe` | JSON `{ token }`, hex de 64 caracteres                                                                                                                                                                              | 200 genérico; ACTIVE → UNSUBSCRIBED e confirma por mensagem transacional             |
+
+Contato valida nome 2–160, assunto 3–200, mensagem 10–10000 e e-mail até 254 caracteres. Telefone aceita 6–40 caracteres numéricos/formatação e UF deve ser uma sigla brasileira válida. A ciência de privacidade é obrigatória; newsletter tem consentimento próprio e nunca ativa sem confirmação. Multipart converte somente as strings exatas `true`/`false` dos campos booleanos; inscrição JSON exige booleano real.
+
+São aceitos até três anexos, somando no máximo 15 MiB: JPG/JPEG, PNG, WebP e AVIF até 5 MiB cada, PDF até 10 MiB. MIME/extensão/bytes e conteúdo seguem o validador da F6. Metadados temporários são persistidos antes dos bytes; anexos ficam em storage privado e vinculados ao contato. O BFF limita todo o multipart a 16 MiB; a API rejeita os limites de arquivos e campos separadamente. A mesma chave de idempotência com payload equivalente conserva um único contato; payload diferente gera 409.
+
+Confirmação vence em 24 horas; reenvio tem intervalo mínimo de dez minutos e invalida o token anterior. Assinante ACTIVE mantém estado e prova original ao pedir novo link de preferências. Descadastro usa token de uso único com validade correspondente a `SUBSCRIBER_RETENTION_DAYS`; novo pedido limitado pode renovar esse link. Nova inscrição após descadastro volta a PENDING e exige nova confirmação. As respostas de inscrição não enumeram endereços.
+
+Rate limits PostgreSQL compartilhados: contato 10 requisições/IP e 5/e-mail por 15 minutos; newsletter 30 requisições/IP por 15 minutos e inscrição 3/e-mail por hora. Confirmação e descadastro contam no bucket público de newsletter. Exceder a janela bloqueia a chave pelo mesmo período. O endereço usado é o da conexão; proxies confiáveis precisam de configuração/validação na F8.
+
+## Administração de relacionamento
+
+Todos os endpoints exigem ADMIN autenticado; mutações também exigem CSRF/origem da sessão. Listagens usam paginação padrão e filtros opcionais `q` (até 120 caracteres) e `status`.
+
+| Método/caminho                                                       | Entrada/efeito                                                                            |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| GET `/admin/contacts`, GET `/admin/contacts/:id`                     | Lista/detalhe permitido, com anexos sem chave/URL permanente                              |
+| PATCH `/admin/contacts/:id`                                          | `{ version, status }`; NEW/IN_PROGRESS/RESOLVED/ARCHIVED, versão incrementada             |
+| DELETE `/admin/contacts/:id`                                         | `{ version }`; remove contato e agenda remoção durável dos bytes                          |
+| POST `/admin/contacts/:id/attachments/:attachmentId/download-ticket` | 200 `{ url, expiresAt }`; ticket dura 60 s, vinculado ao ADMIN e à sessão                 |
+| GET `/admin/contact-downloads/:token`                                | Mesma sessão ADMIN, uso único e scanner autorizado; resposta attachment, private/no-store |
+| GET `/admin/subscribers`                                             | Lista PENDING/ACTIVE/UNSUBSCRIBED e prova de consentimento                                |
+| DELETE `/admin/subscribers/:id`                                      | `{ version }`; remove inscrição/tokens e suas tarefas de e-mail                           |
+| GET `/admin/subscribers/export`                                      | CSV UTF-8 autenticado com os filtros; máximo 10000 linhas, fórmulas neutralizadas         |
+
+Arquivos QUARANTINED/REJECTED não podem ser baixados. LOCAL_VERIFIED é permitido somente pelo adaptador local explícito; ambiente real exige VERIFIED. Scanner e homologação desse estado são gates da F8. Downloads, exclusões e exportações deixam eventos básicos sanitizados; CSV não tem rota pública.
+
+## Busca, sitemap e webhook
+
+`GET /public/search?q=...&kind=all|article|area|professional&page=1&limit=12` exige consulta aparada de 2–120 caracteres, sem controles. Retorna `{ data, meta }` com itens `{ kind, slug, title, excerpt, href }`; não inclui score interno, usuário, texto de contato ou token. Full Text Search usa `websearch_to_tsquery('portuguese', ...)`, consultas parametrizadas e ranking `ts_rank_cd`, com desempate estável. Artigos precisam estar PUBLISHED, sem data futura e com profissional autor ativo; áreas/profissionais precisam estar ativos. Produção exclui mocks, inclusive o autor fictício de um artigo.
+
+`GET /public/sitemap` usa a mesma paginação, até 50 por página, e retorna `{ path, updatedAt }` somente de rotas públicas suportadas com conteúdo publicado/ativo. Produção exclui registros marcados `isMock`. A web gera sitemap XML somente quando o gate de indexação estiver habilitado em produção; busca, filtros, admin, preview e tokens ficam fora. Detalhes em [seo.md](seo.md).
+
+`POST /webhooks/resend` verifica `svix-id`, `svix-timestamp` e `svix-signature` com o secret privado sobre o corpo bruto original antes de interpretar JSON. IDs deduplicam os eventos; a persistência guarda apenas ID, tipo `email.*`, ID do e-mail e instante, sem destinatário/conteúdo bruto. Responde 200 `{ received: true }`; assinatura/timestamp/corpo alterado são rejeitados. O teste local com assinatura fictícia não comprova entrega de webhook pelo Resend real.
 
 ## Validação exigida
 
-Os testes de integração da F2 usam banco PostgreSQL novo e isolado: migrations, seed duas vezes, autenticação/revogação/CSRF, roles/propriedade, consultas/relacionamentos, publicação/retirada, conflitos concorrentes, conteúdo malicioso, mídias privadas, DTOs e Swagger. O runner também verifica bloqueio do seed fictício fora de desenvolvimento e seed estrutural separado. Evidências finais de comandos, resultados e limitações ficam em `relate.md`; fornecedores/fluxos das F6/F7 não são certificados por esses testes locais.
+Os testes de integração usam banco PostgreSQL novo e isolado: migrations, seeds repetidos, auth/roles/CSRF, publicação, mídia e relacionamento. Casos F7 exercitam idempotência, anexos privados/quarentena, tickets de sessão, double opt-in/descadastro, retenção, CSV, busca pública, entrega criptografada, retries/leases e assinatura/deduplicação de webhook. O runner verifica também os guards de seeds e provisionamento. Evidências finais dos comandos, resultados e limites ficam em `../relate.md`; adaptadores e assinaturas fictícias não certificam fornecedores reais.

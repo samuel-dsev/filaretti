@@ -2,7 +2,13 @@ import 'server-only';
 
 import { cache } from 'react';
 
-import { createPublicApiClient, type ArticleQuery, type PaginationQuery } from './public-api-core';
+import {
+  createPublicApiClient,
+  type ArticleQuery,
+  type FaqQuery,
+  type PaginationQuery,
+} from './public-api-core';
+import type { PublicSearchQuery } from '@filaretti/types';
 
 export { PublicApiError } from './public-api-core';
 export type { PublicApiErrorCode, PaginationQuery, ArticleQuery } from './public-api-core';
@@ -16,6 +22,21 @@ export const getPracticeArea = cache((slug: string) => client().getPracticeArea(
 export const getProfessional = cache((slug: string) => client().getProfessional(slug));
 export const getArticle = cache((slug: string) => client().getArticle(slug));
 export const getEditorialFilters = cache(() => client().getEditorialFilters());
+const faqs = cache((page?: number, limit?: number, area?: string) =>
+  client().getFaqs({ page, limit, area }),
+);
+const search = cache((q: string, kind?: PublicSearchQuery['kind'], page?: number, limit?: number) =>
+  client().search({ q, kind, page, limit }),
+);
+export function getFaqs({ page, limit, area }: FaqQuery = {}) {
+  return faqs(page, limit, area);
+}
+export function searchPublic({ q, kind, page, limit }: PublicSearchQuery) {
+  return search(q, kind, page, limit);
+}
+export function getSitemap(query: PaginationQuery = {}) {
+  return client().getSitemap(query);
+}
 
 const practiceAreas = cache((page?: number, limit?: number) =>
   client().getPracticeAreas({ page, limit }),

@@ -37,6 +37,13 @@ enum ContactStatus {
   ARCHIVED
 }
 
+enum ContactScanStatus {
+  QUARANTINED
+  LOCAL_VERIFIED
+  VERIFIED
+  REJECTED
+}
+
 enum SubscriberStatus {
   PENDING
   ACTIVE
@@ -407,15 +414,56 @@ model Contact {
   status         ContactStatus       @default(NEW)
   privacyVersion String              @map("privacy_version") @db.VarChar(80)
   consentedAt    DateTime            @map("consented_at") @db.Timestamptz(3)
+  consentIpHash  String?             @map("consent_ip_hash")
+  idempotencyKey String?             @unique @map("idempotency_key") @db.Uuid
+  requestHash    String?             @map("request_hash") @db.VarChar(64)
+  version        Int                 @default(1)
   isMock         Boolean             @default(false) @map("is_mock")
   createdAt      DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
   practiceArea   PracticeArea?       @relation(fields: [practiceAreaId], references: [id], onDelete: Restrict)
   attachments    ContactAttachment[]
+  files          ContactFile[]
 
   @@index([status, createdAt(sort: Desc)])
   @@index([practiceAreaId])
   @@map("contacts")
+}
+
+// Public intake files have no administrative Media owner or permanent public URL.
+// A null contactId denotes an expiring staging object, removed by retention.
+model ContactFile {
+  id            String            @id @default(uuid()) @db.Uuid
+  contactId     String?           @map("contact_id") @db.Uuid
+  storageKey    String            @unique @map("storage_key") @db.VarChar(500)
+  storageDriver String            @map("storage_driver") @db.VarChar(10)
+  filename      String            @db.VarChar(200)
+  mimeType      String            @map("mime_type") @db.VarChar(100)
+  size          Int
+  scanStatus    ContactScanStatus @default(QUARANTINED) @map("scan_status")
+  expiresAt     DateTime?         @map("expires_at") @db.Timestamptz(3)
+  createdAt     DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  contact       Contact?          @relation(fields: [contactId], references: [id], onDelete: Restrict)
+  tickets       ContactDownloadTicket[]
+
+  @@index([contactId])
+  @@index([expiresAt])
+  @@map("contact_files")
+}
+
+model ContactDownloadTicket {
+  id           String      @id @default(uuid()) @db.Uuid
+  fileId       String      @map("file_id") @db.Uuid
+  adminId      String      @map("admin_id") @db.Uuid
+  sessionId    String      @map("session_id") @db.Uuid
+  tokenHash    String      @unique @map("token_hash") @db.VarChar(64)
+  expiresAt    DateTime    @map("expires_at") @db.Timestamptz(3)
+  usedAt       DateTime?   @map("used_at") @db.Timestamptz(3)
+  createdAt    DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  file         ContactFile @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
+  @@map("contact_download_tickets")
 }
 
 model ContactAttachment {
@@ -440,6 +488,8 @@ model NewsletterSubscriber {
   consentIpHash  String?           @map("consent_ip_hash")
   confirmedAt    DateTime?         @map("confirmed_at") @db.Timestamptz(3)
   unsubscribedAt DateTime?         @map("unsubscribed_at") @db.Timestamptz(3)
+  confirmationSentAt DateTime?     @map("confirmation_sent_at") @db.Timestamptz(3)
+  version        Int               @default(1)
   isMock         Boolean           @default(false) @map("is_mock")
   createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -496,6 +546,15 @@ model OutboxTask {
 
   @@index([status, availableAt])
   @@map("outbox_tasks")
+}
+
+model MailWebhookEvent {
+  id         String   @id @db.VarChar(160)
+  type       String   @db.VarChar(80)
+  emailId    String?  @map("email_id") @db.VarChar(160)
+  receivedAt DateTime @default(now()) @map("received_at") @db.Timestamptz(3)
+
+  @@map("mail_webhook_events")
 }
 
 model AuditEvent {
