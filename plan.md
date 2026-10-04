@@ -2,17 +2,17 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                            | Situação                                                                                                |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| Última atualização               | 03/10/2026 — F5 concluída com PostgreSQL/API reais e revisão no Edge                                    |
-| Último relatório                 | `RP-006`, em `relate.md`                                                                                |
-| Última entrega técnica concluída | **F5 — Portal editorial e leitura de conteúdos; aceite local aprovado**                                 |
-| Versão de referência             | `0.5.0`, registrada na raiz e nos sete workspaces privados                                              |
-| Etapa em execução                | Nenhuma; F5 concluída                                                                                   |
-| Próxima etapa                    | **F6 — CMS, mídia e publicação ponta a ponta**                                                          |
-| Autorização da próxima etapa     | **Aguardando confirmação do usuário para F6**                                                           |
-| Git                              | `dev`, remoto `origin`; base F4 real `e96b124`; commit local F5 previsto em RP-006; push não autorizado |
-| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                          |
+| Campo                            | Situação                                                                  |
+| -------------------------------- | ------------------------------------------------------------------------- |
+| Última atualização               | 04/10/2026 — F6 concluída; aceite local aprovado                          |
+| Último relatório                 | `RP-007`, em `relate.md`                                                  |
+| Última entrega técnica concluída | **F6 — CMS, mídia e publicação ponta a ponta**                            |
+| Versão de referência             | `0.6.0` na raiz e nos sete workspaces privados                            |
+| Etapa em execução                | Nenhuma; F6 entregue                                                      |
+| Próxima etapa                    | **F7 — Relacionamento, busca, SEO e privacidade**                         |
+| Autorização da próxima etapa     | **Aguardando confirmação para F7; push, PR e deploy não autorizados**     |
+| Git                              | `dev`, remoto `origin`; base F5 real `a0bf265`; commit F6 conforme RP-007 |
+| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                            |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -73,7 +73,7 @@ Usar migrations versionadas, relações e políticas de exclusão explícitas. A
 | F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026 | **Concluída — RP-004** |
 | F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026 | **Concluída — RP-005** |
 | F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026 | **Concluída — RP-006** |
-| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5                           | Pendente               |
+| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5; autorizada em 03/10/2026 | **Concluída — RP-007** |
 | F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6                           | Pendente               |
 | F8    | 0.8.0           | Validação integrada e homologação             | F7                           | Pendente               |
 | F9    | 0.9.0           | Migração e preparação da release              | F8 + materiais aprovados     | Pendente               |
@@ -223,4 +223,4 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 
 ## 8. Registro da última atualização
 
-**03/10/2026 — RP-006 — F5 concluída:** autorização “Inicie a F5”; versão `0.5.0`. Listagem/leitura SSR editorial com filtros combinados e URLs paginadas, opções completas do catálogo público, renderer TipTap seguro reutilizável, sumário H2, compartilhamento/cópia acessível, autor/áreas/relacionados e PDF GUIDE público local. Links institucionais levam à leitura; endpoint de opções separado preserva slugs existentes. Política no-store/force-dynamic revalida por nova requisição, com 404/503 reais e retirada comprovada em cinco superfícies sem rebuild. Instalação frozen, lint, typecheck,37 testes básicos,30 integrações PostgreSQL, build e 44 contrastes passaram. Smoke Edge 154:38 checks,20 layouts em 375/768/1024/1440/1920,1932 amostras sólidas com contraste ≥ 4,5:1/zero ignoradas e zero falhas/console/overflow. Inventário 50 arquivos, banco/PNG/PDF/processos temporários removidos, preview local atualizado. Nenhuma biblioteca/schema/migration/seed alterado; sem ação externa. Commit local previsto em RP-006. **Ponto de parada: F5 entregue; aguardar autorização para F6.**
+**04/10/2026 — RP-007 — F6 concluída:** autorização “Prossiga para a versão F6 do desenvolvimento do projeto”, retomada “continue de onde parou”; versão `0.6.0`. CMS com sessão/roles, TipTap e formulários estruturados, metadados/SEO, relacionamentos, mídia local/R2, preview expirante/revogável, publicação/agendamento/retirada, outbox com retry e redirects internos. Conteúdo privado não gera redirect público; ativos CMS não passam pelo cache do otimizador. Instalação frozen, lint, typecheck, 45 testes básicos, 39 integrações PostgreSQL, build, schema, audit de produção e 44 contrastes passaram. Smoke Edge 154: 25 verificações, 81 layouts nas cinco larguras, 4415 amostras sólidas com contraste ≥ 4,5:1/zero ignoradas, zero falhas/overflow/erros inesperados. Revisão visual dos 16 templates, editor móvel completo e conflito; temporários próprios removidos. Migration aditiva aplicada ao banco de desenvolvimento; preview local atualizado. R2 real e homologação permanecem na F8. Commit local previsto no RP-007. **Ponto de parada: F6 entregue; aguardar autorização para F7.**

@@ -12,6 +12,14 @@ import {
   PublicTaxonomiesController,
 } from './domain.controllers';
 import { DOMAIN_ENVIRONMENT } from './shared';
+import {
+  AdminMediaController,
+  PublicMediaController,
+  PublicPreviewController,
+} from '../cms/cms.controllers';
+import { StorageService } from '../cms/storage.service';
+import { MediaService } from '../cms/media.service';
+import { CmsWorker } from '../cms/worker.service';
 
 @Module({
   controllers: [
@@ -22,8 +30,11 @@ import { DOMAIN_ENVIRONMENT } from './shared';
     AdminInstitutionController,
     PublicTaxonomiesController,
     AdminTaxonomiesController,
+    AdminMediaController,
+    PublicMediaController,
+    PublicPreviewController,
   ],
-  providers: [ArticlesService, InstitutionService],
+  providers: [ArticlesService, InstitutionService, StorageService, MediaService, CmsWorker],
 })
 export class DomainModule {
   static register(environment: ApiEnvironment): DynamicModule {

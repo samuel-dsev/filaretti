@@ -132,6 +132,20 @@ export class AdminArticlesController {
   ) {
     return this.articles.publication(id, dto, request.user);
   }
+  @Post(':id/preview') issuePreview(
+    @Param('id', uuid) id: string,
+    @Body() dto: VersionDto,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    return this.articles.issuePreview(id, dto.version, request.user);
+  }
+  @Delete(':id/preview') revokePreview(
+    @Param('id', uuid) id: string,
+    @Body() dto: VersionDto,
+    @Req() request: AuthenticatedRequest,
+  ) {
+    return this.articles.revokePreview(id, dto.version, request.user);
+  }
   @Delete(':id') @ApiOkResponse({ schema: deletedSchema }) remove(
     @Param('id', uuid) id: string,
     @Body() dto: VersionDto,
@@ -164,16 +178,16 @@ export class PublicTaxonomiesController {
 @Controller('admin/taxonomies')
 export class AdminTaxonomiesController {
   constructor(private readonly institution: InstitutionService) {}
-  @Get(':kind') @ApiOkResponse({ schema: listSchema(adminTaxonomySchema) }) list(
-    @Param('kind', kindPipe) kind: 'categories' | 'tags',
-    @Query() query: PaginationDto,
-  ) {
+  @Roles(UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR)
+  @Get(':kind')
+  @ApiOkResponse({ schema: listSchema(adminTaxonomySchema) })
+  list(@Param('kind', kindPipe) kind: 'categories' | 'tags', @Query() query: PaginationDto) {
     return this.institution.listTaxonomies(taxonomyKind(kind), query, true);
   }
-  @Get(':kind/:id') @ApiOkResponse({ schema: adminTaxonomySchema }) detail(
-    @Param('kind', kindPipe) kind: 'categories' | 'tags',
-    @Param('id', uuid) id: string,
-  ) {
+  @Roles(UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR)
+  @Get(':kind/:id')
+  @ApiOkResponse({ schema: adminTaxonomySchema })
+  detail(@Param('kind', kindPipe) kind: 'categories' | 'tags', @Param('id', uuid) id: string) {
     return this.institution.taxonomyDetail(taxonomyKind(kind), id, true);
   }
   @Post(':kind') @ApiCreatedResponse({ schema: adminTaxonomySchema }) create(
@@ -246,6 +260,11 @@ export class PublicInstitutionController {
   ) {
     return this.institution.redirects(query);
   }
+  @Get('redirects/resolve') @ApiOkResponse({ schema: redirectSchema }) resolveRedirect(
+    @Query('path') path: string,
+  ) {
+    return this.institution.resolveRedirect(path);
+  }
 }
 @ApiTags('Institucional administrativo')
 @ApiCookieAuth('filaretti_access')
@@ -255,13 +274,15 @@ export class PublicInstitutionController {
 export class AdminInstitutionController {
   constructor(private readonly institution: InstitutionService) {}
   @Get('professionals')
+  @Roles(UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR)
   @ApiOkResponse({ schema: listSchema(adminProfessionalSchema) })
   professionals(@Query() query: PaginationDto) {
     return this.institution.professionals(query, true);
   }
-  @Get('professionals/:id') @ApiOkResponse({ schema: adminProfessionalSchema }) professional(
-    @Param('id', uuid) id: string,
-  ) {
+  @Roles(UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR)
+  @Get('professionals/:id')
+  @ApiOkResponse({ schema: adminProfessionalSchema })
+  professional(@Param('id', uuid) id: string) {
     return this.institution.professionalDetail(id, true);
   }
   @Post('professionals')
@@ -285,14 +306,16 @@ export class AdminInstitutionController {
   ) {
     return this.institution.removeProfessional(id, dto.version, request.user);
   }
-  @Get('practice-areas') @ApiOkResponse({ schema: listSchema(adminAreaSchema) }) areas(
-    @Query() query: PaginationDto,
-  ) {
+  @Roles(UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR)
+  @Get('practice-areas')
+  @ApiOkResponse({ schema: listSchema(adminAreaSchema) })
+  areas(@Query() query: PaginationDto) {
     return this.institution.areas(query, true);
   }
-  @Get('practice-areas/:id') @ApiOkResponse({ schema: adminAreaSchema }) area(
-    @Param('id', uuid) id: string,
-  ) {
+  @Roles(UserRole.ADMIN, UserRole.EDITOR, UserRole.AUTHOR)
+  @Get('practice-areas/:id')
+  @ApiOkResponse({ schema: adminAreaSchema })
+  area(@Param('id', uuid) id: string) {
     return this.institution.areaDetail(id, true);
   }
   @Post('practice-areas') @ApiCreatedResponse({ schema: adminAreaSchema }) createArea(

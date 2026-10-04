@@ -4,11 +4,26 @@ import type { NextConfig } from 'next';
 // Fail before serving or building when required configuration is invalid.
 // Server configuration is never copied into Next's public `env` option.
 const environment = validateWebEnvironment(process.env);
+const qaBuildId = process.env.FILARETTI_QA_BUILD_ID;
+const qaDistDir =
+  process.env.APP_ENV === 'development' &&
+  qaBuildId &&
+  /^[a-f\d]{8}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{4}-[a-f\d]{12}$/u.test(qaBuildId)
+    ? `.local/f6-qa-build-${qaBuildId}`
+    : undefined;
 
 const nextConfig: NextConfig = {
+  // Local QA builds use their own origin/rewrites without replacing the normal artifact.
+  ...(qaDistDir
+    ? {
+        distDir: qaDistDir,
+        typescript: { tsconfigPath: `.local/f6-qa-tsconfig-${qaBuildId}.json` },
+      }
+    : {}),
   agentRules: false,
   poweredByHeader: false,
   reactStrictMode: true,
+  logging: { incomingRequests: false, browserToTerminal: false },
   transpilePackages: ['@filaretti/ui'],
   images: {
     // Only public raster assets served by this application. Storage hosts join in F6.
@@ -21,6 +36,10 @@ const nextConfig: NextConfig = {
       {
         source: '/api/v1/:path*',
         destination: `${environment.apiInternalUrl.replace(/\/$/, '')}/api/v1/:path*`,
+      },
+      {
+        source: '/media/public/:key',
+        destination: `${environment.apiInternalUrl.replace(/\/$/, '')}/api/v1/media/public/:key`,
       },
     ];
   },

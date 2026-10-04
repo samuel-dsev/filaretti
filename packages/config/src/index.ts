@@ -91,7 +91,10 @@ const apiSchema = z
     REFRESH_TOKEN_SECRET: z.string().min(32),
     REFRESH_TOKEN_TTL_SECONDS: z.coerce.number().int().min(3600).max(2592000).default(604800),
     PREVIEW_SECRET: z.string().min(32),
+    PREVIEW_TTL_SECONDS: z.coerce.number().int().min(60).max(3600).default(900),
     REVALIDATION_SECRET: z.string().min(32),
+    REVALIDATION_TIMEOUT_MS: z.coerce.number().int().min(100).max(30000).default(5000),
+    CMS_WORKER_ENABLED: flag(true),
     STORAGE_DRIVER: z.enum(['local', 'r2']).default('local'),
     STORAGE_LOCAL_PATH: z.string().default('../../.local/storage'),
     R2_ENABLED: flag(false),
@@ -122,13 +125,31 @@ const apiSchema = z
           ctx.addIssue({ code: 'custom', path: [key], message: 'HTTPS required' });
       }
     }
-    // Vendor adapters remain deferred to F6/F7; configuration must not imply they exist.
-    for (const key of ['R2_ENABLED', 'RESEND_ENABLED', 'TURNSTILE_ENABLED'] as const) {
+    for (const key of ['RESEND_ENABLED', 'TURNSTILE_ENABLED'] as const) {
       if (env[key])
         ctx.addIssue({ code: 'custom', path: [key], message: 'Integration pending F6/F7' });
     }
-    if (env.STORAGE_DRIVER !== 'local')
-      ctx.addIssue({ code: 'custom', path: ['STORAGE_DRIVER'], message: 'Adapter pending F6' });
+    if (env.R2_ENABLED !== (env.STORAGE_DRIVER === 'r2'))
+      ctx.addIssue({ code: 'custom', path: ['R2_ENABLED'], message: 'Driver mismatch' });
+    if (env.R2_ENABLED) {
+      for (const key of [
+        'R2_ACCOUNT_ID',
+        'R2_ACCESS_KEY_ID',
+        'R2_SECRET_ACCESS_KEY',
+        'R2_PUBLIC_BUCKET',
+        'R2_PRIVATE_BUCKET',
+      ] as const) {
+        if (!env[key]?.trim()) ctx.addIssue({ code: 'custom', path: [key], message: 'Required' });
+      }
+      if (env.R2_ACCOUNT_ID && !/^[a-f0-9]{32}$/u.test(env.R2_ACCOUNT_ID))
+        ctx.addIssue({ code: 'custom', path: ['R2_ACCOUNT_ID'], message: 'Invalid account' });
+      if (env.R2_PUBLIC_BUCKET === env.R2_PRIVATE_BUCKET)
+        ctx.addIssue({
+          code: 'custom',
+          path: ['R2_PRIVATE_BUCKET'],
+          message: 'Separate buckets required',
+        });
+    }
   });
 
 export function validateApiEnvironment(input: EnvironmentInput) {

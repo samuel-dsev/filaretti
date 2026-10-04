@@ -8,6 +8,7 @@ import {
   IsEmail,
   IsEnum,
   IsInt,
+  IsISO8601,
   IsOptional,
   IsString,
   IsUUID,
@@ -224,9 +225,13 @@ export class PagePatchDto extends PartialType(PageDto, { skipNullProperties: fal
   @ApiProperty() @IsInt() @Min(1) version!: number;
 }
 export class PublicationDto extends VersionDto {
-  @ApiProperty({ enum: ['DRAFT', 'PUBLISHED', 'ARCHIVED'] })
-  @IsEnum({ DRAFT: 'DRAFT', PUBLISHED: 'PUBLISHED', ARCHIVED: 'ARCHIVED' })
-  status!: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+  @ApiProperty({ enum: PublicationStatus })
+  @IsEnum(PublicationStatus)
+  status!: 'DRAFT' | 'SCHEDULED' | 'PUBLISHED' | 'ARCHIVED';
+  @ApiPropertyOptional({ description: 'Instante ISO 8601 UTC futuro para SCHEDULED.' })
+  @IsOptional()
+  @IsISO8601({ strict: true })
+  scheduledAt?: string;
 }
 export class FaqDto {
   @ApiProperty() @IsString() @MinLength(1) @MaxLength(300) question!: string;

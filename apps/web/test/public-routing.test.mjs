@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { publicRouteResource, publicPageNumber } from '../src/lib/public-routing.ts';
-import { publicImage, publicPdf } from '../src/lib/public-media.ts';
+import { isManagedPublicMedia, publicImage, publicPdf } from '../src/lib/public-media.ts';
 import { publicStatusHtml } from '../src/lib/public-status.ts';
 
 test('status gate restricts backend requests to known public resources and slugs', () => {
@@ -81,6 +81,19 @@ test('image allowlist excludes executable, external, private and ambiguous asset
   ])
     assert.equal(publicImage({ ...media, url }), undefined);
   assert.equal(publicImage({ ...media, mimeType: 'image/svg+xml' }), undefined);
+});
+
+test('revocable CMS media bypasses image caching while static fixtures remain optimizable', () => {
+  const key = '11111111-2222-4333-8444-555555555555';
+  for (const extension of ['jpg', 'png', 'webp', 'avif', 'pdf'])
+    assert.equal(isManagedPublicMedia(`/media/public/${key}.${extension}`), true);
+  for (const path of [
+    '/media/public/fixture.png',
+    `/media/private/${key}.png`,
+    `https://fixture.invalid/media/public/${key}.png`,
+    `/media/public/${key}.svg`,
+  ])
+    assert.equal(isManagedPublicMedia(path), false);
 });
 
 test('status pages provide accessible navigation and noindex without backend diagnostics', () => {

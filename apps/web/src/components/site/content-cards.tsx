@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Badge, Card } from '@filaretti/ui';
 import { ArrowIcon } from './icons';
 import type { EditorialCardProps, PracticeAreaCardProps, ProfessionalCardProps } from './types';
+import { isManagedPublicMedia } from '@/lib/public-media';
 
 export function EditorialCard({
   category,
@@ -20,6 +21,7 @@ export function EditorialCard({
         <div className="site-editorial-image">
           <Image
             src={image.src}
+            unoptimized={isManagedPublicMedia(image.src)}
             alt={image.alt}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"
@@ -116,6 +118,7 @@ export function ProfessionalCard({
         <div className="site-professional-image">
           <Image
             src={image.src}
+            unoptimized={isManagedPublicMedia(image.src)}
             alt={image.alt}
             fill
             sizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 33vw"

@@ -38,7 +38,7 @@ import type {
 import { publicContent, publicSections, safeUrl } from './content';
 import { professionalSummary } from './articles.service';
 import {
-  audit,
+  audit as domainAudit,
   databaseWrite,
   DOMAIN_ENVIRONMENT,
   exists,
@@ -53,6 +53,19 @@ import {
   validateRelations,
   versionUpdated,
 } from './shared';
+import { queueRevalidation } from '../cms/outbox';
+import { preserveSlug, redirectPath, validateRedirectGraph } from '../cms/redirects';
+
+async function audit(
+  tx: Prisma.TransactionClient,
+  actor: string,
+  action: string,
+  resource: string,
+  id: string,
+) {
+  await domainAudit(tx, actor, action, resource, id);
+  await queueRevalidation(tx);
+}
 
 type Actor = AuthenticatedRequest['user'];
 type TaxonomyKind = 'category' | 'tag';
@@ -337,6 +350,9 @@ export class InstitutionService {
   async createProfessional(dto: ProfessionalDto, actor: Actor) {
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
+        if (await tx.redirect.findUnique({ where: { sourcePath: `/profissionais/${dto.slug}` } }))
+          throw new BadRequestException({ code: 'SLUG_RESERVED' });
         await validateRelations(tx, dto);
         await validateMedia(tx, dto.photoMediaId, 'image');
         const row = await tx.professional.create({
@@ -365,7 +381,15 @@ export class InstitutionService {
   async updateProfessional(id: string, dto: ProfessionalPatchDto, actor: Actor) {
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
-        exists(await tx.professional.findUnique({ where: { id } }));
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
+        const current = exists(await tx.professional.findUnique({ where: { id } }));
+        if (dto.slug && dto.slug !== current.slug)
+          await preserveSlug(
+            tx,
+            `/profissionais/${current.slug}`,
+            `/profissionais/${dto.slug}`,
+            current.isActive && dto.isActive !== false,
+          );
         await validateRelations(tx, dto);
         await validateMedia(tx, dto.photoMediaId, 'image');
         versionUpdated(
@@ -438,6 +462,11 @@ export class InstitutionService {
   async createArea(dto: PracticeAreaDto, actor: Actor) {
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
+        if (
+          await tx.redirect.findUnique({ where: { sourcePath: `/areas-de-atuacao/${dto.slug}` } })
+        )
+          throw new BadRequestException({ code: 'SLUG_RESERVED' });
         const row = await tx.practiceArea.create({
           data: {
             name: dto.name,
@@ -459,7 +488,15 @@ export class InstitutionService {
   async updateArea(id: string, dto: PracticeAreaPatchDto, actor: Actor) {
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
-        exists(await tx.practiceArea.findUnique({ where: { id } }));
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
+        const current = exists(await tx.practiceArea.findUnique({ where: { id } }));
+        if (dto.slug && dto.slug !== current.slug)
+          await preserveSlug(
+            tx,
+            `/areas-de-atuacao/${current.slug}`,
+            `/areas-de-atuacao/${dto.slug}`,
+            current.isActive && dto.isActive !== false,
+          );
         versionUpdated(
           (
             await tx.practiceArea.updateMany({
@@ -517,6 +554,9 @@ export class InstitutionService {
   async createPage(dto: PageDto, actor: Actor) {
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
+        if (await tx.redirect.findUnique({ where: { sourcePath: `/${dto.slug}` } }))
+          throw new BadRequestException({ code: 'SLUG_RESERVED' });
         const row = await tx.page.create({
           data: {
             title: dto.title,
@@ -535,7 +575,20 @@ export class InstitutionService {
   async updatePage(id: string, dto: PagePatchDto, actor: Actor) {
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
-        exists(await tx.page.findUnique({ where: { id } }));
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
+        const current = exists(await tx.page.findUnique({ where: { id } }));
+        if (dto.slug && dto.slug !== current.slug) {
+          if (['home', 'o-escritorio', 'privacidade', 'cookies'].includes(current.slug))
+            throw new BadRequestException({ code: 'INVALID_CONTENT' });
+          await preserveSlug(
+            tx,
+            `/${current.slug}`,
+            `/${dto.slug}`,
+            current.status === PublicationStatus.PUBLISHED &&
+              current.publishedAt !== null &&
+              current.publishedAt <= new Date(),
+          );
+        }
         versionUpdated(
           (
             await tx.page.updateMany({
@@ -557,6 +610,8 @@ export class InstitutionService {
     );
   }
   async publishPage(id: string, dto: PublicationDto, actor: Actor) {
+    if (dto.status === 'SCHEDULED' || dto.scheduledAt !== undefined)
+      throw new BadRequestException({ code: 'INVALID_PUBLICATION' });
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
         const row = exists(await tx.page.findUnique({ where: { id } }));
@@ -578,6 +633,14 @@ export class InstitutionService {
         return pageAdmin(exists(await tx.page.findUnique({ where: { id } })));
       }),
     );
+  }
+  async resolveRedirect(path: string) {
+    if (!redirectPath(path)) throw new BadRequestException();
+    const row = exists(
+      await this.db.redirect.findFirst({ where: { sourcePath: path, isActive: true } }),
+    );
+    if (!redirectPath(row.targetPath)) throw new BadRequestException();
+    return redirect(row);
   }
   async removePage(id: string, version: number, actor: Actor) {
     return databaseWrite(() =>
@@ -735,37 +798,8 @@ export class InstitutionService {
     return redirectAdmin(exists(await this.db.redirect.findUnique({ where: { id } })));
   }
   private async validateRedirect(tx: Prisma.TransactionClient, value: RedirectDto, id?: string) {
-    const paths = [value.sourcePath, value.targetPath];
-    if (
-      paths.some(
-        (path) =>
-          !safeUrl(path, true) ||
-          path.length > 500 ||
-          /\/{2}/u.test(path) ||
-          (path.length > 1 && path.endsWith('/')) ||
-          path.includes('?') ||
-          path.includes('#') ||
-          path.split('/').some((part) => part === '.' || part === '..') ||
-          /^\/(?:api|admin|preview|_next)(?:\/|$)/iu.test(path),
-      )
-    )
-      throw new BadRequestException();
-    if (value.sourcePath === value.targetPath)
-      throw new BadRequestException({ code: 'REDIRECT_LOOP' });
-    if (value.isActive === false) return;
-    const rows = await tx.redirect.findMany({
-      where: { isActive: true, ...(id ? { id: { not: id } } : {}) },
-      select: { sourcePath: true, targetPath: true },
-    });
-    const graph = new Map(rows.map((row) => [row.sourcePath, row.targetPath]));
-    graph.set(value.sourcePath, value.targetPath);
-    const seen = new Set<string>();
-    let path: string | undefined = value.sourcePath;
-    while (path !== undefined) {
-      if (seen.has(path)) throw new BadRequestException({ code: 'REDIRECT_LOOP' });
-      seen.add(path);
-      path = graph.get(path);
-    }
+    await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
+    return validateRedirectGraph(tx, value, id);
   }
   async createRedirect(dto: RedirectDto, actor: Actor) {
     return databaseWrite(() =>

@@ -374,6 +374,7 @@ model Media {
   ownerId            String              @map("owner_id") @db.Uuid
   visibility         MediaVisibility     @default(PRIVATE)
   storageKey         String              @unique @map("storage_key") @db.VarChar(500)
+  storageDriver      String              @default("local") @map("storage_driver") @db.VarChar(10)
   publicUrl          String?             @map("public_url") @db.VarChar(1000)
   mimeType           String              @map("mime_type") @db.VarChar(100)
   size               Int
@@ -381,6 +382,7 @@ model Media {
   source             String?             @db.VarChar(500)
   license            String?             @db.VarChar(300)
   isMock             Boolean             @default(false) @map("is_mock")
+  version            Int                 @default(1)
   createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
   owner              User                @relation(fields: [ownerId], references: [id], onDelete: Restrict)

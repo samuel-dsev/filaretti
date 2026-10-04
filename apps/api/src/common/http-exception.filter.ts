@@ -34,6 +34,9 @@ const allowedCodes = new Set([
   'REDIRECT_LOOP',
   'INVALID_SORT',
   'CONTENT_FORBIDDEN',
+  'INVALID_MEDIA',
+  'STORAGE_UNAVAILABLE',
+  'SLUG_RESERVED',
 ]);
 
 @Catch()
@@ -44,7 +47,16 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const context = host.switchToHttp();
     const request = context.getRequest<Request & { requestId: string }>();
     const response = context.getResponse<Response>();
-    const status = exception instanceof HttpException ? exception.getStatus() : 500;
+    const parserType =
+      exception instanceof Error && 'type' in exception ? exception.type : undefined;
+    const status =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : parserType === 'entity.too.large'
+          ? 413
+          : parserType === 'entity.parse.failed'
+            ? 400
+            : 500;
     const safe = messages[status] ?? {
       code: status >= 500 ? 'INTERNAL_ERROR' : 'REQUEST_REJECTED',
       message:

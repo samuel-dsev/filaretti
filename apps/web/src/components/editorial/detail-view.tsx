@@ -10,7 +10,7 @@ import {
 } from '@/components/institutional/shared';
 import { PublicContent } from '@/lib/public-content';
 import { contentText, getContentOutline } from '@/lib/public-content-core';
-import { publicImage, publicPdf } from '@/lib/public-media';
+import { isManagedPublicMedia, publicImage, publicPdf } from '@/lib/public-media';
 import { articleTypeLabels, publicationDate } from './article-card';
 import { OutlineLinks } from './outline-links';
 import { ShareLinks } from './share-links';
@@ -62,7 +62,14 @@ export function EditorialDetailView({
                     className="editorial-author-byline"
                   >
                     {authorPhoto ? (
-                      <Image src={authorPhoto.src} alt="" width={48} height={48} sizes="48px" />
+                      <Image
+                        src={authorPhoto.src}
+                        unoptimized={isManagedPublicMedia(authorPhoto.src)}
+                        alt=""
+                        width={48}
+                        height={48}
+                        sizes="48px"
+                      />
                     ) : null}
                     <span>
                       <span className="editorial-meta-label">Por</span>
@@ -99,6 +106,7 @@ export function EditorialDetailView({
               <figure className="editorial-cover">
                 <Image
                   src={cover.src}
+                  unoptimized={isManagedPublicMedia(cover.src)}
                   alt={cover.alt}
                   fill
                   sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1439px) calc(100vw - 96px), 1312px"

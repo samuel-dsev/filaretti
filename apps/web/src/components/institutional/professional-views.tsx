@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { EmptyState, Pagination } from '@filaretti/ui';
 import { Breadcrumb, Hero } from '@/components/site';
 import { PublicContent } from '@/lib/public-content';
-import { publicImage } from '@/lib/public-media';
+import { isManagedPublicMedia, publicImage } from '@/lib/public-media';
 import {
   AreaRelationLinks,
   ArticlePreviewGrid,
@@ -62,6 +62,7 @@ export function ProfessionalDetailView({ professional, articles }: ProfessionalD
             <div className="institution-profile-photo">
               <Image
                 src={image.src}
+                unoptimized={isManagedPublicMedia(image.src)}
                 alt={image.alt}
                 width={720}
                 height={800}

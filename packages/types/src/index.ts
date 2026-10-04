@@ -5,6 +5,7 @@ export interface HealthResponse {
 
 export * from './domain';
 export * from './auth';
+export * from './cms';
 
 export interface ApiErrorResponse {
   error: {

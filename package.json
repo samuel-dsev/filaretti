@@ -1,6 +1,6 @@
 {
   "name": "filaretti",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "packageManager": "pnpm@11.25.0",
   "engines": {
@@ -17,6 +17,7 @@
     "test:design-system": "node scripts/check-design-system.mjs",
     "test:institutional": "pnpm --filter @filaretti/api exec node ../../scripts/test-institutional.mjs",
     "test:editorial": "pnpm --filter @filaretti/api exec node ../../scripts/test-editorial.mjs",
+    "test:cms": "node scripts/test-cms.mjs",
     "db:generate": "pnpm --filter @filaretti/api db:generate",
     "db:migrate": "pnpm --filter @filaretti/api db:migrate",
     "db:seed:development": "pnpm --filter @filaretti/api db:seed:development",
@@ -25,6 +26,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "setup:local": "node scripts/setup-local.mjs",
+    "setup:cms-local": "node scripts/setup-cms-local.mjs",
     "prepare": "husky"
   },
   "devDependencies": {

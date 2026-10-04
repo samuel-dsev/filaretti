@@ -3,6 +3,7 @@ import { validateApiEnvironment } from '@filaretti/config';
 export function testEnvironment(overrides: Record<string, unknown> = {}) {
   return validateApiEnvironment({
     NODE_ENV: 'test',
+    CMS_WORKER_ENABLED: false,
     APP_ENV: 'development',
     DATABASE_URL: 'postgresql://test:secret-not-for-logs@127.0.0.1:1/test',
     DATABASE_TIMEOUT_MS: 100,

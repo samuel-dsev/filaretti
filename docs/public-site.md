@@ -1,5 +1,7 @@
 # Site institucional
 
+Complemento F6: o CMS altera estes dados pelas APIs e persiste tarefas de revalidação. A política no-store permanece; mídia pública usa fachada validada pela API e alterações de slug de áreas/profissionais preservam URLs anteriores com redirect interno. Páginas estruturais mantêm seus slugs. Operação e limites: [cms.md](cms.md).
+
 Site institucional entregue na F4 e integrado ao portal editorial na F5, versão `0.5.0`, 03/10/2026. O usuário aprovou a estilização da F3. As evidências e o checkpoint ficam em `../relate.md`. Dados e identidades continuam explicitamente fictícios; aprovação do design não substitui aprovação de materiais oficiais. Leitura, filtros, arquivos e cache editorial: [editorial.md](editorial.md).
 
 ## Rotas e dados

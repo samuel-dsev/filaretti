@@ -49,7 +49,7 @@ export async function createApplication(
     );
     next();
   });
-  app.useBodyParser('json', { limit: '64kb' });
+  app.useBodyParser('json', { limit: '512kb' });
   app.useGlobalPipes(
     new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }),
   );
@@ -63,9 +63,9 @@ export async function createApplication(
       new DocumentBuilder()
         .setTitle('Filaretti — API local')
         .setDescription(
-          'F2: autenticação, conteúdo institucional e editorial. Dados locais fictícios.',
+          'F6: autenticação, CMS, mídia e publicação editorial. Dados locais fictícios.',
         )
-        .setVersion('0.2.0')
+        .setVersion('0.6.0')
         .addCookieAuth('filaretti_access', { type: 'apiKey' }, 'filaretti_access')
         .build(),
     );

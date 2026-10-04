@@ -1,5 +1,7 @@
 # Segurança e tratamento de dados
 
+Atualização F6: o [CMS](cms.md) integra a sessão, roles/propriedade, preview expirante/revogável, validação real de upload, storage local/R2 e agendamento/outbox. O adapter R2 existe, com validação externa pendente na F8. Admin/preview usam no-store/noindex/no-referrer; o encaminhamento aceita apenas auth/admin, preserva Origin/CSRF e mantém cookies HttpOnly. As menções a fluxos futuros nas seções históricas F2–F5 referem-se à entrega daquela fase.
+
 Referência: F2, 03/10/2026. Os controles descritos são implementados na API local; evidências e limitações do aceite ficam em `relate.md`. Fornecedores, homologação e produção permanecem nas fases próprias.
 
 ## Fundação e segredos

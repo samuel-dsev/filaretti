@@ -2,24 +2,156 @@
 
 ## Situação atual
 
-| Campo                | Estado                                                                                          |
-| -------------------- | ----------------------------------------------------------------------------------------------- |
-| Última atualização   | 03/10/2026 — RP-006                                                                             |
-| Etapa                | **F5 concluída — aceite local aprovado**                                                        |
-| Versão               | `0.5.0` na raiz e nos sete workspaces privados                                                  |
-| Código/aplicação     | Portal editorial SSR com filtros/URLs, leitura segura, sumário, compartilhamento e PDF público  |
-| Ambiente             | PostgreSQL local saudável; API 3001/Next otimizado 3000 em loopback; Edge 154 revisado          |
-| Git                  | `dev`, remoto `origin`; base F4 real `e96b124`; commit local F5 conforme RP-006                 |
-| Commit desta entrega | `feat(editorial): implementa portal e leitura de conteúdos (v0.5.0)`; SHA informado após commit |
-| Próxima etapa        | **F6 — CMS, mídia e publicação ponta a ponta**                                                  |
-| Autorização          | **Aguardando confirmação para F6; push não autorizado**                                         |
-| Checkpoint           | RP-006 abaixo e quadro inicial de plan.md                                                       |
+| Campo                | Estado                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| Última atualização   | 04/10/2026 — RP-007                                                                         |
+| Etapa                | **F6 concluída — aceite local aprovado**                                                    |
+| Versão               | `0.6.0` na raiz e nos sete workspaces privados                                              |
+| Código/aplicação     | CMS com TipTap, mídia, preview, agendamento, publicação, outbox e redirects                 |
+| Ambiente             | PostgreSQL saudável; API 3001/Next otimizado 3000 em loopback; Edge 154 revisado            |
+| Git                  | `dev`, remoto `origin`; base F5 real `a0bf265`; commit local F6 conforme RP-007             |
+| Commit desta entrega | `feat(cms): implementa gestão de conteúdo e publicação (v0.6.0)`; SHA informado após commit |
+| Próxima etapa        | **F7 — Relacionamento, busca, SEO e privacidade**                                           |
+| Autorização          | **Aguardando confirmação para F7; push, PR e deploy não autorizados**                       |
+| Checkpoint           | RP-007 abaixo e quadro inicial de plan.md                                                   |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo.
 
 ## Histórico
 
+### RP-007 — 04/10/2026 — F6 — CMS, mídia e publicação ponta a ponta
+
+**Escopo autorizado:** “Prossiga para a versão F6 do desenvolvimento do projeto” em 03/10/2026, com retomada “continue de onde parou” em 04/10/2026. Implementar somente F6 e seu commit local conforme AGENTS.md. **Estado: concluída tecnicamente; aceite local aprovado.** F7, push, PR, deploy, homologação externa e produção aguardam autorização própria.
+
+**Versão:** `0.5.0` → `0.6.0`, oito manifests privados alinhados. TipTap `3.31.4`, Sharp `0.35.5`, AWS SDK S3 `3.1146.0`, pdf-lib `1.17.1` e tipos Multer `2.3.0` fixados. Overrides limitados a `@prisma/config>deepmerge-ts` `8.0.0` e `prisma>mysql2` `3.23.1` corrigem achados transitivos sem migrar Prisma `7.10.0`. Lockfile e instalação frozen aprovados.
+
+**Git e continuidade:** checkout real `C:\Users\Samuel\Documents\Projetos\Filaretti`; caminho antigo `Projeto` ausente. Branch `dev`, base F5 `a0bf265`, inicialmente limpa. Commit previsto: `feat(cms): implementa gestão de conteúdo e publicação (v0.6.0)`. SHA real informado após commit e registrado na próxima retomada, sem commit circular.
+
+#### Arquivos criados, alterados e removidos
+
+Criados (37):
+
+- `apps/api/prisma/migrations/202610030001_f6_media/migration.sql`
+- `apps/api/src/cms/cms.controllers.ts`
+- `apps/api/src/cms/dto.ts`
+- `apps/api/src/cms/media.service.ts`
+- `apps/api/src/cms/outbox.ts`
+- `apps/api/src/cms/redirects.ts`
+- `apps/api/src/cms/storage.service.ts`
+- `apps/api/src/cms/upload.ts`
+- `apps/api/src/cms/worker.service.ts`
+- `apps/api/test/cms.integration.test.ts`
+- `apps/web/src/app/admin/(workspace)/[[...route]]/page.tsx`
+- `apps/web/src/app/admin/(workspace)/layout.tsx`
+- `apps/web/src/app/admin/layout.tsx`
+- `apps/web/src/app/admin/login/page.tsx`
+- `apps/web/src/app/api/cms/[...path]/route.ts`
+- `apps/web/src/app/api/revalidate/route.ts`
+- `apps/web/src/app/preview/[token]/page.tsx`
+- `apps/web/src/components/admin/cms-page.tsx`
+- `apps/web/src/components/admin/dashboard.tsx`
+- `apps/web/src/components/admin/form-controls.tsx`
+- `apps/web/src/components/admin/media-library.tsx`
+- `apps/web/src/components/admin/media-picker.tsx`
+- `apps/web/src/components/admin/resource-editor.tsx`
+- `apps/web/src/components/admin/resource-list.tsx`
+- `apps/web/src/components/admin/rich-editor.tsx`
+- `apps/web/src/components/admin/session.tsx`
+- `apps/web/src/components/admin/settings.tsx`
+- `apps/web/src/components/admin/users.tsx`
+- `apps/web/src/lib/admin-api.ts`
+- `apps/web/src/lib/admin-types.ts`
+- `apps/web/src/lib/cms-routing.ts`
+- `apps/web/test/admin-api.test.mjs`
+- `apps/web/test/cms-routing.test.mjs`
+- `docs/cms.md`
+- `packages/types/src/cms.ts`
+- `scripts/setup-cms-local.mjs`
+- `scripts/test-cms.mjs`
+
+Alterados (41):
+
+- `README.md`
+- `apps/api/.env.example`
+- `apps/api/package.json`
+- `apps/api/prisma/schema.prisma`
+- `apps/api/src/app.ts`
+- `apps/api/src/common/http-exception.filter.ts`
+- `apps/api/src/domain/articles.service.ts`
+- `apps/api/src/domain/domain.controllers.ts`
+- `apps/api/src/domain/domain.module.ts`
+- `apps/api/src/domain/dto.ts`
+- `apps/api/src/domain/institution.service.ts`
+- `apps/api/test/helpers.ts`
+- `apps/web/.env.example`
+- `apps/web/next.config.ts`
+- `apps/web/package.json`
+- `apps/web/src/components/admin/admin-layout.tsx`
+- `apps/web/src/components/admin/styles.css`
+- `apps/web/src/components/editorial/detail-view.tsx`
+- `apps/web/src/components/institutional/professional-views.tsx`
+- `apps/web/src/components/site/content-cards.tsx`
+- `apps/web/src/lib/public-media.ts`
+- `apps/web/src/proxy.ts`
+- `apps/web/test/public-routing.test.mjs`
+- `docs/api.md`
+- `docs/database.md`
+- `docs/editorial.md`
+- `docs/public-site.md`
+- `docs/security.md`
+- `package.json`
+- `packages/config/package.json`
+- `packages/config/src/index.ts`
+- `packages/config/test/environment.test.ts`
+- `packages/eslint-config/package.json`
+- `packages/tsconfig/package.json`
+- `packages/types/package.json`
+- `packages/types/src/index.ts`
+- `packages/ui/package.json`
+- `plan.md`
+- `pnpm-lock.yaml`
+- `pnpm-workspace.yaml`
+- `relate.md`
+
+Removidos: nenhum. Total: 78 arquivos versionados da F6. Ambientes reais, logs, JSON/PNG de QA, scripts auxiliares e builds temporários permanecem ignorados. Migrations anteriores e seeds existentes foram preservados.
+
+#### Funcionalidades e decisões
+
+- CMS: `/admin/login`, dashboard, usuários, artigos, categorias, tags, áreas, profissionais, páginas com seções, FAQ, biblioteca de mídia, configurações e redirects. Listas/formulários usam a API existente, com loading/vazio/erro e controle de versão. ADMIN mantém usuários/configurações/redirects; EDITOR aprova/publica; AUTHOR mantém seus rascunhos e mídias. Backend revalida role e propriedade. Seletores AUTHOR carregam catálogos públicos paginados sem cookies.
+- Editor: TipTap com schema permitido da F2/F5, campos de título/slug/resumo/SEO, autor/tipo, relacionamentos, capa/PDF e destaque. Salvar, publicar, agendar, retirar e arquivar são ações distintas. Alterações pendentes bloqueiam publicação/preview; gravações bloqueiam edição, inclusive links do editor. Conflito 409 preserva o texto local e não sobrescreve silenciosamente. JSON limitado a 512 KiB acomoda documentos multibyte válidos; corpos excessivos retornam 413 sanitizado.
+- Sessão: BFF `/api/cms/*` restrito a auth/admin, cookies HttpOnly com Path do BFF, Origin/CSRF preservados, corpo bounded de 11 MiB. Tokens de sessão não entram em JSON/localStorage; refresh concorrente deduplicado. Configuração local alinha o segredo da API/web sem imprimir nem sobrescrever valores existentes.
+- Preview: token opaco, hash HMAC persistido, TTL configurável, expiração/revogação/reemissão e bloqueio para emissor inativo/sem permissão. Proxy valida antes do streaming para HTTP 404/503 real; renderer seguro compartilhado com F5. Admin/preview no-store, noindex e no-referrer. Logs sanitizados e sem analytics no preview.
+- Mídia: multipart administrativo; JPG/JPEG, PNG, WebP, AVIF até 5 MiB e PDF até 10 MiB. Decoder raster completo/reencode, limite de pixels e remoção de metadados; PDF com parse estrutural e bloqueio de ações ativas, inclusive dicionários aninhados. Extensão/MIME/bytes/tamanho concordam; SVG/HTML/executáveis/truncados/animados são rejeitados. Chaves UUID aleatórias, metadados, proprietário, busca e versão. Migration aditiva inclui driver/version/index; storage público/privado separado local e adaptador R2 implementado.
+- Fachada `/media/public/<chave>` verifica registro público e ausência de vínculo com contatos a cada leitura. Imagens geridas pelo CMS usam `unoptimized`/no-store; Proxy bloqueia também chamadas manuais ao cache Next Image, inclusive variantes codificadas, segmentos e query/fragmento. Fixtures estáticos continuam otimizáveis. Exclusão impede uso por FKs e links JSON em artigos/profissionais/páginas/áreas/FAQ; remove registro na transação e bytes via outbox com retry.
+- Publicação: datas exibidas em Brasília e persistidas UTC; worker a cada minuto e na inicialização. PostgreSQL com advisory lock e SKIP LOCKED impede duplicação entre instâncias, recupera vencidos após reinício e revalida emissor/autor/relacionamentos. Outbox tem lease/fencing, tentativas limitadas, backoff e códigos sanitizados. Callback web server-only valida segredo/path/body, invalida dependências do layout e devolve ack com mesma chave idempotente. No-store público garante nova consulta atualizada mesmo se o callback falhar.
+- URLs: grafo interno sem ciclos/destinos externos/caminhos privados. Troca de slug enquanto artigo/página está publicado ou perfil/área ativo preserva a URL anterior; rascunhos e registros inativos não criam aliases públicos. URLs reservadas não podem ser reutilizadas. O Proxy atende também fontes antigas `.html`; destinos absolutos são construídos na mesma origem validada pelo caminho. Slugs estruturais home/escritório/privacidade/cookies ficam fixos.
+
+#### Validações executadas e resultados
+
+- `pnpm install --frozen-lockfile`: passou; `pnpm audit --prod`: sem vulnerabilidades conhecidas. Nenhuma biblioteca/lockfile mudou após esses checks.
+- `pnpm lint`, `pnpm typecheck`, `pnpm build`, `pnpm format:check`, `git diff --check`: passaram na base integrada final, sem erros/warnings de lint. Build normal Next otimizado separado do artefato QA.
+- `pnpm test`: **45 testes aprovados**, 34 web, 8 configuração e 3 fundação HTTP/API; zero falha/skip. Inclui refresh concorrente, preservação de conflitos, catálogos públicos sem sessão e exclusão dos ativos geridos do cache de imagens.
+- `pnpm test:integration`: **39 testes aprovados**, PostgreSQL/HTTP reais, zero falha/skip. Bancos temporários próprios recebem três migrations, seeds repetidos/idempotentes, provisão de primeiro ADMIN isolada e bloqueio de seed fictício em produção. Novos casos cobrem privacidade dos slugs, JSON multibyte/413, quatro formatos raster/PDF inválido/nested, preview, papéis, publicação/retirada, conflitos/redirects, duas instâncias, reinício, leases/retry/exaustão, referências JSON e remoção durável. Os bancos próprios foram removidos pelo runner. Aviso de depreciação `pg` em concorrência permanece não impeditivo com a versão fixada; não foi feita migração para release candidate.
+- `pnpm --filter @filaretti/api db:validate` e `pnpm db:migrate`: passaram; migration `202610030001_f6_media` aplicada ao `filaretti_dev`, sem reset/reseed/remover volume.
+- `pnpm test:design-system`: **44 combinações semânticas de contraste aprovadas**.
+- `pnpm test:cms` com Playwright já disponível e Edge 154.0.4258.53: **25 verificações aprovadas**, 81 layouts: 16 templates em 375/768/1024/1440/1920 e editor AUTHOR móvel. **4415 amostras de texto sólido ≥ 4,5:1, zero ignoradas**, zero overflow global, labels/nomes/IDs/alt/imagens válidos. Login por teclado, criar/salvar/upload/preview/publicar/retirar, read-only pendente, conflito sem perda, papel AUTHOR, logout, mídia privada/inválida/em uso/excluída, aliases publicados/legacy, restart real e callback persistido passaram. Zero erro JS ou console inesperado; três 401/409 esperados. Retirada observada em 564 ms nas três dependências verificadas, resultado local sem garantia de SLA.
+- Revisão visual manual: folhas dos 16 templates nas cinco larguras, editor móvel completo em cinco recortes e estado de conflito. Navegador local/teclado e inspeção estática com subagente; não equivale a WCAG completo/leitor de tela/outros navegadores.
+- Isolamento/cleanup confirmado em `.local/f6-qa-smoke.json`: processos/banco/storage/fixtures/build/tsconfig próprios removidos e portas 3024/3025 liberadas. PNGs em `.local/f6-qa-evidence/`; inventário em `.local/f6-files.json`. Artefato de QA tem origem/build próprios porque rewrites são fixados no build; não substitui o build de uso normal.
+- Preview local atualizado para `0.6.0`: API 3001/Next 3000 em loopback, health/login/home HTTP 200, conteúdo e fornecedores exclusivamente locais/fictícios. Login: http://localhost:3000/admin/login. PIDs atuais e checks sanitizados em `.local/f6-preview.json`. Abertura no painel Codex foi solicitada; ferramenta retornou queued.
+
+Falhas intermediárias de harness/origem/labels e de contraste, Location relativo, resposta 413, cache de imagem e aliases privados foram resolvidas. Os resultados acima são os checks finais; não houve aceite baseado em mocks de HTTP, porta fechada ou apenas configuração.
+
+#### Limitações, pendências e próximo passo
+
+R2 possui adaptador e validação de configuração, mas **não foi acessado/validado externamente**; contas, buckets, isolamento e recuperação real permanecem na F8 autorizada. PDFs editoriais têm validação estrutural; scanner/quarentena de anexos de contato permanece nas F7/F8. Nenhuma integração Resend/Turnstile/analytics, e-mail real, homologação ou produção foi ativada.
+
+Contatos/assinantes completos, busca global, SEO/sitemap e privacidade são F7. CMS salva páginas estruturadas; templates públicos FAQ/contato/privacidade/cookies entram na F7. Criar outra página no CMS não cria automaticamente rota/template público. Agendamento exige instância API/worker ativa; recupera vencidos quando retorna. Edição de slug enquanto retirado não publica alias: renomear e republicar exige redirect ADMIN explícito para uma URL histórica se necessário. Imagens CMS não usam cache de otimização; derivados revogáveis no storage podem ser avaliados na homologação.
+
+CI remoto, navegadores/dispositivos adicionais, leitor de tela, Lighthouse, integrações reais, backups/restauração e SLA de produção não foram comprovados nesta etapa. Material institucional/identidade seguem fictícios até aprovação. **F6 entregue; aguardar autorização para F7.** Sem push/PR/release/deploy/DNS/publicação.
+
 ### RP-006 — 03/10/2026 — F5 — Portal editorial e leitura de conteúdos
+
+**SHA confirmado na retomada F6:** `a0bf265`, commit local da F5. Branch `dev` e árvore inicialmente limpa; autorização F6 recebida em 03/10/2026.
 
 **Escopo autorizado:** “Inicie a F5”. Implementação e aceite da F5, incluindo commit local conforme AGENTS.md. **Estado: concluída tecnicamente; aceite local aprovado.** F6, push, PR, homologação externa e publicação exigem autorização própria.
 

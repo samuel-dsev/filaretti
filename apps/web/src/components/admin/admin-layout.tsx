@@ -17,6 +17,8 @@ export interface AdminLayoutProps {
   description?: string;
   navigation: AdminNavigationItem[];
   userLabel?: string;
+  environmentLabel?: string;
+  actions?: ReactNode;
   children: ReactNode;
 }
 
@@ -59,6 +61,8 @@ export function AdminLayout({
   description,
   navigation,
   userLabel,
+  environmentLabel = 'Ambiente de demonstração · conteúdo fictício',
+  actions,
   children,
 }: AdminLayoutProps) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -72,11 +76,7 @@ export function AdminLayout({
         </p>
         <p className="admin-nav-heading">Navegação</p>
         <AdminNavigation navigation={navigation} />
-        <p className="admin-sidebar-note">
-          Ambiente de demonstração
-          <br />
-          Conteúdo fictício
-        </p>
+        <p className="admin-sidebar-note">{environmentLabel}</p>
       </aside>
       <div className="admin-workspace">
         <header className="admin-topbar">
@@ -100,10 +100,11 @@ export function AdminLayout({
               <Avatar name={userLabel} size="sm" />
             </div>
           ) : null}
+          {actions}
         </header>
         <main id="conteudo" tabIndex={-1} className="admin-main">
           <div className="admin-page-heading">
-            <p className="site-eyebrow">Administração · demonstração</p>
+            <p className="site-eyebrow">Administração</p>
             <h1>{title}</h1>
             {description ? <p>{description}</p> : null}
           </div>
@@ -119,7 +120,7 @@ export function AdminLayout({
       >
         <p className="admin-mobile-brand">{brand}</p>
         <AdminNavigation navigation={navigation} onNavigate={() => setMenuOpen(false)} />
-        <p className="admin-mobile-note">Ambiente de demonstração · conteúdo fictício</p>
+        <p className="admin-mobile-note">{environmentLabel}</p>
       </Drawer>
     </div>
   );

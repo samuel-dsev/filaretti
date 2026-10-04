@@ -1,6 +1,6 @@
 {
   "name": "@filaretti/web",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,6 +15,9 @@
     "@filaretti/config": "workspace:*",
     "@filaretti/types": "workspace:*",
     "@filaretti/ui": "workspace:*",
+    "@tiptap/pm": "3.31.4",
+    "@tiptap/react": "3.31.4",
+    "@tiptap/starter-kit": "3.31.4",
     "next": "16.3.8",
     "react": "19.3.0",
     "react-dom": "19.3.0"

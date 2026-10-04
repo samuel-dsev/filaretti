@@ -1,6 +1,6 @@
 # Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.5.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional e portal editorial usam a API real, preservando o Design System aprovado da F3. A F5 acrescenta filtros, paginação, leitura segura, sumário, compartilhamento e referências de PDF público. CMS e integrações seguem as próximas fases. Situação e validações reais: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.6.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F6 acrescenta login/admin, TipTap, biblioteca de mídia, preview e publicação agendada. Relacionamento e integrações reais seguem as próximas fases. Situação e validações: [relate.md](relate.md).
 
 ## Pré-requisitos
 
@@ -29,11 +29,11 @@ pnpm dev
 
 Abra `http://127.0.0.1:3000` para o site institucional com dados fictícios da API e `/dev/design-system` para a biblioteca visual; `/dev/design-system/admin` apresenta o layout administrativo. As demonstrações exigem `APP_ENV=development` e Host de loopback, retornando 404 fora dessas condições. O build otimizado local também permite a revisão com `APP_ENV=development`. Fonte e contratos dos componentes: [docs/design-system.md](docs/design-system.md). Rotas, dados, estados e cache: [docs/public-site.md](docs/public-site.md).
 
-API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. A web encaminha `/api/v1/*` para a API por origem única; o contrato de sessão usa cookies HttpOnly e header CSRF nas mutações. A demonstração da F3 não autentica nem chama endpoints administrativos. Contratos e procedimentos: [docs/api.md](docs/api.md). Nenhuma conexão de banco ou segredo usa prefixo `NEXT_PUBLIC_`.
+API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. `/admin/login` abre o CMS. A web encaminha suas chamadas por `/api/cms/*`, preservando cookies HttpOnly e header CSRF nas mutações; a origem do navegador deve corresponder a `WEB_PUBLIC_URL`. Em checkout anterior à F6, executar `pnpm setup:cms-local` uma vez para alinhar o segredo de revalidação ignorado e reiniciar os apps. Contratos e procedimentos: [docs/api.md](docs/api.md) e [docs/cms.md](docs/cms.md). Nenhuma conexão de banco ou segredo usa prefixo `NEXT_PUBLIC_`.
 
 O seed usa somente contas e conteúdo explicitamente fictícios. Credenciais locais e procedimento do primeiro ADMIN sem senha padrão em produção: [docs/database.md](docs/database.md). Não executar seed de desenvolvimento fora de `APP_ENV=development`; `seed-production` contém apenas configuração estrutural. Recuperação de senha já possui tokens e consumo seguro; a entrega por e-mail entra na F7.
 
-`APP_ENV` define o ambiente de dados; `NODE_ENV` define modo de execução/build. Build local otimizado usa `APP_ENV=development`, mesmo com `NODE_ENV=production`. `APP_ENV=production` rejeita mocks, cookies inseguros e URLs públicas sem HTTPS. Flags R2/Resend/Turnstile ficam desligadas e sua ativação é rejeitada na F1, pois os adaptadores ainda não existem.
+`APP_ENV` define o ambiente de dados; `NODE_ENV` define modo de execução/build. Build local otimizado usa `APP_ENV=development`, mesmo com `NODE_ENV=production`. `APP_ENV=production` rejeita mocks, cookies inseguros e URLs públicas sem HTTPS. R2 tem adaptador implementado e configuração validada, com teste real pendente na F8; Resend/Turnstile continuam bloqueados até a F7. Desenvolvimento usa storage local e nenhum fornecedor externo é ativado automaticamente.
 
 ## Verificação
 
@@ -46,6 +46,7 @@ pnpm test:design-system
 pnpm build
 pnpm test:institutional
 pnpm test:editorial
+pnpm test:cms
 pnpm format:check
 pnpm --filter @filaretti/api db:validate
 ```
@@ -67,6 +68,8 @@ docker compose start postgres
 
 O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset para repetir verificações. Os apps rodam no host com bind local; apenas PostgreSQL está no Compose.
 
+O smoke `test:cms` usa PostgreSQL/HTTP/Edge reais em banco temporário, storage isolado e portas 3024/3025; verifica login, upload, preview, publicação/retirada e permissões. Pré-requisitos e limites: [docs/cms.md](docs/cms.md). Os testes de integração cobrem concorrência/recovery do worker, conflito de edição, arquivos inválidos, mídia em uso e redirects. O teste local não comprova R2 real.
+
 ## Estrutura e continuidade
 
 | Caminho                                       | Responsabilidade                                                                       |
@@ -81,7 +84,7 @@ O volume `filaretti-local_postgres_data` persiste; não executar `down -v`/reset
 
 Todos os pacotes são privados. Não há publicação npm; bump funcional da etapa acontece na raiz e nos workspaces, acompanhado de plano/relatório e lockfile. Husky/lint-staged formatam arquivos staged; CI e checks completos continuam obrigatórios.
 
-Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F5 e commit local. F6, push, PR, homologação e produção dependem de autorização própria.
+Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F6 e commit local. F7, push, PR, homologação e produção dependem de autorização própria.
 
 ## Referências
 

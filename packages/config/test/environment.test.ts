@@ -62,10 +62,29 @@ describe('configuration boundaries', () => {
     }
     throw new Error('Expected validation failure');
   });
-  it('does not allow enabling vendors before adapters exist', () => {
+  it('requires R2 credentials and still blocks F7 integrations', () => {
     for (const field of ['R2_ENABLED', 'RESEND_ENABLED', 'TURNSTILE_ENABLED']) {
       expect(() => validateApiEnvironment({ ...api, [field]: 'true' })).toThrow(field);
     }
+  });
+  it('allows a configured R2 adapter only with separate buckets', () => {
+    const r2 = {
+      ...api,
+      STORAGE_DRIVER: 'r2',
+      R2_ENABLED: 'true',
+      R2_ACCOUNT_ID: 'a'.repeat(32),
+      R2_ACCESS_KEY_ID: 'test-only',
+      R2_SECRET_ACCESS_KEY: 'test-only',
+      R2_PUBLIC_BUCKET: 'test-public',
+      R2_PRIVATE_BUCKET: 'test-private',
+    };
+    expect(validateApiEnvironment(r2).STORAGE_DRIVER).toBe('r2');
+    expect(() => validateApiEnvironment({ ...r2, R2_PRIVATE_BUCKET: 'test-public' })).toThrow(
+      'R2_PRIVATE_BUCKET',
+    );
+    expect(() => validateApiEnvironment({ ...r2, R2_ACCOUNT_ID: '../unsafe' })).toThrow(
+      'R2_ACCOUNT_ID',
+    );
   });
   it('rejects secret-looking public API paths and unsupported URL protocols', () => {
     expect(() =>

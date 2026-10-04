@@ -1,4 +1,5 @@
 import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common';
+import { createHmac, randomBytes } from 'node:crypto';
 import { Prisma, PublicationStatus, UserRole } from '@prisma/client';
 import type { ApiEnvironment } from '@filaretti/config';
 import type {
@@ -17,6 +18,8 @@ import type {
   PublicationDto,
 } from './dto';
 import { plainText, publicContent } from './content';
+import { queueRevalidation } from '../cms/outbox';
+import { preserveSlug } from '../cms/redirects';
 import {
   audit,
   databaseWrite,
@@ -239,6 +242,11 @@ export class ArticlesService {
         await validateRelations(tx, dto);
         await validateMedia(tx, dto.coverMediaId, 'image');
         await validateMedia(tx, dto.pdfMediaId, 'pdf');
+        if (dto.pdfMediaId && dto.type !== 'GUIDE')
+          throw new BadRequestException({ code: 'INVALID_RELATION' });
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
+        if (await tx.redirect.findUnique({ where: { sourcePath: `/conteudos/${dto.slug}` } }))
+          throw new BadRequestException({ code: 'SLUG_RESERVED' });
         const record = await tx.article.create({
           data: {
             title: dto.title,
@@ -275,11 +283,26 @@ export class ArticlesService {
   async update(id: string, dto: ArticlePatchDto, actor: Actor) {
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
+        await tx.$executeRaw`SELECT pg_advisory_xact_lock(6006001)`;
         const current = exists(await tx.article.findUnique({ where: { id } }));
         this.authorize(current, actor);
         await validateRelations(tx, dto);
         await validateMedia(tx, dto.coverMediaId, 'image');
         await validateMedia(tx, dto.pdfMediaId, 'pdf');
+        if (
+          (dto.pdfMediaId ?? (dto.pdfMediaId === null ? null : current.pdfMediaId)) &&
+          (dto.type ?? current.type) !== 'GUIDE'
+        )
+          throw new BadRequestException({ code: 'INVALID_RELATION' });
+        if (dto.slug && dto.slug !== current.slug)
+          await preserveSlug(
+            tx,
+            `/conteudos/${current.slug}`,
+            `/conteudos/${dto.slug}`,
+            current.status === PublicationStatus.PUBLISHED &&
+              current.publishedAt !== null &&
+              current.publishedAt <= new Date(),
+          );
         versionUpdated(
           (
             await tx.article.updateMany({
@@ -337,6 +360,11 @@ export class ArticlesService {
           });
         }
         await audit(tx, actor.id, 'article.updated', 'article', id);
+        if (current.status === PublicationStatus.PUBLISHED)
+          await queueRevalidation(tx, [
+            `/conteudos/${current.slug}`,
+            `/conteudos/${dto.slug ?? current.slug}`,
+          ]);
         return admin(exists(await tx.article.findUnique({ where: { id }, include })));
       }),
     );
@@ -346,7 +374,7 @@ export class ArticlesService {
     return databaseWrite(() =>
       this.db.$transaction(async (tx) => {
         const record = exists(await tx.article.findUnique({ where: { id }, include }));
-        if (dto.status === 'PUBLISHED') {
+        if (dto.status === 'PUBLISHED' || dto.status === 'SCHEDULED') {
           if (!plainText(publicContent(record.content)).trim())
             throw new BadRequestException({ code: 'INVALID_PUBLICATION' });
           await validateRelations(tx, {
@@ -358,6 +386,17 @@ export class ArticlesService {
           await validateMedia(tx, record.coverMediaId, 'image');
           await validateMedia(tx, record.pdfMediaId, 'pdf');
         }
+        const scheduledAt = dto.scheduledAt ? new Date(dto.scheduledAt) : null;
+        if (
+          dto.status === 'SCHEDULED' &&
+          (!scheduledAt ||
+            !Number.isFinite(scheduledAt.getTime()) ||
+            scheduledAt.getTime() <= Date.now() ||
+            !dto.scheduledAt?.endsWith('Z'))
+        )
+          throw new BadRequestException({ code: 'INVALID_PUBLICATION' });
+        if (dto.status !== 'SCHEDULED' && dto.scheduledAt !== undefined)
+          throw new BadRequestException({ code: 'INVALID_PUBLICATION' });
         versionUpdated(
           (
             await tx.article.updateMany({
@@ -365,7 +404,7 @@ export class ArticlesService {
               data: {
                 status: dto.status,
                 publishedAt: dto.status === 'PUBLISHED' ? (record.publishedAt ?? new Date()) : null,
-                scheduledAt: null,
+                scheduledAt: dto.status === 'SCHEDULED' ? scheduledAt : null,
                 version: { increment: 1 },
                 updatedById: actor.id,
               },
@@ -373,8 +412,150 @@ export class ArticlesService {
           ).count,
         );
         await audit(tx, actor.id, `article.${dto.status.toLowerCase()}`, 'article', id);
+        await tx.previewToken.updateMany({
+          where: { articleId: id, revokedAt: null },
+          data: { revokedAt: new Date() },
+        });
+        await queueRevalidation(tx, [`/conteudos/${record.slug}`]);
         return admin(exists(await tx.article.findUnique({ where: { id }, include })));
       }),
+    );
+  }
+  private previewHash(token: string) {
+    return createHmac('sha256', this.environment.PREVIEW_SECRET).update(token).digest('hex');
+  }
+  async issuePreview(id: string, version: number, actor: Actor) {
+    return this.db.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM articles WHERE id = ${id}::uuid FOR UPDATE`;
+      const row = exists(await tx.article.findUnique({ where: { id } }));
+      this.authorize(row, actor);
+      versionUpdated(row.version === version ? 1 : 0);
+      const now = new Date();
+      const token = randomBytes(32).toString('base64url');
+      const expiresAt = new Date(now.getTime() + this.environment.PREVIEW_TTL_SECONDS * 1000);
+      await tx.previewToken.updateMany({
+        where: { articleId: id, revokedAt: null },
+        data: { revokedAt: now },
+      });
+      await tx.previewToken.create({
+        data: {
+          articleId: id,
+          createdById: actor.id,
+          tokenHash: this.previewHash(token),
+          expiresAt,
+        },
+      });
+      await audit(tx, actor.id, 'article.preview.created', 'article', id);
+      return { token, expiresAt: expiresAt.toISOString() };
+    });
+  }
+  async revokePreview(id: string, version: number, actor: Actor) {
+    return this.db.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM articles WHERE id = ${id}::uuid FOR UPDATE`;
+      const row = exists(await tx.article.findUnique({ where: { id } }));
+      this.authorize(row, actor);
+      versionUpdated(row.version === version ? 1 : 0);
+      await tx.previewToken.updateMany({
+        where: { articleId: id, revokedAt: null },
+        data: { revokedAt: new Date() },
+      });
+      await audit(tx, actor.id, 'article.preview.revoked', 'article', id);
+      return { revoked: true };
+    });
+  }
+  async preview(token: string) {
+    if (!/^[A-Za-z0-9_-]{43}$/u.test(token)) return exists(null);
+    const row = exists(
+      await this.db.previewToken.findFirst({
+        where: {
+          tokenHash: this.previewHash(token),
+          revokedAt: null,
+          expiresAt: { gt: new Date() },
+          createdBy: { isActive: true },
+        },
+        include: { article: { include }, createdBy: { select: { role: true } } },
+      }),
+    );
+    if (
+      row.createdBy.role === UserRole.AUTHOR &&
+      (row.article.createdById !== row.createdById ||
+        row.article.status !== PublicationStatus.DRAFT)
+    )
+      return exists(null);
+    return {
+      article: {
+        ...detail(row.article),
+        publishedAt: row.article.publishedAt?.toISOString() ?? row.article.updatedAt.toISOString(),
+      },
+      expiresAt: row.expiresAt.toISOString(),
+    };
+  }
+  async publishDue(now = new Date()) {
+    return this.db.$transaction(
+      async (tx) => {
+        const locks = await tx.$queryRaw<
+          { acquired: boolean }[]
+        >`SELECT pg_try_advisory_xact_lock(6006002) AS acquired`;
+        if (!locks[0]?.acquired) return 0;
+        const ids = await tx.$queryRaw<
+          { id: string }[]
+        >`SELECT id FROM articles WHERE status = 'SCHEDULED' AND scheduled_at <= ${now} ORDER BY scheduled_at, id FOR UPDATE SKIP LOCKED LIMIT 50`;
+        let published = 0;
+        for (const { id } of ids) {
+          const record = exists(await tx.article.findUnique({ where: { id }, include }));
+          try {
+            if (!plainText(publicContent(record.content)).trim()) throw new BadRequestException();
+            const issuer = record.updatedById
+              ? await tx.user.findUnique({ where: { id: record.updatedById } })
+              : null;
+            if (!issuer?.isActive || issuer.role === UserRole.AUTHOR)
+              throw new BadRequestException();
+            await validateRelations(tx, {
+              authorId: record.authorId,
+              categoryIds: record.categories.map((r) => r.categoryId),
+              tagIds: record.tags.map((r) => r.tagId),
+              practiceAreaIds: record.practiceAreas.map((r) => r.practiceAreaId),
+            });
+            await validateMedia(tx, record.coverMediaId, 'image');
+            await validateMedia(tx, record.pdfMediaId, 'pdf');
+          } catch (error) {
+            if (!(error instanceof BadRequestException)) throw error;
+            await tx.article.update({
+              where: { id },
+              data: {
+                status: 'DRAFT',
+                scheduledAt: null,
+                publishedAt: null,
+                version: { increment: 1 },
+              },
+            });
+            await tx.auditEvent.create({
+              data: { action: 'article.schedule.rejected', resource: 'article', resourceId: id },
+            });
+            continue;
+          }
+          await tx.article.update({
+            where: { id },
+            data: {
+              status: 'PUBLISHED',
+              scheduledAt: null,
+              publishedAt: now,
+              version: { increment: 1 },
+            },
+          });
+          await tx.previewToken.updateMany({
+            where: { articleId: id, revokedAt: null },
+            data: { revokedAt: now },
+          });
+          await tx.auditEvent.create({
+            data: { action: 'article.scheduled.published', resource: 'article', resourceId: id },
+          });
+          await queueRevalidation(tx, [`/conteudos/${record.slug}`]);
+          published++;
+        }
+        return published;
+      },
+      { timeout: 30000 },
     );
   }
   async remove(id: string, version: number, actor: Actor) {

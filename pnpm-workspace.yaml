@@ -23,3 +23,8 @@ minimumReleaseAgeExclude:
 
 saveExact: true
 engineStrict: true
+
+# Patch transitive Prisma CLI vulnerabilities while retaining the established Prisma version.
+overrides:
+  '@prisma/config>deepmerge-ts': 8.0.0
+  'prisma>mysql2': 3.23.1

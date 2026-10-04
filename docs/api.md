@@ -1,5 +1,7 @@
 # API e contratos
 
+Complemento F6 (`0.6.0`): [cms.md](cms.md) documenta painel, mídia, preview, agendamento, outbox e resolução de redirects. As interfaces de relacionamento continuam reservadas à F7. O Swagger local reflete os endpoints efetivamente implementados.
+
 Referência: F2, 03/10/2026. As rotas abaixo existem na API NestJS; interface administrativa e páginas conectadas entram nas fases seguintes. A validação integrada usa HTTP e PostgreSQL reais em banco de teste isolado.
 
 ## Saúde do serviço
@@ -44,7 +46,7 @@ A API sempre gera um UUID próprio, sem confiar no identificador enviado pelo cl
 
 Swagger fica em `/api/docs` somente quando `APP_ENV` e `NODE_ENV` são `development`; é desativado nos demais casos. Ele descreve os endpoints existentes; o planejamento abaixo não deve gerar rotas fictícias na documentação executável. A configuração segue a [integração OpenAPI do NestJS](https://docs.nestjs.com/openapi/introduction).
 
-A API aplica DTOs com transformação explícita, whitelist e rejeição de propriedades desconhecidas. O corpo JSON tem teto de 64 KiB; IDs administrativos/relacionais usam UUID e slugs usam letras minúsculas, números e hífens. `packages/types` publica contratos permitidos sem modelos Prisma. As respostas de domínio passam por serializers explícitos; hash de senha, chave de storage, token, contato e assinante não integram respostas públicas. Swagger inclui DTOs de entrada, rotas reais e schemas dos campos de saída públicos/administrativos.
+A API aplica DTOs com transformação explícita, whitelist e rejeição de propriedades desconhecidas. O corpo JSON tem teto de 512 KiB para acomodar documentos TipTap com caracteres multibyte; os limites de texto, nós e campos continuam validados. IDs administrativos/relacionais usam UUID e slugs usam letras minúsculas, números e hífens. `packages/types` publica contratos permitidos sem modelos Prisma. As respostas de domínio passam por serializers explícitos; hash de senha, chave de storage, token, contato e assinante não integram respostas públicas. Swagger inclui DTOs de entrada, rotas reais e schemas dos campos de saída públicos/administrativos.
 
 Todas as respostas ficam `Cache-Control: no-store`, política mantida na F5. A web revalida por nova requisição e renderiza sem cache persistente; retirada de publicação impede imediatamente nova leitura pública pela API/site. Tarefas persistidas após mutações pertencem à F6; detalhes em [editorial.md](editorial.md).
 

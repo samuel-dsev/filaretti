@@ -1,5 +1,7 @@
 # Banco de dados
 
+Complemento F6: mídia recebe versão para controle de concorrência e identificação do adaptador de storage em nova migration. Preview e outbox passam a executar os fluxos documentados em [cms.md](cms.md), com hash de token, trava PostgreSQL, lease e retries persistidos. Migrations F2 aplicadas não foram reescritas. Aceite real da F6: RP-007 de `../relate.md`.
+
 F2, 03/10/2026. Schema, duas migrations, seeds e serviço Prisma implementados. As evidências de execução com PostgreSQL real e o aceite integrado ficam em `../relate.md`; validação estática do schema não comprova aplicação de migrations.
 
 ## Ambiente e acesso

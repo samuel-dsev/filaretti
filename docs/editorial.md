@@ -1,5 +1,7 @@
 # Portal editorial
 
+Complemento F6: editor TipTap, mídia validada, preview e publicação agendada estão documentados em [cms.md](cms.md). A política no-store e o renderer seguro desta fase permanecem; alterações de slug editorial preservam a URL antiga, e a outbox entrega a revalidação com retries. Resultados da F6 no RP-007.
+
 F5, versão `0.5.0`, 03/10/2026. As rotas editoriais usam PostgreSQL/API reais e preservam o visual aprovado. Conteúdos, identidades e arquivos de desenvolvimento continuam fictícios; materiais oficiais dependem da aprovação prevista na F9. Evidências e resultado do aceite ficam no RP-006 de `../relate.md`.
 
 ## URLs e leitura

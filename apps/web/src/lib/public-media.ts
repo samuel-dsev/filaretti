@@ -2,6 +2,13 @@ import type { PublicMedia } from '@filaretti/types';
 
 const publicRasterTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/avif']);
 
+/** Revocable CMS assets must use the no-store storage facade, never Next's image cache. */
+export function isManagedPublicMedia(pathname: string): boolean {
+  return /^\/media\/public\/[a-f\d]{8}-[a-f\d]{4}-4[a-f\d]{3}-[89ab][a-f\d]{3}-[a-f\d]{12}\.(?:jpe?g|png|webp|avif|pdf)$/iu.test(
+    pathname,
+  );
+}
+
 /** Mirrors Next's image allowlist; private/API paths and external hosts stay excluded. */
 export function publicImage(
   media: PublicMedia | null,
