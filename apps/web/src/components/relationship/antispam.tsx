@@ -121,9 +121,7 @@ export function Antispam({
     <div className="relationship-antispam">
       <div ref={container} />
       {mode === 'mock' ? (
-        <p className="relationship-note">
-          Desenvolvimento local: verificação antispam simulada. Use somente dados fictícios.
-        </p>
+        <p className="relationship-note">Verificação antispam simulada neste ambiente local.</p>
       ) : (
         <p className="relationship-note">Verificação de segurança necessária para enviar.</p>
       )}

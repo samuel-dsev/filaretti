@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Button, Drawer } from '@filaretti/ui';
 import { Brand } from './brand';
 import { ArrowIcon, MenuIcon, SearchIcon } from './icons';
@@ -9,6 +10,7 @@ import { SearchOverlay } from './search-overlay';
 import type { SiteHeaderProps, SiteNavigationItem } from './types';
 
 export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHeaderProps) {
+  const pathname = usePathname();
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -17,6 +19,18 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
   const id = useId();
   const activeItem = navigation.find((item) => item.id === activeMenu);
+  const currentItem = navigation.find((item) => {
+    const matchesPath = (href: string) =>
+      pathname === href || (href !== '/' && pathname.startsWith(`${href}/`));
+    return (
+      (item.href && matchesPath(item.href)) || item.children?.some((link) => matchesPath(link.href))
+    );
+  });
+
+  function currentLocation(item: SiteNavigationItem) {
+    if (item.id !== currentItem?.id) return undefined;
+    return pathname === item.href ? 'page' : 'location';
+  }
 
   useEffect(() => {
     if (!activeMenu) return;
@@ -62,6 +76,7 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                     <Button
                       variant="ghost"
                       className="site-nav-toggle"
+                      aria-current={currentLocation(item)}
                       aria-expanded={activeMenu === item.id}
                       aria-controls={`${id}-${item.id}`}
                       ref={(element) => {
@@ -77,15 +92,13 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                       }}
                     >
                       {item.label}
-                      <span className="site-chevron" aria-hidden="true">
-                        ⌄
-                      </span>
                     </Button>
                   ) : item.href ? (
                     <Link
                       prefetch={false}
                       href={item.href}
                       className="site-nav-link"
+                      aria-current={currentLocation(item)}
                       onClick={() => setActiveMenu(null)}
                     >
                       {item.label}
@@ -135,7 +148,12 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
               <ul className="site-mega-links">
                 {activeItem.children.map((link) => (
                   <li key={`${link.label}-${link.href}`}>
-                    <Link prefetch={false} href={link.href} onClick={() => setActiveMenu(null)}>
+                    <Link
+                      prefetch={false}
+                      href={link.href}
+                      aria-current={pathname === link.href ? 'page' : undefined}
+                      onClick={() => setActiveMenu(null)}
+                    >
                       <span>
                         <strong>{link.label}</strong>
                         {link.description ? <small>{link.description}</small> : null}
@@ -161,13 +179,16 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
               <li key={item.id}>
                 {item.children?.length ? (
                   <>
-                    <span className="site-mobile-group">{item.label}</span>
+                    <span className="site-mobile-group" aria-current={currentLocation(item)}>
+                      {item.label}
+                    </span>
                     <ul>
                       {item.children.map((link) => (
                         <li key={`${link.label}-${link.href}`}>
                           <Link
                             prefetch={false}
                             href={link.href}
+                            aria-current={pathname === link.href ? 'page' : undefined}
                             onClick={() => setMobileOpen(false)}
                           >
                             {link.label}
@@ -178,7 +199,12 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                     </ul>
                   </>
                 ) : item.href ? (
-                  <Link prefetch={false} href={item.href} onClick={() => setMobileOpen(false)}>
+                  <Link
+                    prefetch={false}
+                    href={item.href}
+                    aria-current={currentLocation(item)}
+                    onClick={() => setMobileOpen(false)}
+                  >
                     {item.label}
                     <ArrowIcon />
                   </Link>

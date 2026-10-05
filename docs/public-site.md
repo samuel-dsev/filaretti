@@ -4,6 +4,8 @@ Complemento F6: o CMS altera estes dados pelas APIs e persiste tarefas de revali
 
 Site institucional entregue na F4 e integrado ao portal editorial na F5, versão `0.5.0`, 03/10/2026. O usuário aprovou a estilização da F3. As evidências e o checkpoint ficam em `../relate.md`. Dados e identidades continuam explicitamente fictícios; aprovação do design não substitui aprovação de materiais oficiais. Leitura, filtros, arquivos e cache editorial: [editorial.md](editorial.md).
 
+Na revisão local `0.10.1`, por pedido do usuário, a prosa passou a usar nomes e informações inventados sem “Fictícia” na interface, preservando `isMock`, slugs e todos os ativos visuais. O header identifica a seção atual por rota exata/descendente e `aria-current`, sem seleção permanente ou seta em Áreas de atuação; mega menu e teclado continuam disponíveis. O breadcrumb de `/contato` usa o mesmo container institucional. Textos continuam administráveis pelo CMS, sem transformar fixtures em materiais oficiais.
+
 ## Rotas e dados
 
 | Rota                       | Consultas públicas da API                                                                                  |

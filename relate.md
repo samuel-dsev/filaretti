@@ -2,18 +2,36 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                                                     |
-| ------------------ | ---------------------------------------------------------------------------------------------------------- |
-| Última atualização | 05/10/2026 — RP-012                                                                                        |
-| Etapa              | **Testes manuais locais iniciados; F8/F9/F10 parciais nos aceites externos**                               |
-| Versão             | `0.10.0`, oito manifests privados alinhados; V1 `1.0.0` não publicada                                      |
-| Git                | `dev`; F10 confirmada em `e03f71f3259081259aed4d7d974cbd4ff64373b3`; commit documental previsto no RP-012  |
-| Autorização        | Localhost, testes manuais, revisão visual e conteúdo real local; ações externas permanecem pendentes       |
-| Checkpoint         | Receber relatos de bugs, referências visuais e materiais reais aprovados; corrigir a base incrementalmente |
+| Campo              | Estado                                                                              |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| Última atualização | 05/10/2026 — RP-013                                                                 |
+| Etapa              | **Testes manuais locais iniciados; F8/F9/F10 parciais nos aceites externos**        |
+| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada               |
+| Git                | `dev`; base documental `d1cb2b7`; correção local em preparação                      |
+| Autorização        | Textos inventados sem Fictícia, header e breadcrumb de contato; imagens preservadas |
+| Checkpoint         | Revisão textual/header/contato verificados; continuar testes manuais com o usuário  |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo; este fechamento usa a data 05/10/2026 do cliente, com timestamps UTC originais nas evidências.
 
 ## Histórico
+
+### RP-013 — 05/10/2026 — Revisão textual, header e breadcrumb de contato
+
+**Escopo autorizado:** seleção do header conforme página atual, remoção da seta em Áreas de atuação, alinhamento do breadcrumb “Início / Contato” e substituição da prosa institucional/editorial por textos e profissionais inventados, com inspiração no tom de `https://silveiro.com.br/`. Usuário restringiu outras mudanças aos textos e proibiu alterar/adicionar imagens. Essa autorização substitui a exigência anterior de rótulos visíveis “Fictícia”; registros continuam `isMock=true`, com dados locais, e não viram materiais aprovados para produção.
+
+**Estado:** concluído e verificado localmente. Versão corretiva `0.10.0` → `0.10.1`, oito manifests privados alinhados. Branch `dev`, base documental real `d1cb2b7`, inicialmente limpa. Commit local previsto: `fix(site): corrige navegacao e renova textos locais (v0.10.1)`.
+
+**Mudanças:** header usa `usePathname`/`aria-current` para rota exata e descendentes, sem seleção fixa ou glifo de seta; mega menu, teclado e mobile preservados. `/contato` usa wrapper institucional padrão no breadcrumb. Catálogo original para quatro profissionais, cinco áreas, vinte artigos/atualizações/guias, seis categorias, vinte tags, seis FAQs e quatro páginas. Prosa auxiliar do footer/admin/antispam/políticas foi atualizada. Slugs/IDs, relacionamentos, estado/datas de publicação, credenciais, integrações, mídia e componentes visuais foram preservados. A única alteração CSS é a correção específica do header solicitada; o único ajuste de container é o breadcrumb de contato.
+
+**Persistência:** seed normal continua idempotente. `refresh-development-content.ts` exige desenvolvimento/loopback e os 75 fixtures mock conhecidos, com snapshot local sem senhas/tokens e transação Serializable/trava do CMS. Aplicação real aprovada: 4 profissionais, 5 áreas, 20 conteúdos, 6 categorias, 20 tags, 6 FAQs, 4 páginas, 3 usuários, 3 contatos, 3 assinantes e settings. Comparação antes/depois confirmou campos não textuais e registros de mídia preservados. `version`/`updatedAt` acompanham edições; no fechamento foram alinhados os contadores dos sete fixtures settings/contatos/assinantes sem reaplicar textos. Recusa em production validada com exit 1 esperado e sem mutação. Nenhuma migration/reset/seed de produção ou fornecedor real executado.
+
+**Validação:** lint web/API, typecheck web/API/Prisma/tools, build integrado API/pacotes/Next e build web final aprovados. 63 testes web Node + 9 RTL, 100 integrações PostgreSQL reais e 44 contrastes aprovados, sem falhas/skips. Seed idempotente conferido em bancos temporários próprios. Subagente frontend verificou nove rotas Edge, seleção/ausência de seta, ArrowDown/Escape/foco e menu mobile. Breadcrumb e título de contato em x=64px na largura 1440. Smoke adicional: 32 rotas públicas, incluindo todos os perfis/áreas/artigos publicados, sem “Fictícia” na prosa visível/títulos; 30 layouts de seis templates em 375/768/1024/1440/1920, sem overflow ou erros JavaScript. Principal inspecionou Home desktop/mobile, contato desktop e artigo mobile. Imagens, inclusive arte CSS, preservadas; somente sua legenda textual revisada. Prettier/diff-check executados no fechamento.
+
+**Evidências/limites:** `.local/revision-text-smoke.json`, `.local/revision-text-evidence/`, script/capturas header/contato e `.local/content-before-<timestamp>.json`, ignorados pelo Git. Primeira rodada responsiva falhou numa leitura de overflow de artigo após trocar a largura; sonda direta não reproduziu (scrollWidth=375). Runner passou a aguardar dois frames após resize/fontes; rodada final 32 rotas/30 layouts aprovada sem alterar CSS adicional do produto. Warning preexistente de concorrência pg permanece sem falha. Não reexecutados os smokes completos F8/CMS/relacionamento, Lighthouse ou navegadores/dispositivos externos; esta entrega verifica o escopo textual/header/contato.
+
+**Equipe e arquivos (2 criados, 28 alterados):** subagentes isolados para header/contato e catálogo; principal integrou/verificou. Criados `apps/api/prisma/development-content.ts` e `apps/api/prisma/refresh-development-content.ts`. Alterados `apps/api/prisma/seed-development.ts`, `apps/api/test/database.integration.test.ts`, oito manifests `package.json` (raiz/API/web/cinco packages), `scripts/test-f8.mjs`, `scripts/test-cms.mjs`; web: `src/app/(institutional)/{contato,cookies,privacidade}/page.tsx`, `src/app/(institutional)/layout.tsx`, `src/components/admin/admin-layout.tsx`, `src/components/relationship/antispam.tsx`, `src/components/site/{content-cards.tsx,hero.tsx,site-header.tsx,styles.css}`; `docs/database.md`, `docs/public-site.md`, `docs/release-checklist.json`, `README.md`, `plan.md` e `relate.md`. Nenhum ativo de imagem, schema, migration ou lockfile alterado; nenhum arquivo removido. Testes mantêm stemming/índices/ocultação sem depender dos rótulos antigos.
+
+**Retomada:** `http://localhost:3000` permanece ativo em development para os próximos testes/relatos do usuário. Conteúdo inventado continua local e administrável pelo CMS. Integrações reais, CI remoto, publicação, push/PR, DNS e aceite externo permanecem fora desta entrega.
 
 ### RP-012 — 05/10/2026 — Ambiente para testes manuais locais
 

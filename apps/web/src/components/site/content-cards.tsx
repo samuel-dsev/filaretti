@@ -127,7 +127,7 @@ export function ProfessionalCard({
       ) : (
         <div className="site-professional-placeholder">
           <span aria-hidden="true">{initials}</span>
-          <small>Retrato de demonstração</small>
+          <small>Equipe Filaretti</small>
         </div>
       )}
       <div className="site-professional-body">

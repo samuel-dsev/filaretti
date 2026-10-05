@@ -44,7 +44,7 @@ export default async function InstitutionalLayout({ children }: { children: Reac
       footer={{
         brand,
         description:
-          'Conheça as áreas de atuação, os profissionais e as informações do escritório.',
+          'Atuação integrada, escuta próxima e conhecimento jurídico para apoiar suas decisões.',
         groups: [
           {
             title: 'Institucional',
@@ -65,7 +65,7 @@ export default async function InstitutionalLayout({ children }: { children: Reac
         ],
         ...(process.env.APP_ENV !== 'production'
           ? {
-              note: 'Ambiente de desenvolvimento. Conteúdos e identidades explicitamente fictícios.',
+              note: 'Conhecimento jurídico para decisões conscientes.',
             }
           : {}),
         copyright: `© ${new Date().getFullYear()} ${settings.siteName}`,

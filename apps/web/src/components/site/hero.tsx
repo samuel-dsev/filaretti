@@ -32,7 +32,7 @@ export function Hero({ eyebrow, title, description, actions, visual }: HeroProps
 }
 
 export function PlaceholderArtwork({
-  label = 'Ilustração de demonstração · imagem substituível',
+  label = 'Filaretti Advocacia · perspectivas em diálogo',
 }: {
   label?: string;
 }) {

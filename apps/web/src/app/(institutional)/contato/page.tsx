@@ -23,7 +23,9 @@ export default async function ContactPage() {
   const address = Object.values(settings.address).filter(Boolean).join(', ');
   return (
     <>
-      <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Contato' }]} />
+      <div className="f-container institution-breadcrumb">
+        <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Contato' }]} />
+      </div>
       <Hero
         eyebrow="Relacionamento"
         title="Contato"

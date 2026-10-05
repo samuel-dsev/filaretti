@@ -110,14 +110,24 @@
 }
 
 .site-nav-link:hover,
+.site-nav-toggle.f-button:hover:not(:disabled):not([aria-disabled='true']),
 .site-nav-toggle.f-button[aria-expanded='true'] {
   color: var(--f-color-primary);
   background: var(--f-color-offwhite);
 }
 
-.site-chevron {
-  font-family: var(--f-font-body);
-  font-size: 1rem;
+.site-nav-toggle.f-button {
+  background: transparent;
+}
+
+.site-nav-link {
+  border-radius: var(--f-radius-sm);
+}
+
+.site-nav-link[aria-current],
+.site-nav-toggle.f-button[aria-current] {
+  color: var(--f-color-navy);
+  background: var(--f-color-pale);
 }
 
 .site-header-actions svg,
@@ -253,6 +263,15 @@
   border-bottom: 1px solid #d4dce3;
   color: var(--f-color-navy);
   text-decoration: none;
+}
+
+.site-mobile-group[aria-current] {
+  color: var(--f-color-primary);
+}
+
+.site-mobile-nav a[aria-current] {
+  color: var(--f-color-primary);
+  background: var(--f-color-pale);
 }
 
 .site-search-field label {

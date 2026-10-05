@@ -61,7 +61,7 @@ export function AdminLayout({
   description,
   navigation,
   userLabel,
-  environmentLabel = 'Ambiente de demonstração · conteúdo fictício',
+  environmentLabel = 'Ambiente local de testes',
   actions,
   children,
 }: AdminLayoutProps) {

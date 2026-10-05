@@ -25,8 +25,7 @@ export default async function CookiesPage() {
       <div className="f-container">
         {process.env.APP_ENV !== 'production' ? (
           <p className="relationship-note">
-            Conteúdo fictício de desenvolvimento. O texto oficial depende de aprovação do
-            escritório.
+            Você pode consultar e ajustar suas preferências de navegação a qualquer momento.
           </p>
         ) : null}
         <CookiePreferencesButton />

@@ -1,6 +1,16 @@
 import { ArticleType, PublicationStatus, UserRole, type PrismaClient } from '@prisma/client';
 import { hashPassword } from '../src/auth/password';
 import { createSeedClient, reportSeedFailure } from './seed-client';
+import {
+  DEVELOPMENT_ARTICLES,
+  DEVELOPMENT_CATEGORIES,
+  DEVELOPMENT_FAQS,
+  DEVELOPMENT_PAGES,
+  DEVELOPMENT_PRACTICE_AREAS,
+  DEVELOPMENT_PROFESSIONALS,
+  DEVELOPMENT_SITE_NAME,
+  DEVELOPMENT_TAGS,
+} from './development-content';
 
 // Deliberately public test fixtures. These accounts must never reach production.
 export const DEVELOPMENT_PASSWORD = 'Local-F2-Ficticio!2026';
@@ -8,29 +18,74 @@ export const DEVELOPMENT_USERS = [
   {
     id: fixtureId(1, 1),
     email: 'admin@filaretti.test',
-    name: 'Admin Fictício',
+    name: 'Administração Filaretti',
     role: UserRole.ADMIN,
   },
   {
     id: fixtureId(1, 2),
     email: 'editor@filaretti.test',
-    name: 'Editor Fictício',
+    name: 'Equipe Editorial',
     role: UserRole.EDITOR,
   },
   {
     id: fixtureId(1, 3),
     email: 'author@filaretti.test',
-    name: 'Autor Fictício',
+    name: 'Núcleo de Conteúdo',
     role: UserRole.AUTHOR,
   },
 ] as const;
 
-function fixtureId(group: number, number: number): string {
+export function fixtureId(group: number, number: number): string {
   return `${group.toString(16)}0000000-0000-4000-8000-${number.toString().padStart(12, '0')}`;
 }
 
-function document(text: string) {
+export function document(text: string) {
   return { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text }] }] };
+}
+
+export function developmentArticleContent(index: number) {
+  const article = DEVELOPMENT_ARTICLES[index]!;
+  return {
+    type: 'doc',
+    content: [
+      ...document(article.introduction).content,
+      ...article.sections.flatMap((section) => [
+        {
+          type: 'heading',
+          attrs: { level: 2 },
+          content: [{ type: 'text', text: section.heading }],
+        },
+        ...document(section.text).content,
+      ]),
+      ...document(article.conclusion).content,
+    ],
+  };
+}
+
+export function developmentPageSections(slug: keyof typeof DEVELOPMENT_PAGES) {
+  const page = DEVELOPMENT_PAGES[slug];
+  const [intro, ...sections] = page.sections;
+  // Keep the existing page template and section key; update only its written content.
+  return [
+    {
+      key: 'intro',
+      heading: intro.heading,
+      body: {
+        type: 'doc',
+        content: [
+          ...document(intro.text).content,
+          ...sections.flatMap((section) => [
+            {
+              type: 'heading',
+              attrs: { level: 2 },
+              content: [{ type: 'text', text: section.heading }],
+            },
+            ...document(section.text).content,
+          ]),
+        ],
+      },
+    },
+  ];
 }
 
 export function assertDevelopmentSeedEnvironment(): void {
@@ -63,6 +118,7 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
       }
       const professionals = [];
       for (let i = 1; i <= 4; i++) {
+        const copy = DEVELOPMENT_PROFESSIONALS[i - 1]!;
         professionals.push(
           await tx.professional.upsert({
             where: { slug: `profissional-ficticio-${i}` },
@@ -70,11 +126,11 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
             create: {
               id: fixtureId(2, i),
               slug: `profissional-ficticio-${i}`,
-              name: `Profissional Fictício ${i}`,
-              title: 'Perfil demonstrativo — sem credencial profissional real',
-              bio: document('Biografia fictícia destinada exclusivamente ao desenvolvimento.'),
-              education: ['Formação fictícia para demonstração'],
-              experience: ['Experiência fictícia para demonstração'],
+              name: copy.name,
+              title: copy.title,
+              bio: document(copy.bio),
+              education: [...copy.education],
+              experience: [...copy.experience],
               sortOrder: i,
               isMock: true,
             },
@@ -83,6 +139,7 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
       }
       const areas = [];
       for (let i = 1; i <= 5; i++) {
+        const copy = DEVELOPMENT_PRACTICE_AREAS[i - 1]!;
         areas.push(
           await tx.practiceArea.upsert({
             where: { slug: `area-ficticia-${i}` },
@@ -90,10 +147,10 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
             create: {
               id: fixtureId(3, i),
               slug: `area-ficticia-${i}`,
-              name: `Área Fictícia ${i}`,
-              summary: 'Área demonstrativa, sem oferta real de serviços.',
-              description: document('Descrição fictícia sobre direitos e responsabilidades.'),
-              services: ['Serviço fictício demonstrativo'],
+              name: copy.name,
+              summary: copy.summary,
+              description: document(copy.description),
+              services: [...copy.services],
               sortOrder: i,
               isMock: true,
             },
@@ -125,7 +182,7 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
             create: {
               id: fixtureId(5, i),
               slug: `categoria-ficticia-${i}`,
-              name: `Categoria Fictícia ${i}`,
+              name: DEVELOPMENT_CATEGORIES[i - 1]!,
               isMock: true,
             },
           }),
@@ -140,7 +197,7 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
             create: {
               id: fixtureId(6, i),
               slug: `tag-ficticia-${i}`,
-              name: `Tag Fictícia ${i}`,
+              name: DEVELOPMENT_TAGS[i - 1]!,
               isMock: true,
             },
           }),
@@ -149,6 +206,7 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
       const articleTypes = [ArticleType.ARTICLE, ArticleType.UPDATE, ArticleType.GUIDE] as const;
       const baseDate = new Date('2026-09-01T12:00:00.000Z');
       for (let i = 1; i <= 20; i++) {
+        const copy = DEVELOPMENT_ARTICLES[i - 1]!;
         const status =
           i <= 12
             ? PublicationStatus.PUBLISHED
@@ -163,12 +221,11 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
           create: {
             id: fixtureId(4, i),
             slug: `conteudo-ficticio-${i.toString().padStart(2, '0')}`,
-            title: `Conteúdo Fictício ${i} — direitos e responsabilidades`,
-            excerpt:
-              'Conteúdo demonstrativo. Não constitui orientação jurídica ou material aprovado.',
-            content: document(
-              `Texto fictício ${i} sobre direitos, responsabilidades e informação jurídica. Somente para desenvolvimento.`,
-            ),
+            title: copy.title,
+            excerpt: copy.excerpt,
+            content: developmentArticleContent(i - 1),
+            seoTitle: copy.title,
+            seoDescription: copy.excerpt,
             type: articleTypes[(i - 1) % articleTypes.length]!,
             status,
             authorId: professionals[(i - 1) % professionals.length]!.id,
@@ -204,34 +261,34 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
         });
       }
       for (let i = 1; i <= 6; i++) {
+        const copy = DEVELOPMENT_FAQS[i - 1]!;
         await tx.faq.upsert({
           where: { id: fixtureId(7, i) },
           update: {},
           create: {
             id: fixtureId(7, i),
-            question: `Pergunta Fictícia ${i}?`,
-            answer: document('Resposta fictícia destinada exclusivamente à demonstração.'),
+            question: copy.question,
+            answer: document(copy.answer),
             practiceAreaId: i === 1 ? null : areas[(i - 2) % areas.length]!.id,
             sortOrder: i,
             isMock: true,
           },
         });
       }
-      for (const [index, slug] of ['home', 'o-escritorio', 'privacidade', 'cookies'].entries()) {
+      for (const [index, slug] of (
+        ['home', 'o-escritorio', 'privacidade', 'cookies'] as const
+      ).entries()) {
+        const copy = DEVELOPMENT_PAGES[slug];
         await tx.page.upsert({
           where: { slug },
           update: {},
           create: {
             id: fixtureId(8, index + 1),
             slug,
-            title: `Página Fictícia — ${slug}`,
-            sections: [
-              {
-                key: 'intro',
-                heading: 'Conteúdo fictício',
-                body: document('Texto fictício. A versão definitiva depende de material aprovado.'),
-              },
-            ],
+            title: copy.title,
+            seoTitle: copy.seoTitle,
+            seoDescription: copy.seoDescription,
+            sections: developmentPageSections(slug),
             status: PublicationStatus.PUBLISHED,
             publishedAt: baseDate,
             isMock: true,
@@ -244,10 +301,15 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
           update: {},
           create: {
             id: fixtureId(9, i),
-            name: `Contato Fictício ${i}`,
+            name: ['Camila Sampaio', 'André Lacerda', 'Beatriz Monteiro'][i - 1]!,
             email: `contato-${i}@filaretti.test`,
-            subject: 'Solicitação fictícia',
-            message: 'Mensagem demonstrativa sem dados de cliente real.',
+            subject: [
+              'Revisão de contrato comercial',
+              'Planejamento societário',
+              'Consulta inicial',
+            ][i - 1]!,
+            message:
+              'Gostaria de agendar uma conversa para apresentar minha necessidade e conhecer as possibilidades de atendimento.',
             privacyVersion: 'mock-development-v1',
             consentedAt: baseDate,
             isMock: true,
@@ -259,7 +321,7 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
           create: {
             id: fixtureId(10, i),
             email: `assinante-${i}@filaretti.test`,
-            name: `Assinante Fictício ${i}`,
+            name: ['Luiza Carvalho', 'Pedro Vasconcelos', 'Isabela Moura'][i - 1]!,
             status: i === 1 ? 'ACTIVE' : i === 2 ? 'PENDING' : 'UNSUBSCRIBED',
             consentVersion: 'mock-development-v1',
             consentedAt: baseDate,
@@ -274,7 +336,7 @@ export async function seedDevelopment(client: PrismaClient): Promise<void> {
         update: {},
         create: {
           id: 'site',
-          siteName: 'Filaretti — demonstração fictícia',
+          siteName: DEVELOPMENT_SITE_NAME,
           publicEmail: 'escritorio@filaretti.test',
           address: {},
           socialLinks: [],

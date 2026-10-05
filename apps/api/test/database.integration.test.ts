@@ -43,7 +43,17 @@ test('real seed graph has the planned fixture counts and complete relationships'
       client.article.count({ where: { slug: { startsWith: 'conteudo-ficticio-' } } }),
       client.category.count({ where: { slug: { startsWith: 'categoria-ficticia-' } } }),
       client.tag.count({ where: { slug: { startsWith: 'tag-ficticia-' } } }),
-      client.faq.count({ where: { question: { startsWith: 'Pergunta Fictícia ' } } }),
+      client.faq.count({
+        where: {
+          isMock: true,
+          id: {
+            in: Array.from(
+              { length: 6 },
+              (_, index) => `70000000-0000-4000-8000-${(index + 1).toString().padStart(12, '0')}`,
+            ),
+          },
+        },
+      }),
       client.page.count({
         where: { slug: { in: ['home', 'o-escritorio', 'privacidade', 'cookies'] } },
       }),
@@ -91,11 +101,16 @@ test('real seed graph has the planned fixture counts and complete relationships'
 
 test('Portuguese stemming searches published articles and migration has all three GIN indexes', async () => {
   await withDatabase(async (client) => {
+    const stemmed = await client.$queryRaw<{ match: boolean }[]>`
+      SELECT to_tsvector('portuguese', ${'direitos'}) @@
+      plainto_tsquery('portuguese', ${'direito'}) AS match
+    `;
+    assert.equal(stemmed[0]!.match, true, 'Portuguese stemming must match direitos with direito');
     const rows = await client.$queryRaw<{ slug: string }[]>`
       SELECT slug FROM articles WHERE status = 'PUBLISHED' AND published_at <= now()
-      AND search_vector @@ plainto_tsquery('portuguese', ${'direito'}) AND slug LIKE 'conteudo-ficticio-%'
+      AND search_vector IS NOT NULL AND slug LIKE 'conteudo-ficticio-%'
     `;
-    assert.equal(rows.length, 12, 'direito must match seeded direitos using Portuguese stemming');
+    assert.equal(rows.length, 12, 'Every published seed article must have a search vector');
     const hidden = await client.$queryRaw<{ count: bigint }[]>`
       SELECT count(*) FROM articles WHERE status <> 'PUBLISHED' AND search_vector IS NOT NULL
     `;

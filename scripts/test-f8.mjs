@@ -669,10 +669,7 @@ async function layoutChecks(channel, fullMatrix) {
       await page.keyboard.press('Enter');
       assert.equal(await page.locator(':focus').getAttribute('id'), 'conteudo');
       await page.goto(`${webOrigin}/perguntas-frequentes`, { waitUntil: 'networkidle' });
-      const question = page
-        .locator('summary')
-        .filter({ hasText: /Pergunta Fictícia/u })
-        .first();
+      const question = page.locator('main summary').first();
       await question.focus();
       await page.keyboard.press('Enter');
       assert.equal(

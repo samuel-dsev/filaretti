@@ -76,7 +76,13 @@ rtk proxy pnpm --filter @filaretti/api db:seed:development
 | Contatos e assinantes fictícios | 3 e 3                                                      |
 | Configuração do site            | 1                                                          |
 
-Todas as identidades e conteúdos aplicáveis carregam `isMock=true`; nomes e textos dizem explicitamente que são fictícios. E-mails usam `.test`. Não há biografias, credenciais profissionais, números de telefone, destinatários ou anexos reais. Os 20 artigos têm slugs `conteudo-ficticio-01` a `conteudo-ficticio-20` e relações com autor, usuário criador, categoria, tag e área.
+Todas as identidades e conteúdos aplicáveis carregam `isMock=true`. Desde a revisão local `0.10.1`, os textos de apresentação são originais, com profissionais e informações inventados por pedido do usuário, sem o rótulo “Fictícia” na interface. O catálogo está em `apps/api/prisma/development-content.ts`; isso não constitui aprovação de materiais reais para produção. E-mails usam `.test`, e nenhuma credencial profissional, número de telefone, destinatário ou anexo real foi acrescentado. IDs, slugs técnicos e relações foram preservados; os 20 artigos continuam com slugs `conteudo-ficticio-01` a `conteudo-ficticio-20`.
+
+O seed normal continua idempotente e não sobrescreve edições. Para a revisão textual já existente no banco local, o comando abaixo atualiza exclusivamente os 75 registros mock conhecidos, em transação Serializable com a trava do CMS. Exige o mesmo ambiente de desenvolvimento do seed e banco em loopback; recusa conjunto incompleto ou registros sem `isMock`. Salva um snapshot ignorado em `.local/content-before-<timestamp>.json`, sem senhas/tokens, e verifica que mídias e campos não textuais permanecem iguais, exceto `version`/`updatedAt` usados no controle de edição. Este comando substitui deliberadamente os textos desses fixtures; não o executar sobre edições locais que devam ser preservadas.
+
+```powershell
+rtk proxy pnpm --filter @filaretti/api exec tsx prisma/refresh-development-content.ts
+```
 
 **Credenciais públicas exclusivamente locais:** `admin@filaretti.test`, `editor@filaretti.test` e `author@filaretti.test`; senha de teste `Local-F2-Ficticio!2026`. A senha é armazenada como Argon2id (64 MiB, 3 iterações, paralelismo 1), com o mesmo helper de autenticação. Não reutilizar essas identidades/senha em homologação pública ou produção. Se o seed encontrar uma identidade correspondente sem `isMock`, falha em vez de sobrescrevê-la.
 

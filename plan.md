@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                                                                 |
-| ---------------------- | -------------------------------------------------------------------------------------------------------- |
-| Última atualização     | 05/10/2026 — ambiente local iniciado para testes manuais e revisão visual                                |
-| Último relatório       | `RP-012`, em `relate.md`                                                                                 |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                                        |
-| Última entrega técnica | **F10 local: gate operacional, candidata controlada/pública, manuais e seis correções da revisão**       |
-| Versão de referência   | `0.10.0`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado                      |
-| Etapa corrente         | **Testes manuais locais; F10 local verificada e F8/F9/F10 parciais nos aceites externos**                |
-| Próximo passo          | Receber bugs, referências visuais e materiais reais aprovados; corrigir e revisar incrementalmente       |
-| Autorização            | Iniciar localhost, testes manuais, revisão visual e conteúdo real local; ações externas seguem pendentes |
-| Git                    | `dev`, remoto `origin`; F10 confirmada em `e03f71f3259081259aed4d7d974cbd4ff64373b3`                     |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                           |
+| Campo                  | Situação                                                                                         |
+| ---------------------- | ------------------------------------------------------------------------------------------------ |
+| Última atualização     | 05/10/2026 — revisão textual, header e contato verificados localmente                            |
+| Último relatório       | `RP-013`, em `relate.md`                                                                         |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                                |
+| Última entrega técnica | **Revisão textual e correções de header/contato verificadas — RP-013**                           |
+| Versão de referência   | `0.10.1`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado              |
+| Etapa corrente         | **Testes manuais locais; F10 local verificada e F8/F9/F10 parciais nos aceites externos**        |
+| Próximo passo          | Continuar testes manuais e corrigir os novos relatos nesta base                                  |
+| Autorização            | Prosa inventada sem Fictícia, seleção do header, remoção da seta e breadcrumb; preservar imagens |
+| Git                    | `dev`, remoto `origin`; base documental `d1cb2b7`; commit corretivo previsto no RP-013           |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                   |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -223,6 +223,10 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**05/10/2026 — RP-013 — revisão textual e primeiras correções manuais verificadas:** header selecionado conforme a página, seta de Áreas removida, breadcrumb de contato alinhado e prosa renovada com informações inventadas inspiradas no tom de `https://silveiro.com.br/`. Nenhuma imagem alterada/adicionada. Autorização atual substitui a exigência anterior de escrever “Fictícia” nas identidades visíveis; `isMock`, isolamento, slugs, estado de publicação e gates externos preservados. Versão corretiva `0.10.1`, base `d1cb2b7`, branch `dev`. Catálogo original/seed e refresh aplicado aos 75 fixtures com snapshot, transação e conferência de campos não textuais/mídias. Lint, tipagem, build, 72 testes web, 100 integrações PostgreSQL e 44 contrastes aprovados. Edge: 32 rotas sem “Fictícia” nos textos/títulos, 30 layouts nas cinco larguras, header/teclado/mobile e alinhamento de contato. Histórico/evidências/limites no RP-013; `http://localhost:3000` permanece ativo para os próximos relatos do usuário.
+
+### Registro anterior — RP-012 (histórico)
 
 **05/10/2026 — RP-012 — início dos testes manuais locais:** usuário pediu iniciar o sistema em localhost antes de testar funcionalidades, reportar bugs e prosseguir com estilização/conteúdo real. Base `e03f71f`, versão `0.10.0`, `dev` limpa. Processos antigos desta base foram identificados e encerrados; `rtk proxy pnpm dev` iniciou Next com atualização automática e API com compilação contínua. Site e painel em `http://localhost:3000`, API em `http://127.0.0.1:3001`; PostgreSQL existente saudável na porta 5434 e volume preservado. Home/login/contato/readiness retornaram 200; login ADMIN validado em Edge real, dashboard carregado e zero erros JavaScript capturados nesse fluxo. Integrações locais simuladas; nenhuma alteração de configuração, seed, conteúdo ou código da aplicação. Documentos atualizados e commit documental local previsto no RP-012. Próximo passo: receber os relatos/materiais do usuário e aplicar correções incrementais; materiais reais precisam ser fornecidos/aprovados, e publicação/ações externas continuam com seus gates próprios.
 

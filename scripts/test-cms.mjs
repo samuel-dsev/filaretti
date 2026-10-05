@@ -1364,7 +1364,10 @@ async function browserFlow() {
           .getByText(/permissão/iu)
           .first()
           .waitFor();
-        assert.equal(await authorPage.getByText('Admin Fictício', { exact: true }).count(), 0);
+        assert.equal(
+          await authorPage.getByText('Administração Filaretti', { exact: true }).count(),
+          0,
+        );
       } finally {
         await context.close();
       }

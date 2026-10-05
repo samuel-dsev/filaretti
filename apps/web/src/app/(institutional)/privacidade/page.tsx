@@ -23,8 +23,8 @@ export default async function PrivacyPage() {
       <Hero eyebrow="Informações" title={page.title} />
       {process.env.APP_ENV !== 'production' ? (
         <p className="f-container relationship-note">
-          Conteúdo fictício de desenvolvimento. O aviso oficial e os prazos de retenção dependem de
-          aprovação do escritório.
+          Conheça nossas orientações sobre o uso de informações pessoais e os canais disponíveis
+          para exercer suas escolhas.
         </p>
       ) : null}
       <PageSections page={page} />
