@@ -2,18 +2,34 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                                                      |
-| ------------------ | ----------------------------------------------------------------------------------------------------------- |
-| Última atualização | 05/10/2026 — RP-011                                                                                         |
-| Etapa              | **F10 local/revisão verificada; F8/F9/F10 parciais nos aceites externos**                                   |
-| Versão             | `0.10.0`, oito manifests privados alinhados; V1 `1.0.0` não publicada                                       |
-| Git                | `dev`; base F9 `fff682d0a60f7c95fb7f927d1d3e6812f91695fd`; commit local F10 previsto abaixo                 |
-| Autorização        | Continuar F10 + revisão completa; alvo/ações externas de produção, carga, DNS e push/PR pendentes           |
-| Checkpoint         | Obter materiais/inventário/ambiente/evidências F8/F9 para candidata oficial e ações de produção específicas |
+| Campo              | Estado                                                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Última atualização | 05/10/2026 — RP-012                                                                                        |
+| Etapa              | **Testes manuais locais iniciados; F8/F9/F10 parciais nos aceites externos**                               |
+| Versão             | `0.10.0`, oito manifests privados alinhados; V1 `1.0.0` não publicada                                      |
+| Git                | `dev`; F10 confirmada em `e03f71f3259081259aed4d7d974cbd4ff64373b3`; commit documental previsto no RP-012  |
+| Autorização        | Localhost, testes manuais, revisão visual e conteúdo real local; ações externas permanecem pendentes       |
+| Checkpoint         | Receber relatos de bugs, referências visuais e materiais reais aprovados; corrigir a base incrementalmente |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo; este fechamento usa a data 05/10/2026 do cliente, com timestamps UTC originais nas evidências.
 
 ## Histórico
+
+### RP-012 — 05/10/2026 — Ambiente para testes manuais locais
+
+**Escopo autorizado:** iniciar o sistema em localhost e informar a porta antes dos testes do usuário, com continuidade para correções, revisão de estilização e inserção de materiais reais fornecidos/aprovados. Esta entrega inicia o ambiente; nenhum material real foi recebido/inserido e nenhum ajuste visual foi solicitado em detalhe.
+
+**Estado/versão/Git:** ambiente local disponível, versão `0.10.0` preservada. Checkout `C:\Users\Samuel\Documents\Projetos\Filaretti`, branch `dev` inicialmente limpa, F10 confirmada em `e03f71f3259081259aed4d7d974cbd4ff64373b3`. Commit documental previsto: `docs: registra inicio dos testes manuais locais`. F8/F9/F10 permanecem parciais nos aceites externos.
+
+**Execução:** processos API/Next antigos nas portas 3001/3000 foram identificados pelo caminho deste checkout e data de início anterior aos builds atuais; somente esses dois processos foram encerrados. `rtk proxy pnpm dev` iniciou Next/Turbopack e API/tsc-watch, permitindo atualização automática nas próximas edições. Serviços permanecem ativos ao entregar os links. Nenhum serviço de outro projeto, banco ou volume foi encerrado/removido. PostgreSQL existente `filaretti-local-postgres-1` permanece saudável em `127.0.0.1:5434`.
+
+**Endereços:** site `http://localhost:3000`; CMS `http://localhost:3000/admin/login`; API `http://127.0.0.1:3001`. A origem configurada de web/API é `http://localhost:3000`; usar essa origem no navegador para as mutações do CMS. Configuração local validada sem imprimir segredos: development, bind loopback, integrações simuladas e R2/Resend/Turnstile externos desabilitados. Conta ADMIN fictícia e senha pública de teste continuam documentadas em `docs/database.md`.
+
+**Validação atual:** Compose confirmou PostgreSQL saudável; compilação API em watch e Next dev iniciaram; HTTP 200 em readiness (`database=up`), Home, login e contato. Edge headless real validou preenchimento/login pelo BFF e chegada ao Dashboard, com zero erros JavaScript capturados nesse fluxo. Esta verificação de disponibilidade não repete a suíte de QA nem substitui os testes manuais que o usuário vai realizar.
+
+**Arquivos:** alterados somente `plan.md` e `relate.md` para checkpoint/histórico. Nenhum arquivo versionável criado/removido, código ou configuração da aplicação alterados; nenhum seed/migration/carga de conteúdo executado. Prettier e diff-check executados no fechamento documental. Subagentes não foram necessários para esta inicialização operacional simples.
+
+**Retomada:** receber os bugs e escolhas visuais do usuário e corrigir incrementalmente nesta base. Inserir conteúdo real local conforme materiais fornecidos/aprovados, sem inventar biografias/contatos/políticas. E-mails e antispam permanecem simulados neste ambiente. Publicação, fornecedores reais, produção, carga externa, DNS e push/PR continuam pendentes de alvo/autorização aplicáveis.
 
 ### RP-011 — 05/10/2026 — F10 local e revisão completa F0–F10
 

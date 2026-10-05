@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                                                                          |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Última atualização     | 05/10/2026 — F10 local e revisão F0–F10; aceites externos pendentes                                               |
-| Último relatório       | `RP-011`, em `relate.md`                                                                                          |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                                                 |
-| Última entrega técnica | **F10 local: gate operacional, candidata controlada/pública, manuais e seis correções da revisão**                |
-| Versão de referência   | `0.10.0`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado                               |
-| Etapa corrente         | **F10 local verificada; F8/F9/F10 parciais nos aceites externos**                                                 |
-| Próximo passo          | Obter materiais/inventário/ambiente e evidências F8/F9 para candidata oficial e corte revisável                   |
-| Autorização            | Continuar F10 e revisar todas as fases; ambiente/carga/deploy/DNS específicos e push/PR não definidos/autorizados |
-| Git                    | `dev`, remoto `origin`; base F9 `fff682d0a60f7c95fb7f927d1d3e6812f91695fd`; commit F10 previsto no RP-011         |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                                    |
+| Campo                  | Situação                                                                                                 |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| Última atualização     | 05/10/2026 — ambiente local iniciado para testes manuais e revisão visual                                |
+| Último relatório       | `RP-012`, em `relate.md`                                                                                 |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                                        |
+| Última entrega técnica | **F10 local: gate operacional, candidata controlada/pública, manuais e seis correções da revisão**       |
+| Versão de referência   | `0.10.0`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado                      |
+| Etapa corrente         | **Testes manuais locais; F10 local verificada e F8/F9/F10 parciais nos aceites externos**                |
+| Próximo passo          | Receber bugs, referências visuais e materiais reais aprovados; corrigir e revisar incrementalmente       |
+| Autorização            | Iniciar localhost, testes manuais, revisão visual e conteúdo real local; ações externas seguem pendentes |
+| Git                    | `dev`, remoto `origin`; F10 confirmada em `e03f71f3259081259aed4d7d974cbd4ff64373b3`                     |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                           |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -223,6 +223,10 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**05/10/2026 — RP-012 — início dos testes manuais locais:** usuário pediu iniciar o sistema em localhost antes de testar funcionalidades, reportar bugs e prosseguir com estilização/conteúdo real. Base `e03f71f`, versão `0.10.0`, `dev` limpa. Processos antigos desta base foram identificados e encerrados; `rtk proxy pnpm dev` iniciou Next com atualização automática e API com compilação contínua. Site e painel em `http://localhost:3000`, API em `http://127.0.0.1:3001`; PostgreSQL existente saudável na porta 5434 e volume preservado. Home/login/contato/readiness retornaram 200; login ADMIN validado em Edge real, dashboard carregado e zero erros JavaScript capturados nesse fluxo. Integrações locais simuladas; nenhuma alteração de configuração, seed, conteúdo ou código da aplicação. Documentos atualizados e commit documental local previsto no RP-012. Próximo passo: receber os relatos/materiais do usuário e aplicar correções incrementais; materiais reais precisam ser fornecidos/aprovados, e publicação/ações externas continuam com seus gates próprios.
+
+### Registro anterior — RP-011 (histórico)
 
 **05/10/2026 — RP-011 — F10 local e revisão completa F0–F10:** pedido “continue a implementação f10 do projeto, apos, faça uma revisão completa se todas as fases foram implementadas corretamente”; base F9 real `fff682d`, `dev` inicialmente limpa. Versão local `0.10.0`, com `1.0.0` reservada à V1 aprovada/operacional. Gate offline de treze etapas, identidade/digests do artefato e reports, ordem temporal, candidata e smokes controlados/públicos, corte e rollback, observação e handoff. Plano/manifesto operacionais começam pendentes. Seis defeitos confirmados corrigidos: mocks públicos residuais em produção, gate exigindo indexação antes do corte, CTA newsletter desatualizado, status das políticas retiradas, retry de sessão após outage/401 e evento de copiar link. Relatório/matriz em `docs/phase-review.md`; publicação e manual em `docs/go-live.md` e `docs/cms-handbook.md`. Instalação frozen, lint/typecheck/build,110 testes,100 integrações PostgreSQL,44 contrastes, seis checks de recuperação e audit passaram. QA F8 sem Lighthouse:88 checks/248 layouts/115 análises axe; CMS25/81, relacionamento19/70; zero falhas e recursos próprios removidos. Gates offline bloquearam corretamente ausência de evidências; não comprovam produção. F0–F7 implementadas localmente; F8–F10 permanecem parciais. **Ponto de retomada: obter ambiente/materiais/evidências F8/F9 para candidata oficial e ações externas específicas, sem inventar aprovação/carga/deploy/DNS.**
 
