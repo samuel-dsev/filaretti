@@ -17,6 +17,7 @@ import { AuthenticationGuard, PreloginMutationGuard } from './guards';
 import { PasswordRecoveryService } from './recovery.service';
 import { AUTH_ENVIRONMENT, type AuthenticatedRequest } from './types';
 import { authenticationSchema, csrfSchema, recoverySchema, safeUserSchema } from './responses';
+import { resolveClientIp } from '../common/client-ip';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -47,7 +48,11 @@ export class AuthController {
     @Req() request: Request,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const tokens = await this.auth.login(body.email, body.password, request.ip ?? 'unknown');
+    const tokens = await this.auth.login(
+      body.email,
+      body.password,
+      resolveClientIp(request, this.environment),
+    );
     writeSessionCookies(response, this.environment, tokens);
     return { user: tokens.user, csrfToken: tokens.csrfToken };
   }
@@ -110,7 +115,11 @@ export class AuthController {
     summary: 'Enfileira recuperação transacional sem revelar cadastro',
   })
   async recover(@Body() body: RecoveryRequestDto, @Req() request: Request) {
-    await this.auth.consumeAttempt('recovery', request.ip ?? 'unknown', body.email);
+    await this.auth.consumeAttempt(
+      'recovery',
+      resolveClientIp(request, this.environment),
+      body.email,
+    );
     await this.recovery.request(body.email);
     return {
       message: 'Se a conta existir, receberá instruções quando a entrega estiver habilitada.',
@@ -124,7 +133,7 @@ export class AuthController {
   @ApiHeader({ name: 'Origin', required: true })
   @ApiHeader({ name: 'X-CSRF-Token', required: true })
   async reset(@Body() body: RecoveryResetDto, @Req() request: Request): Promise<void> {
-    await this.auth.consumeAttempt('reset', request.ip ?? 'unknown');
+    await this.auth.consumeAttempt('reset', resolveClientIp(request, this.environment));
     await this.recovery.reset(body.token, body.newPassword);
   }
 }

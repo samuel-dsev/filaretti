@@ -2,22 +2,216 @@
 
 ## Situação atual
 
-| Campo                | Estado                                                                                                      |
-| -------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Última atualização   | 04/10/2026 — RP-008                                                                                         |
-| Etapa                | **F7 concluída — aceite local aprovado**                                                                    |
-| Versão               | `0.7.0` na raiz e nos sete workspaces privados                                                              |
-| Código/aplicação     | Contato privado, newsletter, busca/FAQ/SEO, outbox/recuperação, retenção e cookies                          |
-| Ambiente             | PostgreSQL saudável; API3001/Next otimizado3000 em loopback; Edge154 revisado                               |
-| Git                  | `dev`, remoto `origin`; base F6 real `51f496c`; commit local F7 conforme RP-008                             |
-| Commit desta entrega | `feat(relationship): implementa contato newsletter busca e privacidade (v0.7.0)`; SHA informado após commit |
-| Próxima etapa        | **F8 — Validação integrada e homologação**                                                                  |
-| Autorização          | **Aguardando confirmação para F8; push, PR e deploy não autorizados**                                       |
-| Checkpoint           | RP-008 abaixo e quadro inicial de plan.md                                                                   |
+| Campo              | Estado                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| Última atualização | 05/10/2026 — RP-009                                                                         |
+| Etapa              | **F8: entrega local verificada; homologação parcial**                                       |
+| Versão             | `0.8.0`, oito manifests privados alinhados                                                  |
+| Git                | `dev`; base F7 `b52000281dbf34b89212065c8c578a99bf39e056`; commit local F8 previsto abaixo  |
+| Autorização        | “Prossiga para a F8”; F9, push, PR, deploy/DNS e fornecedores reais não autorizados         |
+| Checkpoint         | Retomar gates externos, CI real, backup aprovado e browsers/leitor de tela; F9 não iniciada |
 
-Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo.
+Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo; este fechamento usa a data 05/10/2026 do cliente, com timestamps UTC originais nas evidências.
 
 ## Histórico
+
+### RP-009 — 05/10/2026 — F8 — Entrega local; homologação parcial
+
+**Escopo autorizado:** “Prossiga para a F8”, em 04/10/2026; retomada “continue de onde parou” em 05/10/2026, conforme data do cliente. Evidências conservam seus timestamps UTC originais. **Estado: trabalho técnico local entregue e verificado; F8 permanece parcial até os gates externos e de acessibilidade/compatibilidade.** F9 não iniciada.
+
+**Versão:** `0.7.0` → `0.8.0`, oito manifests privados alinhados. Jest, Vitest/React Testing Library, Playwright, axe e Lighthouse fixados no lockfile. `@parcel/watcher` tem build opcional explicitamente negado; exceções de idade mínima para dependências jsdom fixadas foram registradas no workspace. Install frozen e audit de produção aprovados. A mudança compatível em 0.x exige ingress HMAC, URLs públicas HTTPS e cookies Secure fora de development; validar configuração antes de promover artefatos.
+
+**Git e ordem:** checkout real `C:\Users\Samuel\Documents\Projetos\Filaretti`; `Projeto` é o caminho inicial ausente. Branch `dev`, base F7 real `b52000281dbf34b89212065c8c578a99bf39e056`, inicialmente limpa e duas entregas à frente de origin/dev. Contratos/configuração → API/segurança → componentes → integração/QA → otimização/recuperação. Subagentes backend/frontend/QA entregaram tarefas isoladas; principal integrou, corrigiu, revisou evidências e finalizou checks/documentos. A rodada de layout do QA terminou, embora o agente tenha ficado indisponível; o principal executou o fechamento. Commit local previsto: `feat(quality): fortalece seguranca qa e recuperacao local (v0.8.0)`. SHA real será informado após o commit e registrado na próxima retomada, sem commit circular. Push, PR, deploy, DNS e fornecedores reais não foram executados.
+
+#### Arquivos criados, alterados e removidos
+
+Criados (28):
+
+- `.github/workflows/staging-readiness.yml`
+- `apps/api/jest.config.cjs`
+- `apps/api/src/common/client-ip.ts`
+- `apps/api/src/operations/operations.controller.ts`
+- `apps/api/src/operations/operations.service.ts`
+- `apps/api/src/relationship/attachment-scanner.ts`
+- `apps/api/test/clamav.system.test.ts`
+- `apps/api/test/hardening.jest.test.ts`
+- `apps/api/test/operations.integration.test.ts`
+- `apps/web/src/lib/article-complements.ts`
+- `apps/web/src/lib/bff-client-ip.ts`
+- `apps/web/src/lib/security-policy.ts`
+- `apps/web/test/article-complements.test.mjs`
+- `apps/web/test/f8-client-ip.test.mjs`
+- `apps/web/test/f8-components.test.tsx`
+- `apps/web/test/f8-security-policy.test.mjs`
+- `apps/web/test/f8-setup.ts`
+- `apps/web/vitest.config.ts`
+- `docs/f8-backend.md`
+- `docs/f8-frontend.md`
+- `docs/f8-qa.md`
+- `docs/operations.md`
+- `scripts/backup-local.mjs`
+- `scripts/ci-artifact.mjs`
+- `scripts/f8-backup.mjs`
+- `scripts/staging-gate.mjs`
+- `scripts/test-f8.mjs`
+- `scripts/test-recovery.mjs`
+
+Alterados (75):
+
+- `.husky/pre-commit`
+- `.github/workflows/ci.yml`
+- `README.md`
+- `apps/api/.env.example`
+- `apps/api/package.json`
+- `apps/api/src/app.ts`
+- `apps/api/src/auth/auth.controller.ts`
+- `apps/api/src/common/http-exception.filter.ts`
+- `apps/api/src/domain/domain.module.ts`
+- `apps/api/src/health/health.controller.ts`
+- `apps/api/src/relationship/public.guard.ts`
+- `apps/api/src/relationship/relationship.controllers.ts`
+- `apps/api/src/relationship/relationship.service.ts`
+- `apps/api/test/foundation.test.ts`
+- `apps/api/test/health.integration.test.ts`
+- `apps/web/.env.example`
+- `apps/web/next.config.ts`
+- `apps/web/package.json`
+- `apps/web/src/app/(institutional)/conteudos/[slug]/page.tsx`
+- `apps/web/src/app/(institutional)/layout.tsx`
+- `apps/web/src/app/(institutional)/loading.tsx`
+- `apps/web/src/app/admin/layout.tsx`
+- `apps/web/src/app/admin/login/page.tsx`
+- `apps/web/src/app/api/cms/[...path]/route.ts`
+- `apps/web/src/app/api/relationship/[...path]/route.ts`
+- `apps/web/src/app/dev/design-system/layout.tsx`
+- `apps/web/src/app/globals.css`
+- `apps/web/src/app/layout.tsx`
+- `apps/web/src/components/admin/cms-page.tsx`
+- `apps/web/src/components/admin/contacts.tsx`
+- `apps/web/src/components/admin/dashboard.tsx`
+- `apps/web/src/components/admin/resource-editor.tsx`
+- `apps/web/src/components/admin/resource-list.tsx`
+- `apps/web/src/components/admin/rich-editor.tsx`
+- `apps/web/src/components/admin/session.tsx`
+- `apps/web/src/components/admin/settings.tsx`
+- `apps/web/src/components/editorial/article-card.tsx`
+- `apps/web/src/components/editorial/detail-view.tsx`
+- `apps/web/src/components/editorial/styles.css`
+- `apps/web/src/components/institutional/area-views.tsx`
+- `apps/web/src/components/institutional/professional-views.tsx`
+- `apps/web/src/components/institutional/styles.css`
+- `apps/web/src/components/privacy/consent-provider.tsx`
+- `apps/web/src/components/relationship/antispam.tsx`
+- `apps/web/src/components/relationship/password-recovery.tsx`
+- `apps/web/src/components/seo/structured-data.tsx`
+- `apps/web/src/components/site/brand.tsx`
+- `apps/web/src/components/site/breadcrumb.tsx`
+- `apps/web/src/components/site/content-cards.tsx`
+- `apps/web/src/components/site/site-footer.tsx`
+- `apps/web/src/components/site/site-header.tsx`
+- `apps/web/src/components/site/styles.css`
+- `apps/web/src/lib/public-routing.ts`
+- `apps/web/src/lib/public-status.ts`
+- `apps/web/src/proxy.ts`
+- `apps/web/test/consent.test.mjs`
+- `apps/web/test/public-metadata.test.mjs`
+- `docs/architecture.md`
+- `docs/deployment.md`
+- `docs/security.md`
+- `package.json`
+- `packages/config/package.json`
+- `packages/config/src/index.ts`
+- `packages/config/test/environment.test.ts`
+- `packages/eslint-config/package.json`
+- `packages/tsconfig/package.json`
+- `packages/types/package.json`
+- `packages/ui/package.json`
+- `packages/ui/src/button.tsx`
+- `packages/ui/src/dialog.tsx`
+- `packages/ui/src/surfaces.tsx`
+- `plan.md`
+- `pnpm-lock.yaml`
+- `pnpm-workspace.yaml`
+- `relate.md`
+
+Removidos: nenhum. Evidências e helpers próprios em `.local/` são ignorados, contêm somente fixtures fictícias e não entram no commit. Nenhuma migration foi criada/alterada pela F8.
+
+#### Implementação e decisões
+
+- **Identidade/segurança:** BFF aceita um único IP do ingress configurado/confirmado e assina IP, timestamp de 60 segundos, método e pathname. API ignora forwarding arbitrário, exige assertion válida fora de development e limita auth/relacionamento por essa identidade. Segredo fica nos processos servidores. CORS fechado, Origin/CSRF/HttpOnly preservados; staging/production rejeitam URLs públicas HTTP e cookies não Secure. CSP com nonce aleatório por documento, strict-dynamic, sem unsafe-inline/unsafe-eval em script-src no build otimizado; JSON-LD, Turnstile, GA4 e TipTap usam nonce. Headers de proteção e HSTS condicionado à origem HTTPS. Documentos dinâmicos/no-store preservam retirada imediata de publicação; nenhum controle foi removido para elevar nota.
+- **Anexos/saúde/operação:** ClamD privado examina original e bytes normalizados com tamanho/resposta/tempo limitados. Só CLEAN em ambos permite VERIFIED; FOUND rejeita antes da persistência; indisponibilidade conserva QUARANTINED sem ticket/download. Driver disabled só permite LOCAL_VERIFIED nos mocks locais. Liveness distingue processo de readiness PostgreSQL. Operações ADMIN retornam contagens/alertas sanitizados de exaustão, pendência/lease vencidos e quarentena; visitante/EDITOR bloqueados. Nenhum alerta externo/Sentry foi ativado.
+- **Recuperação:** backup local cifra dump custom, arquivos públicos/privados e manifesto com AES-256-GCM, IV/AAD e SHA-256. Snapshot só é finalizado quando completo; restore não sobrescreve arquivos existentes. Ensaio usou dois bancos próprios e pg_restore real, comparou todas as tabelas/migrations, metadata/chave de anexo e hashes. Negativos de chave, adulteração, traversal e overwrite aprovados. O backup exige pausa de escritores: banco/storage não compartilham transação. Windows ACL, cópia externa, retenção diária e RPO/RTO ainda precisam de aprovação/prova. Não foi feito backup operacional do banco de desenvolvimento nem ativado scheduler.
+- **CI/homologação preparada:** workflow inclui suites, PostgreSQL, recuperação, Chromium/axe/Lighthouse e evidências sanitizadas. Artefato de revisão conserva SHA/versão e `deployable=false`: build development/mocks exige rebuild staging aprovado. Gate manual valida revisão e flags de autorização/ingress/backup, depende de required reviewers e não contém adapter de deploy. Flags não são provas de homologação; CI remoto ainda não executado.
+- **Correções de QA:** nomes acessíveis dos cards passaram a conter o texto visível; hierarquia de headings foi corrigida em listas/empty/error; skip links/login/recuperação recebem foco. Contato assíncrono conserva referência ao botão para restaurar foco após pending desabilitá-lo. Loading institucional reserva viewport para impedir deslocamento inicial do rodapé. Banner de consentimento aparece no HTML inicial, sem ativar analytics, e desaparece após ler uma preferência válida salva; retorno pode exibir breve banner. Diálogos/drawers fechados não hidratam conteúdo oculto, preservando hooks/foco/scroll/Escape. Links compartilhados desativam prefetch especulativo; o teste de tráfego confirma leitura somente após interação e navegação Next funcional.
+
+#### Validações efetivamente executadas
+
+| Check                                       | Resultado e limite                                                                                                                              |
+| ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm install --frozen-lockfile`            | Aprovado; dependências/versões reproduzíveis                                                                                                    |
+| `pnpm lint`, `pnpm typecheck`, `pnpm build` | Aprovados em todo o monorepo; build normal e QA otimizado                                                                                       |
+| `pnpm test`                                 | 89 aprovados: 4 fundação HTTP, 7 Jest, 12 configuração, 60 Node web, 6 Vitest/RTL                                                               |
+| `pnpm test:integration`                     | 72 aprovados, zero skips; PostgreSQL real, quatro migrations/seeds e bancos próprios                                                            |
+| ClamAV explícito real                       | 1 teste de sistema aprovado; daemon 1.5.4, definições 28136 de 27/09/2026; EICAR isolado, PNG limpo e marcador fictício com assinatura de teste |
+| `pnpm test:recovery`                        | 6 checks aprovados, banco restaurado e arquivos públicos/privados íntegros; recursos próprios removidos                                         |
+| `pnpm test:cms`                             | 25 checks / 81 layouts; TipTap com nonce, permissões/conflito, upload/PDF/preview, publicação/retirada sem rebuild e recuperação após reinício  |
+| `pnpm test:relationship`                    | 19 checks / 70 layouts; contato/anexo privado, opt-in/descadastro, reset, ADMIN/CSV e tarefas reais locais                                      |
+| `pnpm test:f8` final                        | 104 checks, 248 layouts, 115 análises axe, 18 templates Lighthouse × 3; zero falhas funcionais/automáticas e limpeza integral                   |
+| `pnpm test:design-system`                   | 44 combinações de contraste aprovadas                                                                                                           |
+| `pnpm audit --prod`                         | Zero vulnerabilidades conhecidas na execução                                                                                                    |
+| Gate de staging/sintaxe                     | 6 casos fictícios de gate e 5 scripts validados; não é execução de CI/deploy                                                                    |
+| Formatação/diff                             | Prettier nos arquivos F8 e `git diff --check` aprovados                                                                                         |
+| Preview normal F8                           | 3000/3001 em loopback, versão0.8.0; live/ready, menu móvel/desktop e busca por teclado aprovados                                                |
+
+O teste ClamAV usa imagem oficial fixada e container descartável; FreshClam foi desativado somente na fixture. Atualização online não comprovada. EICAR apenas anexado ao PNG não foi detectado no primeiro experimento; a integração final usa EICAR padrão isolado e marcador fictício reconhecido por assinatura adicional somente de teste. Não alegar cobertura universal de malware. Procedimento/digest em `docs/f8-backend.md`.
+
+**Revisão visual e acessibilidade:** principal abriu capturas dos 45 templates nas cinco larguras (375/768/1024/1440/1920), em 45 pranchas, e estados complementares de token/modal. Matriz Edge 154.0.4258.53: 225 layouts; Chrome 154.0.8037.93: 23 layouts a 1440. Nenhum overflow, erro JS, imagem quebrada, label/controle sem nome ou violação axe detectada. Foram 13291 amostras de texto sólido, 0 ignoradas pelo checker próprio; contraste automatizado não cobre toda composição visual. Axe registrou 71 grupos incompletos que permanecem visíveis no JSON para revisão humana. Teclado verificou skip link, FAQ Enter, foco em diálogos, Escape e restauração ao gatilho; cookies HttpOnly e ausência de tokens em localStorage comprovados. Não certifica WCAG 2.2 AA nem substitui leitor de tela.
+
+**Lighthouse final:** 13.5.0, Chrome desktop com dispositivo móvel emulado, build otimizado `NODE_ENV=production`/`APP_ENV=development`, throttling simulado, reset de storage, noindex legítimo e analytics desligado. Três amostras por template; mediana de Performance escolhe a execução representativa; Accessibility/Best Practices precisam passar nas três. Todas as 54 amostras permanecem em JSON. Metas locais P/A/BP 90 atendidas pelo protocolo; `lighthouseTargetsMet=false`, pois SEO 95 depende da validação adequada de produção/indexação e continua pendente. Após o prefetch, atualização e busca ainda tiveram mediana89; a rodada completa e seus relatórios ficaram em `.local/f8-before-css.json` e `.local/f8-lighthouse-before-css/`. CSS de administração/demonstração foi retirado do global e importado somente nos layouts correspondentes; QA HTTP verifica ausência nas páginas públicas e presença nas rotas privadas/demo, além da matriz visual. Bytes das folhas por rota, antes de gzip: {"public": 50265, "admin": 59242, "demo": 64074}. Essa mudança reduz regras desnecessárias no primeiro carregamento, preservando stylesheets cacheáveis, nonce, conteúdo e funções.
+
+| Template            | Performance mediana | Accessibility nas 3 | Best Practices nas 3 | SEO representativo |
+| ------------------- | ------------------- | ------------------- | -------------------- | ------------------ |
+| home                | 93                  | 100                 | 100                  | 66                 |
+| office              | 93                  | 100                 | 100                  | 66                 |
+| areas               | 95                  | 100                 | 100                  | 66                 |
+| area-detail         | 93                  | 100                 | 100                  | 66                 |
+| professionals       | 93                  | 100                 | 100                  | 66                 |
+| professional-detail | 92                  | 100                 | 100                  | 66                 |
+| contents            | 90                  | 100                 | 100                  | 66                 |
+| article             | 93                  | 100                 | 100                  | 66                 |
+| update              | 92                  | 100                 | 100                  | 66                 |
+| guide               | 92                  | 100                 | 100                  | 66                 |
+| contact             | 92                  | 100                 | 100                  | 66                 |
+| newsletter          | 94                  | 100                 | 100                  | 66                 |
+| confirm             | 94                  | 100                 | 100                  | 63                 |
+| unsubscribe         | 93                  | 100                 | 100                  | 63                 |
+| search              | 93                  | 100                 | 100                  | 66                 |
+| faq                 | 93                  | 100                 | 100                  | 66                 |
+| privacy             | 93                  | 100                 | 100                  | 66                 |
+| cookies             | 93                  | 100                 | 100                  | 66                 |
+
+Amostras individuais Performance abaixo de 90, sem remoção: search: 94,88,93. As rodadas exploratórias de uma amostra identificaram CLS 0,734 e notas Home66/artigo62/área68 antes da correção de loading; depois, contato88 por banner tardio e Home88/listagem88/artigo87 após a mudança do banner. Foram preservadas em `.local/f8-lighthouse-baseline/`, `.local/f8-lighthouse-baseline.json`, `.local/f8-lighthouse-after-banner/` e `.local/f8-after-banner.json`. Uma rodada intermediária de três amostras ainda apresentou artigo com mediana89; seus 54 relatórios e resumo foram preservados em .local/f8-lighthouse-before-prefetch/ e .local/f8-before-prefetch.json, motivando a desativação do prefetch especulativo. A mudança para três amostras foi fixada antes da rodada final, conforme variabilidade documentada do Lighthouse; não é repetição até nota favorável. Notas de SEO protegidas não são atribuídas integralmente a noindex: auditorias específicas permanecem nos originais.
+
+**Evidências locais:** `.local/f8-qa-smoke.json` é a execução completa final; `.local/f8-layout-smoke.json`/`f8-lighthouse-smoke.json` guardam rodadas incrementais anteriores, com datas/limites próprios. Capturas e 54 relatórios originais em `.local/f8-qa-evidence/`; `.local/f8-recovery.json`, `.local/f6-qa-smoke.json`, `.local/f7-qa-smoke.json` e documentação F8 conservam reprodução/resultados. O preview normal foi atualizado após confirmar propriedade dos PIDs anteriores, recompilar e reiniciar somente web/API locais: `.local/f8-preview.json` e `.local/f8-preview-checks.json`, quatro checks de saúde/menu/busca. A primeira verificação tinha seletor ambíguo para “Todas as áreas” no menu e na Home; o seletor foi limitado ao menu, sem mudança no produto. Todos os runners removeram apenas bancos, build/config, storage, fixtures, processos e portas que criaram; banco/volume de desenvolvimento preservados.
+
+**Hook de commit no Windows:** a primeira tentativa falhou antes do commit porque a chamada única do Prettier excedeu o limite da linha de comando. O hook agora limita cada lote do lint-staged a4000 caracteres, mantendo stash/restauração e a execução do Prettier em todos os arquivos. Nenhum check foi desativado. A nova tentativa deve passar o hook antes de concluir o commit local.
+
+#### Pendências, riscos e ponto exato de retomada
+
+**Correção da evidência visual:** a captura Chromium beyond-viewport deixou seções adiadas sem paint em PNG, embora foco/Enter funcionassem. O runner passou a guardar o viewport original de1000px e a expandir temporariamente a altura somente durante a captura completa, sem mudar CSS. Geometria/axe/teclado retomam o viewport normal; Lighthouse conserva seu protocolo. A execução completa final usa essa captura corrigida. O SHA-256 do conjunto final de233 arquivos versionáveis da aplicação é `c993b1059170ffd514bb4a8c9d5b7cdea9776e1960cbef444934636ea372b7d3`; seleção em apps/packages e manifests raiz, excluindo env/testes/Markdown. As 54 medições pertencem a uma única execução completa, sem combinar notas de rodadas distintas.
+
+A rodada anterior às correções da leitura principal tinha102 checks/248 layouts/115 análises axe aprovados e somente artigo com mediana89; resumo e54 originais preservados em `.local/f8-before-primary-streaming.json` e `.local/f8-lighthouse-before-primary-streaming/`. A publicação principal passa a ser consultada junto com os dados da navegação, deduplicada por React cache somente nessa renderização, e deixa de esperar biografia/relacionados, que possuem Suspense próprio e falhas independentes. O Proxy sobrescreve o header interno e limita o preload a slug de detalhe público válido; gates de publicação, metadata/JSON-LD e no-store preservados. Testes Node verificam consultas paralelas/independentes e alvos restritos; Edge/Chrome comprovam título/corpo visíveis sem JavaScript. Essa prova se limita à leitura principal, sem alegar widgets ou complementos interativos disponíveis sem JavaScript.
+
+O CSS por rota reduziu o conjunto público para cerca de50KB não comprimidos, mas a rodada seguinte ainda teve Home mediana89/artigo88; os54 originais e resumo ficaram em `.local/f8-lighthouse-before-static-actions/` e `.local/f8-before-static-actions.json`. A implementação final tornou Button/LinkButton universais para evitar hidratação de ações estáticas; callbacks interativos permanecem nos componentes de cliente e ações desabilitadas removem destino/callback/foco. Seções institucionais passam a adiar layout/paint distante do viewport com `content-visibility:auto` e tamanho intrínseco memorizado, preservando DOM/acesso por foco. A estimativa inicial de1000px pode ajustar a extensão da barra de rolagem na primeira exploração. Há fallback por `@supports`. Testes reais de foco/Enter ao final do artigo e revisão visual complementam o QA; leitor de tela continua pendente. As mudanças são aplicadas ao código normal e ao QA, sem flags exclusivas para elevar notas.
+
+Após as correções, foram reabertas capturas da Home e das publicações nas cinco larguras, além de navegação por foco, contato, login/preview e administração, incluindo imagens do viewport original. Os templates preservaram o layout e os controles. Capturas expandidas podem conservar espaço adicional após o rodapé; a imagem de viewport original registra a primeira dobra real. A matriz automatizada completa foi repetida; CMS e relacionamento também foram reexecutados após a antecipação da publicação e passaram, com seus próprios recursos removidos.
+
+1. Obter autorização e ambiente de staging protegido, banco/buckets/secrets isolados e destinatários fictícios em allowlist. Sem resposta confirmando ambiente externo, nenhuma integração real foi ativada.
+2. Comprovar R2 público/privado, Resend/domínio/assinatura/replay/entrega, Turnstile hostname/action, worker contínuo, TLS/HSTS/CSP e ingress que sobrescreve IP/bloqueia origin direto. Testar falha/reinício/concorrência e rollback externos.
+3. Autorizar push/CI remoto, configurar environment/reviewers e adapter concreto, obter run/artifact reais. Workflow local preparado não comprova CI remoto nem publicação de homologação.
+4. Aprovar retenção, backup diário, cópia externa, responsável e orçamento; medir RPO/RTO e comprovar restore de banco/arquivos externos/R2 e recuperação da chave. Configurar scanner privado atualizado e monitor/destino de alertas sanitizados. QUARANTINED não tem liberação posterior implementada; definir procedimento antes de receber dados reais.
+5. Executar Firefox, Safari macOS, Android Chrome/iOS Safari físicos e leitor de tela nos fluxos principais. WebKit/Firefox não tinham binários compatíveis; nada instalado ou certificado. Resolver itens axe incompletos com tecnologia assistiva/revisão humana e medir SEO em ambiente/indexação aprovados sem publicar dados fictícios.
+6. Só após gates/aceite integral da F8, solicitar autorização própria para **F9 — Conteúdo final e migração**. Materiais, biografias, identidade, destinatários e textos/prazos operacionais seguem sujeitos à aprovação. **Ponto de parada: F8 local entregue em 0.8.0; homologação parcial; F9 aguardando autorização.**
 
 ### RP-008 — 04/10/2026 — F7 — Relacionamento, busca, SEO e privacidade
 

@@ -44,6 +44,7 @@ export interface DialogProps {
   children: ReactNode;
   footer?: ReactNode;
   initialFocusRef?: RefObject<HTMLElement | null>;
+  returnFocusRef?: RefObject<HTMLElement | null>;
   className?: string;
 }
 
@@ -57,6 +58,7 @@ function ModalSurface({
   children,
   footer,
   initialFocusRef,
+  returnFocusRef,
   className,
   drawer = false,
   side = 'right',
@@ -81,9 +83,11 @@ function ModalSurface({
       window.cancelAnimationFrame(focusFrame);
       if (dialog.open) dialog.close();
       unlockScroll();
-      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) previousFocus.focus();
+      // An asynchronous opener may lose focus while temporarily disabled before the dialog mounts.
+      const returnFocus = returnFocusRef?.current ?? previousFocus;
+      if (returnFocus instanceof HTMLElement && returnFocus.isConnected) returnFocus.focus();
     };
-  }, [open, initialFocusRef]);
+  }, [open, initialFocusRef, returnFocusRef]);
 
   function handleKeyDown(event: KeyboardEvent<HTMLDialogElement>) {
     if (event.key === 'Escape') {
@@ -128,6 +132,10 @@ function ModalSurface({
       onClose();
     }
   }
+
+  // Closed surfaces have no interactive content to hydrate. Mount them when requested;
+  // the effect above still owns native focus, scroll locking and cleanup on close.
+  if (!open) return null;
 
   return (
     <dialog

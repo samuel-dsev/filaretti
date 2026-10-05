@@ -8,6 +8,11 @@
   min-width: 0;
 }
 
+/* Keep the footer outside the initial viewport while streamed page content is pending. */
+.institution-loading {
+  min-block-size: 100svh;
+}
+
 .site-header {
   position: relative;
   z-index: 30;

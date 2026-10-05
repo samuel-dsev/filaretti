@@ -53,6 +53,7 @@ export function Dashboard() {
     <>
       {error ? (
         <ErrorState
+          headingLevel={2}
           title="Dashboard indisponível"
           description={error}
           action={<Button onClick={() => void load()}>Tentar novamente</Button>}

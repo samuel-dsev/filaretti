@@ -93,6 +93,7 @@ export function ResourceList({
       ) : null}
       {error ? (
         <ErrorState
+          headingLevel={2}
           title="Listagem indisponível"
           description={error}
           action={<Button onClick={() => void load()}>Tentar novamente</Button>}
@@ -156,6 +157,7 @@ export function ResourceList({
         </>
       ) : (
         <EmptyState
+          headingLevel={2}
           title="Nenhum registro encontrado"
           description="Crie um registro ou altere os filtros para começar."
         />

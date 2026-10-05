@@ -1,11 +1,21 @@
 import type { ReactNode } from 'react';
+import { headers } from 'next/headers';
 import { PublicLayout } from '../../components/site';
-import { getPracticeAreas, getSettings } from '../../lib/public-api';
+import { getArticle, getPracticeAreas, getSettings } from '../../lib/public-api';
 
 export const dynamic = 'force-dynamic';
 
 export default async function InstitutionalLayout({ children }: { children: ReactNode }) {
-  const [settings, areas] = await Promise.all([getSettings(), getPracticeAreas({ limit: 50 })]);
+  const articleSlug = (await headers()).get('x-filaretti-article-slug');
+  // React cache deduplicates this no-store read with metadata/page for this render.
+  // Start primary publication data alongside navigation instead of after the layout.
+  const [settings, areas] = await Promise.all([
+    getSettings(),
+    getPracticeAreas({ limit: 50 }),
+    articleSlug && articleSlug.length <= 120 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(articleSlug)
+      ? getArticle(articleSlug)
+      : Promise.resolve(null),
+  ]);
   const brand = { name: settings.siteName, href: '/', monogram: 'F' };
   return (
     <PublicLayout

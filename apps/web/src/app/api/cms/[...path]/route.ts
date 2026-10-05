@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { signVisitorHeaders } from '@/lib/bff-client-ip';
 
 export const dynamic = 'force-dynamic';
 const cacheHeaders = {
@@ -37,6 +38,12 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     );
   }
   try {
+    for (const [key, value] of signVisitorHeaders(
+      request,
+      request.method,
+      `/api/v1/${path.join('/')}`,
+    ))
+      headers.set(key, value);
     let body: Uint8Array<ArrayBuffer> | undefined;
     if (!readOnly && request.body) {
       const reader = request.body.getReader();

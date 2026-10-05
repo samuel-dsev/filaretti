@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Button } from '@filaretti/ui';
+import { documentNonce } from '@/lib/security-policy';
 
 export interface RelationshipConfiguration {
   mock: boolean;
@@ -40,6 +41,7 @@ function loadWidget() {
     };
     const timeout = window.setTimeout(fail, 10000);
     script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+    script.nonce = documentNonce() ?? '';
     script.async = true;
     script.onload = () => {
       if (!(window as TurnstileWindow).turnstile) {

@@ -7,6 +7,13 @@
   background: var(--f-color-surface);
 }
 
+@supports (content-visibility: auto) and (contain-intrinsic-block-size: auto 1px) {
+  .institution-section {
+    content-visibility: auto;
+    contain-intrinsic-block-size: auto 1000px;
+  }
+}
+
 .institution-section-soft {
   background: var(--f-color-offwhite);
 }

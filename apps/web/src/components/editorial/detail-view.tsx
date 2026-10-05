@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import type { PublicArticle, PublicArticleSummary, PublicProfessional } from '@filaretti/types';
-import { Badge, EmptyState, LinkButton } from '@filaretti/ui';
+import { Badge, EmptyState, ErrorState, LinkButton } from '@filaretti/ui';
 import { Breadcrumb } from '@/components/site';
 import {
   AreaRelationLinks,
@@ -20,11 +20,13 @@ export function EditorialDetailView({
   author,
   related,
   shareUrl,
+  includeComplements = true,
 }: {
   article: PublicArticle;
   author: PublicProfessional | null;
   related: PublicArticleSummary[];
   shareUrl?: string;
+  includeComplements?: boolean;
 }) {
   const cover = publicImage(article.cover, article.title);
   const authorPhoto = article.author
@@ -182,6 +184,26 @@ export function EditorialDetailView({
           </div>
         </div>
       </article>
+      {includeComplements ? (
+        <EditorialComplementsView article={article} author={author} related={related} />
+      ) : null}
+    </>
+  );
+}
+
+export function EditorialComplementsView({
+  article,
+  author,
+  related,
+  relatedUnavailable = false,
+}: {
+  article: PublicArticle;
+  author: PublicProfessional | null;
+  related: PublicArticleSummary[];
+  relatedUnavailable?: boolean;
+}) {
+  return (
+    <>
       {article.author ? (
         <InstitutionalSection id="autor" title="Sobre o autor" eyebrow="Autoria" soft>
           <div className="editorial-author-profile">
@@ -201,7 +223,17 @@ export function EditorialDetailView({
         action={{ label: 'Todos os conteúdos', href: '/conteudos' }}
         soft
       >
-        <ArticlePreviewGrid articles={related} emptyTitle="Nenhum conteúdo relacionado publicado" />
+        {relatedUnavailable ? (
+          <ErrorState
+            title="Conteúdos relacionados indisponíveis"
+            description="Não foi possível carregar esta lista. Você pode consultar todos os conteúdos publicados."
+          />
+        ) : (
+          <ArticlePreviewGrid
+            articles={related}
+            emptyTitle="Nenhum conteúdo relacionado publicado"
+          />
+        )}
       </InstitutionalSection>
     </>
   );

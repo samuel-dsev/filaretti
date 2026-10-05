@@ -3,7 +3,11 @@ import type { SiteBrand } from './types';
 
 export function Brand({ brand, inverse = false }: { brand: SiteBrand; inverse?: boolean }) {
   return (
-    <Link className={`site-brand${inverse ? ' site-brand-inverse' : ''}`} href={brand.href}>
+    <Link
+      prefetch={false}
+      className={`site-brand${inverse ? ' site-brand-inverse' : ''}`}
+      href={brand.href}
+    >
       {brand.monogram ? (
         <span className="site-brand-monogram" aria-hidden="true">
           {brand.monogram}

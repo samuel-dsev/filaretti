@@ -13,6 +13,7 @@ import {
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Button, Dialog } from '@filaretti/ui';
+import { documentNonce } from '@/lib/security-policy';
 import {
   analyticsAllowed,
   analyticsEvents,
@@ -45,9 +46,6 @@ function readPreferenceSnapshot(): string | null {
   }
 }
 const serverPreferenceSnapshot = () => null;
-const subscribeHydration = () => () => undefined;
-const hydratedSnapshot = () => true;
-const serverHydratedSnapshot = () => false;
 
 /** No free-form event parameters are accepted, so content and identifiers cannot be included. */
 export function trackAnalytics(event: AnalyticsEvent) {
@@ -114,7 +112,6 @@ export function ConsentProvider({
     serverPreferenceSnapshot,
   );
   const preferences = useMemo(() => parsePreferences(stored), [stored]);
-  const ready = useSyncExternalStore(subscribeHydration, hydratedSnapshot, serverHydratedSnapshot);
   useEffect(() => {
     const id = identifier ?? '';
     if (!analyticsAllowed(environment, enabled, identifier, preferences, pathname)) {
@@ -147,6 +144,7 @@ export function ConsentProvider({
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
+    script.nonce = documentNonce() ?? '';
     script.dataset.filarettiAnalytics = 'true';
     document.head.append(script);
     analyticsActive = true;
@@ -208,13 +206,19 @@ export function ConsentProvider({
       }}
     >
       {children}
-      {ready && !preferences && !open ? (
+      {/* Show the consent request in the server HTML while browser preferences are unknown.
+          Analytics still requires the verified browser preference and explicit production gates. */}
+      {!preferences && !open ? (
         <aside className="privacy-banner" aria-label="Preferências de cookies">
           <div>
             <h2>Suas preferências de cookies</h2>
             <p>
               Usamos recursos necessários para o funcionamento do site. Analytics só inicia com sua
-              autorização. <Link href="/cookies">Conheça os cookies</Link>.
+              autorização.{' '}
+              <Link prefetch={false} href="/cookies">
+                Conheça os cookies
+              </Link>
+              .
             </p>
           </div>
           <div className="privacy-actions">
@@ -257,7 +261,13 @@ export function ConsentProvider({
           </Button>
         </div>
         <p>
-          <Link href="/privacidade">Privacidade</Link> · <Link href="/cookies">Cookies</Link>
+          <Link prefetch={false} href="/privacidade">
+            Privacidade
+          </Link>{' '}
+          ·{' '}
+          <Link prefetch={false} href="/cookies">
+            Cookies
+          </Link>
         </p>
       </Dialog>
     </PreferencesContext.Provider>

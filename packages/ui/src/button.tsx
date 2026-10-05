@@ -1,5 +1,3 @@
-'use client';
-
 import type { ComponentPropsWithRef } from 'react';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -65,13 +63,9 @@ export function LinkButton({
         .join(' ')}
       aria-disabled={disabled || undefined}
       tabIndex={disabled ? -1 : tabIndex}
-      onClick={(event) => {
-        if (disabled) {
-          event.preventDefault();
-          return;
-        }
-        onClick?.(event);
-      }}
+      // No href and no callback make disabled links inert without JavaScript.
+      // Enabled static links can render on the server; client callers retain their handlers.
+      onClick={disabled ? undefined : onClick}
     >
       {children}
     </a>

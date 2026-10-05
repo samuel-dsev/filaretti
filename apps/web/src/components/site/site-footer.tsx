@@ -18,7 +18,9 @@ export function SiteFooter({ brand, description, groups, note, copyright }: Site
               <ul>
                 {group.links.map((link) => (
                   <li key={`${link.label}-${link.href}`}>
-                    <Link href={link.href}>{link.label}</Link>
+                    <Link prefetch={false} href={link.href}>
+                      {link.label}
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -27,13 +29,17 @@ export function SiteFooter({ brand, description, groups, note, copyright }: Site
         </div>
         {note ? <p className="site-footer-note">{note}</p> : null}
         <nav className="privacy-footer-links" aria-label="Privacidade e preferências">
-          <Link href="/privacidade">Privacidade</Link>
-          <Link href="/cookies">Cookies</Link>
+          <Link prefetch={false} href="/privacidade">
+            Privacidade
+          </Link>
+          <Link prefetch={false} href="/cookies">
+            Cookies
+          </Link>
           <CookiePreferencesButton />
         </nav>
         <div className="site-footer-bottom">
           <p>{copyright}</p>
-          <Link href="#conteudo">
+          <Link prefetch={false} href="#conteudo">
             Voltar ao conteúdo <span aria-hidden="true">↑</span>
           </Link>
         </div>

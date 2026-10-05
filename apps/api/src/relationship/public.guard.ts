@@ -10,6 +10,7 @@ import type { ApiEnvironment } from '@filaretti/config';
 import type { Request } from 'express';
 import { DOMAIN_ENVIRONMENT } from '../domain/shared';
 import { RelationshipRateLimiter } from './rate-limit.service';
+import { resolveClientIp } from '../common/client-ip';
 
 @Injectable()
 export class RelationshipPublicGuard implements CanActivate {
@@ -29,7 +30,7 @@ export class RelationshipPublicGuard implements CanActivate {
     const contact = request.path.endsWith('/contact');
     await this.limiter.consume(
       contact ? 'contact-ip' : 'newsletter-ip',
-      request.ip ?? 'unknown',
+      resolveClientIp(request, this.environment),
       contact ? 10 : 30,
     );
     return true;

@@ -32,6 +32,9 @@ import { RelationshipRateLimiter } from '../relationship/rate-limit.service';
 import { RelationshipPublicGuard } from '../relationship/public.guard';
 import { RelationshipWorker } from '../relationship/email-worker.service';
 import { ResendWebhookController } from '../relationship/webhook.controller';
+import { AttachmentScanner } from '../relationship/attachment-scanner';
+import { OperationsController } from '../operations/operations.controller';
+import { OperationsService } from '../operations/operations.service';
 
 @Module({
   controllers: [
@@ -50,6 +53,7 @@ import { ResendWebhookController } from '../relationship/webhook.controller';
     AdminContactDownloadsController,
     AdminSubscribersController,
     ResendWebhookController,
+    OperationsController,
   ],
   providers: [
     ArticlesService,
@@ -62,6 +66,8 @@ import { ResendWebhookController } from '../relationship/webhook.controller';
     RelationshipRateLimiter,
     RelationshipPublicGuard,
     RelationshipWorker,
+    AttachmentScanner,
+    OperationsService,
   ],
 })
 export class DomainModule {

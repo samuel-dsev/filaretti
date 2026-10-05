@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Inject,
   Param,
   ParseUUIDPipe,
   Patch,
@@ -33,6 +34,9 @@ import {
 } from './dto';
 import { RelationshipPublicGuard } from './public.guard';
 import { CONTACT_FILE_COUNT_LIMIT, RelationshipService } from './relationship.service';
+import type { ApiEnvironment } from '@filaretti/config';
+import { DOMAIN_ENVIRONMENT } from '../domain/shared';
+import { resolveClientIp } from '../common/client-ip';
 
 const uuid = new ParseUUIDPipe();
 
@@ -40,7 +44,10 @@ const uuid = new ParseUUIDPipe();
 @UseGuards(RelationshipPublicGuard)
 @Controller('public')
 export class PublicRelationshipController {
-  constructor(private readonly relationship: RelationshipService) {}
+  constructor(
+    private readonly relationship: RelationshipService,
+    @Inject(DOMAIN_ENVIRONMENT) private readonly environment: ApiEnvironment,
+  ) {}
 
   @Post('contact')
   @HttpCode(202)
@@ -93,13 +100,13 @@ export class PublicRelationshipController {
     @UploadedFiles() files: UploadedFile[] | undefined,
     @Req() request: Request,
   ) {
-    return this.relationship.contact(dto, files ?? [], request.ip ?? 'unknown');
+    return this.relationship.contact(dto, files ?? [], resolveClientIp(request, this.environment));
   }
 
   @Post('newsletter/subscribe')
   @HttpCode(202)
   subscribe(@Body() dto: NewsletterSubscribeDto, @Req() request: Request) {
-    return this.relationship.subscribe(dto, request.ip ?? 'unknown');
+    return this.relationship.subscribe(dto, resolveClientIp(request, this.environment));
   }
 
   @Post('newsletter/confirm')

@@ -87,6 +87,12 @@
   background: var(--f-color-offwhite);
 }
 
+.editorial-complements-loading {
+  min-block-size: 100svh;
+  padding-block: 3rem;
+  background: var(--f-color-offwhite);
+}
+
 .editorial-article-intro {
   max-width: 66rem;
 }

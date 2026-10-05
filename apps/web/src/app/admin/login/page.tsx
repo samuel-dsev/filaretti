@@ -27,7 +27,7 @@ export default function LoginPage() {
     }
   }
   return (
-    <main id="conteudo" className="cms-login">
+    <main id="conteudo" tabIndex={-1} className="cms-login">
       <div className="cms-login-brand">
         <p className="site-eyebrow">Filaretti Advocacia</p>
         <h1>Administração</h1>

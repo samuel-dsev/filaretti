@@ -53,8 +53,29 @@ const webSchema = z
     NEXT_PUBLIC_TURNSTILE_SITE_KEY: optionalText,
     NEXT_PUBLIC_GA4_ID: optionalText,
     NEXT_PUBLIC_SENTRY_DSN: optionalText,
+    BFF_CLIENT_IP_SECRET: optionalText,
+    WEB_CLIENT_IP_HEADER: z.preprocess(
+      (value) => (value === '' ? undefined : value),
+      z.enum(['x-real-ip', 'cf-connecting-ip']).optional(),
+    ),
+    WEB_TRUSTED_PROXY_CONFIRMED: flag(false),
   })
   .superRefine((env, ctx) => {
+    if (env.BFF_CLIENT_IP_SECRET && !/^[a-f0-9]{64}$/u.test(env.BFF_CLIENT_IP_SECRET))
+      ctx.addIssue({
+        code: 'custom',
+        path: ['BFF_CLIENT_IP_SECRET'],
+        message: '32 byte hex required',
+      });
+    if (env.APP_ENV !== 'development') {
+      for (const key of [
+        'BFF_CLIENT_IP_SECRET',
+        'WEB_CLIENT_IP_HEADER',
+        'WEB_TRUSTED_PROXY_CONFIRMED',
+      ] as const)
+        if (!env[key])
+          ctx.addIssue({ code: 'custom', path: [key], message: 'Trusted ingress required' });
+    }
     if (env.NEXT_PUBLIC_MOCK_INTEGRATIONS && env.APP_ENV !== 'development')
       ctx.addIssue({
         code: 'custom',
@@ -75,11 +96,11 @@ const webSchema = z
       });
     if (env.SEO_INDEXING_ENABLED && env.APP_ENV !== 'production')
       ctx.addIssue({ code: 'custom', path: ['SEO_INDEXING_ENABLED'], message: 'Production only' });
+    if (env.APP_ENV !== 'development' && !env.NEXT_PUBLIC_SITE_URL.startsWith('https:'))
+      ctx.addIssue({ code: 'custom', path: ['NEXT_PUBLIC_SITE_URL'], message: 'HTTPS required' });
     if (env.APP_ENV === 'production') {
       if (env.MOCK_CONTENT)
         ctx.addIssue({ code: 'custom', path: ['MOCK_CONTENT'], message: 'Mocks forbidden' });
-      if (!env.NEXT_PUBLIC_SITE_URL.startsWith('https:'))
-        ctx.addIssue({ code: 'custom', path: ['NEXT_PUBLIC_SITE_URL'], message: 'HTTPS required' });
     }
   });
 
@@ -154,11 +175,42 @@ const apiSchema = z
     TURNSTILE_EXPECTED_HOSTNAME: optionalText,
     TURNSTILE_EXPECTED_ACTION: optionalText,
     SENTRY_DSN: optionalText,
+    BFF_CLIENT_IP_SECRET: optionalText,
+    CONTACT_SCANNER_DRIVER: z.enum(['disabled', 'clamav']).default('disabled'),
+    CLAMAV_HOST: z
+      .string()
+      .regex(/^[A-Za-z0-9.-]+$/u)
+      .default('127.0.0.1'),
+    CLAMAV_PORT: z.coerce.number().int().min(1).max(65535).default(3310),
+    CLAMAV_TIMEOUT_MS: z.coerce.number().int().min(100).max(30000).default(10000),
+    CLAMAV_PRIVATE_NETWORK_CONFIRMED: flag(false),
   })
   .superRefine((env, ctx) => {
-    if (env.APP_ENV === 'production') {
-      if (env.MOCK_CONTENT)
-        ctx.addIssue({ code: 'custom', path: ['MOCK_CONTENT'], message: 'Mocks forbidden' });
+    if (env.BFF_CLIENT_IP_SECRET && !/^[a-f0-9]{64}$/u.test(env.BFF_CLIENT_IP_SECRET))
+      ctx.addIssue({
+        code: 'custom',
+        path: ['BFF_CLIENT_IP_SECRET'],
+        message: '32 byte hex required',
+      });
+    if (env.APP_ENV !== 'development' && !env.BFF_CLIENT_IP_SECRET)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['BFF_CLIENT_IP_SECRET'],
+        message: 'Trusted BFF required',
+      });
+    if (
+      env.APP_ENV !== 'development' &&
+      env.CONTACT_SCANNER_DRIVER === 'clamav' &&
+      !env.CLAMAV_PRIVATE_NETWORK_CONFIRMED
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['CLAMAV_PRIVATE_NETWORK_CONFIRMED'],
+        message: 'Private scanner required',
+      });
+    if (env.APP_ENV === 'production' && env.MOCK_CONTENT)
+      ctx.addIssue({ code: 'custom', path: ['MOCK_CONTENT'], message: 'Mocks forbidden' });
+    if (env.APP_ENV !== 'development') {
       if (!env.COOKIE_SECURE)
         ctx.addIssue({ code: 'custom', path: ['COOKIE_SECURE'], message: 'Secure required' });
       for (const key of ['WEB_PUBLIC_URL', 'API_PUBLIC_URL'] as const) {

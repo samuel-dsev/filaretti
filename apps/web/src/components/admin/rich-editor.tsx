@@ -6,6 +6,7 @@ import StarterKit from '@tiptap/starter-kit';
 import type { TipTapDocument, TipTapMark, TipTapNode } from '@filaretti/types';
 import { Button, Input } from '@filaretti/ui';
 import { safePublicUrl } from '@/lib/public-content-core';
+import { documentNonce } from '@/lib/security-policy';
 
 // TipTap emits default attrs such as target/rel/class and null language. The API
 // accepts only this explicit editorial schema, independent of DOM attributes.
@@ -46,6 +47,7 @@ export function RichEditor({
   const [link, setLink] = useState('');
   const [linkError, setLinkError] = useState('');
   const editor = useEditor({
+    injectNonce: typeof document === 'undefined' ? undefined : documentNonce(),
     immediatelyRender: false,
     shouldRerenderOnTransaction: true,
     extensions: [

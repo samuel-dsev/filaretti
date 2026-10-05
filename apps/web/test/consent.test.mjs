@@ -211,6 +211,8 @@ function providerHarness({
       if (name === 'next/link') return { default: 'Link' };
       if (name === '@filaretti/ui') return { Button: 'Button', Dialog: 'Dialog' };
       if (name === '@/lib/consent') return consent;
+      if (name === '@/lib/security-policy')
+        return { documentNonce: () => 'initial-document-nonce' };
       if (name === './styles.css') return {};
       throw new Error(`Unexpected component dependency: ${name}`);
     },
@@ -292,6 +294,7 @@ test('enabled production provider loads only after consent and excludes private 
   runtime.click('Aceitar analytics');
   assert.equal(runtime.scripts.length, 1);
   assert.equal(runtime.scripts[0].src, 'https://www.googletagmanager.com/gtag/js?id=G-TEST12345');
+  assert.equal(runtime.scripts[0].nonce, 'initial-document-nonce');
   assert.equal(runtime.browser['ga-disable-G-TEST12345'], false);
   const commands = runtime.commands();
   assert.deepEqual(commands[0], [
@@ -389,16 +392,16 @@ test('restricted routes revoke an active provider and staging or disabled provid
   }
 });
 
-test('server hydration snapshots deny analytics before reading browser preferences', () => {
+test('server hydration renders the consent request and denies analytics until browser preferences are read', () => {
   const runtime = providerHarness({ stored: accepted, hydrating: true });
   assert.equal(runtime.scripts.length, 0);
-  assert.equal(runtime.bannerVisible(), false);
+  assert.equal(runtime.bannerVisible(), true);
   runtime.hydrate();
   assert.equal(runtime.scripts.length, 1);
   assert.equal(runtime.bannerVisible(), false);
   runtime.unmount();
   const missing = providerHarness({ hydrating: true });
-  assert.equal(missing.bannerVisible(), false);
+  assert.equal(missing.bannerVisible(), true);
   missing.hydrate();
   assert.equal(missing.bannerVisible(), true);
   assert.equal(missing.scripts.length, 0);

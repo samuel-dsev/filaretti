@@ -54,7 +54,7 @@ export function EditorialCard({
           </div>
         ) : null}
         {href ? (
-          <Link href={href} className="site-card-link" aria-label={`Ler: ${title}`}>
+          <Link href={href} className="site-card-link" aria-label={`Ler conteúdo: ${title}`}>
             Ler conteúdo
             <ArrowIcon />
           </Link>
@@ -88,7 +88,7 @@ export function PracticeAreaCard({ number, title, description, href }: PracticeA
       </h3>
       <p>{description}</p>
       {href ? (
-        <Link href={href} className="site-card-link" aria-label={`Conhecer área: ${title}`}>
+        <Link href={href} className="site-card-link" aria-label={`Conhecer a área: ${title}`}>
           Conhecer a área
           <ArrowIcon />
         </Link>

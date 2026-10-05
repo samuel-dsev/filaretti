@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { AdminSessionProvider } from '@/components/admin/session';
+import '@/components/admin/styles.css';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {

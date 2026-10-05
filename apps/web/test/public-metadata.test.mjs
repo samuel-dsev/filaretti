@@ -13,6 +13,23 @@ registerHooks({
   },
 });
 const { publicMetadata } = await import(moduleUrl);
+const { publicArticleSlug } = await import('../src/lib/public-routing.ts');
+
+test('article preload accepts only bounded public detail slugs', () => {
+  assert.equal(publicArticleSlug('/conteudos/publicacao-ficticia-01'), 'publicacao-ficticia-01');
+  for (const path of [
+    '/conteudos',
+    '/conteudos/INVALID',
+    '/conteudos/encoded%2Fslug',
+    '/conteudos/a/b',
+    '/conteudos/' + 'a'.repeat(121),
+    '/conteudos/-slug',
+    '/profissionais/publicacao',
+    '/admin/artigos/rascunho',
+    '/preview/token',
+  ])
+    assert.equal(publicArticleSlug(path), null, path);
+});
 
 test('metadata uses configured canonical, bounded plain strings and explicit noindex', () => {
   const previous = process.env.NEXT_PUBLIC_SITE_URL;
@@ -55,6 +72,9 @@ test('indexing requires production and an explicit flag; filtered pages remain n
     'API_INTERNAL_URL',
     'NEXT_PUBLIC_SITE_URL',
     'SEO_INDEXING_ENABLED',
+    'BFF_CLIENT_IP_SECRET',
+    'WEB_CLIENT_IP_HEADER',
+    'WEB_TRUSTED_PROXY_CONFIRMED',
   ];
   const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
   Object.assign(process.env, {
@@ -63,6 +83,9 @@ test('indexing requires production and an explicit flag; filtered pages remain n
     API_INTERNAL_URL: 'https://api.example.test',
     NEXT_PUBLIC_SITE_URL: 'https://example.test',
     SEO_INDEXING_ENABLED: 'true',
+    BFF_CLIENT_IP_SECRET: 'a'.repeat(64),
+    WEB_CLIENT_IP_HEADER: 'x-real-ip',
+    WEB_TRUSTED_PROXY_CONFIRMED: 'true',
   });
   try {
     const metadata = publicMetadata({

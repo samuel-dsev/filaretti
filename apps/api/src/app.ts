@@ -38,12 +38,30 @@ export async function createApplication(
     bodyParser: false,
     rawBody: true,
   });
+  // Browser requests use the same-origin BFF. No cross-origin cookie API is exposed.
+  // Forwarded IP/protocol headers remain untrusted; signed BFF assertions are validated per route.
+  app.getHttpAdapter().getInstance().set('trust proxy', false);
+  app.getHttpAdapter().getInstance().disable('x-powered-by');
   app.use((request: Request & { requestId: string }, response: Response, next: NextFunction) => {
     request.requestId = randomUUID();
     response.setHeader('X-Request-Id', request.requestId);
     response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('Referrer-Policy', 'no-referrer');
     response.setHeader('Cache-Control', 'no-store');
+    response.setHeader(
+      'Permissions-Policy',
+      'camera=(), microphone=(), geolocation=(), payment=()',
+    );
+    response.setHeader('X-Frame-Options', 'DENY');
+    response.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
+    if (environment.APP_ENV !== 'development') {
+      if (new URL(environment.API_PUBLIC_URL).protocol === 'https:')
+        response.setHeader('Strict-Transport-Security', 'max-age=31536000');
+      response.setHeader(
+        'Content-Security-Policy',
+        "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'",
+      );
+    }
     response.on('finish', () =>
       logger.event('request.completed', {
         requestId: request.requestId,
@@ -57,7 +75,12 @@ export async function createApplication(
     new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }),
   );
   app.useGlobalFilters(new HttpExceptionFilter(logger));
-  app.setGlobalPrefix('api/v1', { exclude: [{ path: 'health', method: RequestMethod.GET }] });
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['health', 'health/live', 'health/ready'].map((path) => ({
+      path,
+      method: RequestMethod.GET,
+    })),
+  });
   app.enableShutdownHooks();
 
   if (environment.APP_ENV === 'development' && environment.NODE_ENV === 'development') {
@@ -65,8 +88,8 @@ export async function createApplication(
       app,
       new DocumentBuilder()
         .setTitle('Filaretti — API local')
-        .setDescription('F7: CMS, relacionamento, busca e publicação. Dados locais fictícios.')
-        .setVersion('0.7.0')
+        .setDescription('F8: CMS, relacionamento e operação privada. Dados locais fictícios.')
+        .setVersion('0.8.0')
         .addCookieAuth('filaretti_access', { type: 'apiKey' }, 'filaretti_access')
         .build(),
     );

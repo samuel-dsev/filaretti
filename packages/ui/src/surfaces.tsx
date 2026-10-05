@@ -122,15 +122,23 @@ export interface EmptyStateProps {
   description?: string;
   action?: ReactNode;
   className?: string;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-export function EmptyState({ title, description, action, className }: EmptyStateProps) {
+export function EmptyState({
+  title,
+  description,
+  action,
+  className,
+  headingLevel = 3,
+}: EmptyStateProps) {
+  const Heading = `h${headingLevel}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   return (
     <div className={['f-empty-state', className].filter(Boolean).join(' ')}>
       <span className="f-empty-state__symbol" aria-hidden="true">
         ◇
       </span>
-      <h3 className="f-state__title">{title}</h3>
+      <Heading className="f-state__title">{title}</Heading>
       {description ? <p className="f-state__description">{description}</p> : null}
       {action ? <div className="f-state__action">{action}</div> : null}
     </div>
@@ -139,13 +147,20 @@ export function EmptyState({ title, description, action, className }: EmptyState
 
 export type ErrorStateProps = EmptyStateProps;
 
-export function ErrorState({ title, description, action, className }: ErrorStateProps) {
+export function ErrorState({
+  title,
+  description,
+  action,
+  className,
+  headingLevel = 3,
+}: ErrorStateProps) {
+  const Heading = `h${headingLevel}` as 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   return (
     <div className={['f-error-state', className].filter(Boolean).join(' ')} role="alert">
       <span className="f-error-state__symbol" aria-hidden="true">
         !
       </span>
-      <h3 className="f-state__title">{title}</h3>
+      <Heading className="f-state__title">{title}</Heading>
       {description ? <p className="f-state__description">{description}</p> : null}
       {action ? <div className="f-state__action">{action}</div> : null}
     </div>

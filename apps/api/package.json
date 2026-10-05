@@ -1,6 +1,6 @@
 {
   "name": "@filaretti/api",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "scripts": {
     "dev": "prisma generate && tsc-watch --onSuccess \"node dist/main.js\"",
@@ -8,7 +8,7 @@
     "start": "node dist/main.js",
     "lint": "eslint src test prisma scripts",
     "typecheck": "prisma generate && tsc -p tsconfig.test.json --noEmit && tsc -p prisma/tsconfig.json --noEmit",
-    "test": "tsc -p tsconfig.test.json && node --test dist-test/test/foundation.test.js",
+    "test": "tsc -p tsconfig.test.json && node --test dist-test/test/foundation.test.js && node --experimental-vm-modules ../../node_modules/jest/bin/jest.js --config jest.config.cjs",
     "test:integration": "prisma generate && tsc -p tsconfig.test.json && node scripts/run-integration.mjs",
     "db:validate": "prisma validate",
     "db:generate": "prisma generate",

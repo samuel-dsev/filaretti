@@ -33,6 +33,7 @@ import {
 import { queueEmail } from './email-outbox';
 import { RelationshipRateLimiter, relationshipHash } from './rate-limit.service';
 import { TurnstileService, localRelationshipMocks } from './turnstile.service';
+import { AttachmentScanner } from './attachment-scanner';
 
 export const CONTACT_FILE_TOTAL_LIMIT = 15 * 1024 * 1024;
 export const CONTACT_FILE_COUNT_LIMIT = 3;
@@ -96,6 +97,7 @@ export class RelationshipService {
     private readonly turnstile: TurnstileService,
     private readonly limiter: RelationshipRateLimiter,
     @Inject(DOMAIN_ENVIRONMENT) private readonly environment: ApiEnvironment,
+    private readonly scanner: AttachmentScanner = new AttachmentScanner(environment),
   ) {}
 
   private tokenHash(token: string) {
@@ -111,9 +113,27 @@ export class RelationshipService {
   /** Metadata is durable before upload; crash recovery never needs a bucket listing. */
   private async stage(files: UploadedFile[]): Promise<ContactFile[]> {
     const result: ContactFile[] = [];
+    const scanDeadline = Date.now() + 15000;
     try {
       for (const file of files) {
         const validated = await validateUpload(file);
+        let scanStatus: ContactFile['scanStatus'] =
+          localRelationshipMocks(this.environment) &&
+          this.environment.CONTACT_SCANNER_DRIVER === 'disabled'
+            ? 'LOCAL_VERIFIED'
+            : 'QUARANTINED';
+        if (this.environment.CONTACT_SCANNER_DRIVER === 'clamav') {
+          const original = await this.scanner.scan(file.buffer, scanDeadline);
+          if (original === 'INFECTED')
+            throw new BadRequestException({ code: 'ATTACHMENT_REJECTED' });
+          const normalized =
+            original === 'CLEAN'
+              ? await this.scanner.scan(validated.bytes, scanDeadline)
+              : 'UNAVAILABLE';
+          if (normalized === 'INFECTED')
+            throw new BadRequestException({ code: 'ATTACHMENT_REJECTED' });
+          if (original === 'CLEAN' && normalized === 'CLEAN') scanStatus = 'VERIFIED';
+        }
         const row = await this.db.contactFile.create({
           data: {
             storageKey: `${randomUUID()}.${validated.extension}`,
@@ -121,7 +141,7 @@ export class RelationshipService {
             filename: safeFilename(file.originalname),
             mimeType: validated.mimeType,
             size: validated.bytes.length,
-            scanStatus: localRelationshipMocks(this.environment) ? 'LOCAL_VERIFIED' : 'QUARANTINED',
+            scanStatus,
             expiresAt: new Date(Date.now() + 60 * 60 * 1000),
           },
         });

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Cormorant_Garamond, Inter } from 'next/font/google';
 import type { ReactNode } from 'react';
+import { headers } from 'next/headers';
 
 import './globals.css';
 
@@ -19,9 +20,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
     <html lang="pt-BR" className={`${inter.variable} ${cormorant.variable}`}>
+      <head>
+        <meta name="filaretti-nonce" content={nonce} />
+      </head>
       <body>
         <a className="skip-link" href="#conteudo">
           Ir para o conteúdo

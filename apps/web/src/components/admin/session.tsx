@@ -76,14 +76,15 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
   }, [loading, user, error, router]);
   if (loading || (!user && !error))
     return (
-      <main id="conteudo" className="cms-session">
+      <main id="conteudo" tabIndex={-1} className="cms-session">
         <Skeleton label="Verificando sessão administrativa" height="8rem" />
       </main>
     );
   if (error)
     return (
-      <main id="conteudo" className="cms-session">
+      <main id="conteudo" tabIndex={-1} className="cms-session">
         <ErrorState
+          headingLevel={1}
           title="Administração indisponível"
           description={error}
           action={<Button onClick={() => void reload()}>Tentar novamente</Button>}

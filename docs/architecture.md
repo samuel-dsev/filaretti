@@ -1,5 +1,7 @@
 # Arquitetura
 
+Atualização F8 (`0.8.0`): API combina testes HTTP/PostgreSQL existentes com Jest `30.5.2` para hardening; web acrescenta Vitest `5.0.3` e React Testing Library `16.3.3` aos testes existentes. QA usa Playwright `1.63.0`, axe `4.13.0` e Lighthouse `13.5.0`. Mantêm-se monorepo, banco e fronteiras originais. A identificação de visitante é uma afirmação HMAC do BFF, não confiança genérica em proxy. [Operação](operations.md) registra health, outbox, scanner e recuperação; [QA F8](f8-qa.md) registra resultados e limites. Os manifests são a referência das versões correntes; as seções F1–F4 abaixo preservam as decisões do baseline.
+
 Referência: F4, versão `0.4.0`, 03/10/2026. O estado da entrega e as evidências executadas ficam em `../relate.md`; este documento registra decisões e fronteiras de responsabilidade.
 
 ## Fundação F1

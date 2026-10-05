@@ -44,3 +44,54 @@ jobs:
       - run: pnpm test:design-system
       - run: pnpm test:integration
       - run: pnpm build
+      - name: Local recovery rehearsal against the isolated CI PostgreSQL service
+        run: pnpm test:recovery
+        env:
+          F8_PG_CONTAINER: ${{ job.services.postgres.id }}
+      - name: Install reproducible browser runtime
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Integrated F8 QA with protected local indexing
+        run: pnpm test:f8
+        env:
+          F8_TEST_BROWSER_CHANNEL: chromium
+      - name: Critical CMS publication and private relationship flows
+        run: |
+          pnpm test:cms
+          pnpm test:relationship
+        env:
+          F6_TEST_BROWSER_CHANNEL: chromium
+          F7_TEST_BROWSER_CHANNEL: chromium
+      - name: Record artifact identity and scope
+        if: success()
+        run: node scripts/ci-artifact.mjs
+      - name: Retain sanitized QA evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: f8-evidence-${{ github.sha }}
+          path: |
+            .local/f8-qa-smoke.json
+            .local/f8-layout-smoke.json
+            .local/f8-lighthouse-smoke.json
+            .local/f8-qa-evidence/
+            .local/f8-recovery.json
+            .local/f6-qa-smoke.json
+            .local/f7-qa-smoke.json
+          include-hidden-files: true
+          retention-days: 14
+          if-no-files-found: warn
+      - name: Retain build for manual staging review
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: review-build-${{ github.sha }}
+          path: |
+            .local/ci-artifact.json
+            apps/api/dist/
+            packages/config/dist/
+            apps/web/.next/
+            !apps/web/.next/cache/**
+            !apps/web/.next/trace
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: error

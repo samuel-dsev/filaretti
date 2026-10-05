@@ -2,17 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                            | Situação                                                                  |
-| -------------------------------- | ------------------------------------------------------------------------- |
-| Última atualização               | 04/10/2026 — F7 concluída; aceite local aprovado                          |
-| Último relatório                 | `RP-008`, em `relate.md`                                                  |
-| Última entrega técnica concluída | **F7 — Relacionamento, busca, SEO e privacidade**                         |
-| Versão de referência             | `0.7.0` na raiz e nos sete workspaces privados                            |
-| Etapa em execução                | Nenhuma; F7 entregue localmente                                           |
-| Próxima etapa                    | **F8 — Validação integrada e homologação**                                |
-| Autorização da próxima etapa     | **Aguardando confirmação para F8; push, PR e deploy não autorizados**     |
-| Git                              | `dev`, remoto `origin`; base F6 real `51f496c`; commit F7 conforme RP-008 |
-| Cwd verificado                   | `C:\Users\Samuel\Documents\Projetos\Filaretti`                            |
+| Campo                  | Situação                                                                                                 |
+| ---------------------- | -------------------------------------------------------------------------------------------------------- |
+| Última atualização     | 05/10/2026 — F8 entregue localmente; homologação parcial                                                 |
+| Último relatório       | `RP-009`, em `relate.md`                                                                                 |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                                        |
+| Última entrega técnica | **F8 local: segurança, QA e recuperação verificados; gates restantes abaixo**                            |
+| Versão de referência   | `0.8.0`, oito manifests privados alinhados                                                               |
+| Etapa corrente         | **F8 parcial; ambiente externo e acessibilidade/compatibilidade pendentes**                              |
+| Próximo passo          | Retomar gates externos, CI real, backup aprovado, browsers/leitor de tela e SEO                          |
+| Autorização            | F8 autorizada: “Prossiga para a F8”; F9, push, PR e deploy não autorizados                               |
+| Git                    | `dev`, remoto `origin`; base F7 `b52000281dbf34b89212065c8c578a99bf39e056`; commit F8 previsto no RP-009 |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                           |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -65,19 +66,19 @@ Usar migrations versionadas, relações e políticas de exclusão explícitas. A
 
 ## 4. Grandes atualizações e ordem cronológica
 
-| Etapa | Versão prevista | Entrega principal                             | Dependência                  | Estado                 |
-| ----- | --------------- | --------------------------------------------- | ---------------------------- | ---------------------- |
-| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                 | **Concluída — RP-000** |
-| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026     | **Concluída — RP-002** |
-| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1; autorizada pelo usuário  | **Concluída — RP-003** |
-| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026 | **Concluída — RP-004** |
-| F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026 | **Concluída — RP-005** |
-| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026 | **Concluída — RP-006** |
-| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5; autorizada em 03/10/2026 | **Concluída — RP-007** |
-| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6; autorizada em 04/10/2026 | **Concluída — RP-008** |
-| F8    | 0.8.0           | Validação integrada e homologação             | F7                           | Pendente               |
-| F9    | 0.9.0           | Migração e preparação da release              | F8 + materiais aprovados     | Pendente               |
-| F10   | 1.0.0           | Publicação e validação operacional da V1      | F9 + autorização de produção | Pendente               |
+| Etapa | Versão prevista | Entrega principal                             | Dependência                  | Estado                                                            |
+| ----- | --------------- | --------------------------------------------- | ---------------------------- | ----------------------------------------------------------------- |
+| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                 | **Concluída — RP-000**                                            |
+| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026     | **Concluída — RP-002**                                            |
+| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1; autorizada pelo usuário  | **Concluída — RP-003**                                            |
+| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026 | **Concluída — RP-004**                                            |
+| F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026 | **Concluída — RP-005**                                            |
+| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026 | **Concluída — RP-006**                                            |
+| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5; autorizada em 03/10/2026 | **Concluída — RP-007**                                            |
+| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6; autorizada em 04/10/2026 | **Concluída — RP-008**                                            |
+| F8    | 0.8.0           | Validação integrada e homologação             | F7; autorizada em 04/10/2026 | **Parcial — entrega local RP-009; gates externos e QA pendentes** |
+| F9    | 0.9.0           | Migração e preparação da release              | F8 + materiais aprovados     | Pendente                                                          |
+| F10   | 1.0.0           | Publicação e validação operacional da V1      | F9 + autorização de produção | Pendente                                                          |
 
 Cada etapa termina com validação, documentação, commit local quando o Git estiver preparado, relatório e pausa. Os subpassos pertencem à mesma atualização; não autorizam executar a etapa seguinte. Segurança, testes e acessibilidade começam na fundação e acompanham todas as entregas.
 
@@ -223,4 +224,4 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 
 ## 8. Registro da última atualização
 
-**04/10/2026 — RP-008 — F7 concluída:** autorização “Inicie a F7 seguindo a ordem de desenvolvimento corretamente”, retomada “continue de onde parou”; versão `0.7.0`. Contratos/persistência/API precederam componentes e integração. Contato idempotente com ciência e anexos privados, quarentena/tickets ADMIN, newsletter double opt-in/descadastro, recuperação por outbox criptografada, adaptadores Resend/Turnstile e webhook assinado, limites compartilhados, retenção, administração/CSV, busca portuguesa, FAQ, metadata/JSON-LD/sitemap/robots e consentimento de analytics. Frozen install, lint, typecheck, build, 63 testes básicos, 66 integrações PostgreSQL, schema/migration, audit de produção, format e 44 contrastes passaram. Smoke Edge 154: 19 verificações, 70 layouts, 2603 amostras sólidas com contraste ≥ 4,5:1/zero ignoradas, zero falhas/overflow/erros JS; arquivos/banco/build/processos próprios removidos. Revisão visual nas cinco larguras e estados de token/modal. Migration aditiva aplicada ao banco local sem reset; preview 3000/3001 em loopback atualizado. GA4 habilitado foi verificado com runtime simulado do componente; navegador local usou GA4 desligado. Fornecedores reais, scanner, proxy confiável, backup/restauração e homologação permanecem na F8 autorizada; materiais/textos/prazos seguem sujeitos à aprovação. Commit local previsto no RP-008. **Ponto de parada: F7 entregue; aguardar autorização para F8.**
+**05/10/2026 — RP-009 — F8 local entregue; homologação parcial:** autorização “Prossiga para a F8” e retomada “continue de onde parou”; versão `0.8.0`. Contratos/configuração precederam API, componentes, integração e otimização. HMAC de IP por ingress confirmado, CSP/nonce/headers, staging HTTPS/Secure, ClamAV fail-closed, live/ready, operações sanitizadas ADMIN, Jest/Vitest/RTL/Playwright/axe e recuperação criptografada real implementados. Install frozen, lint, typecheck, build, 89 testes, 72 integrações PostgreSQL, ClamAV real, seis checks de recuperação, 44 contrastes, audit de produção e format/diff passaram. CMS: 25 checks/81 layouts; relacionamento: 19/70. QA F8: 104 checks/248 layouts/115 análises axe, sem violações automáticas; 18 templates × três amostras Lighthouse, P mediana/A/BP ≥90 e SEO protegido <95. Revisão visual em cinco larguras, teclado/foco, sessão HttpOnly e CSP aplicada. Corrigidos headings/labels, foco assíncrono, deslocamento do rodapé, banner tardio, hidratação de diálogos fechados e prefetch especulativo. CSS por rota, ações estáticas universais e layout/paint adiado fora do viewport reduzem trabalho inicial; foco/Enter continuam disponíveis e a primeira exploração pode ajustar o tamanho estimado de seções. CI/gate manual preparados, sem execução remota/deploy. Evidências/recursos próprios isolados e limpeza integral; banco de desenvolvimento preservado. Gates: staging e fornecedores reais, ingress/TLS, CI remoto, backup diário/cópia externa/restore R2, alertas e scanner atualizados, Firefox/Safari/dispositivos físicos/leitor de tela e aceite SEO. Última fase com aceite completo continua F7; F8 permanece parcial. Commit local previsto no RP-009. **Ponto de parada: retomar gates F8 com autorização específica; F9 não iniciada.**

@@ -229,6 +229,7 @@ export function ResourceEditor({ kind, recordId }: { kind: ResourceKey; recordId
   if (!loaded)
     return error ? (
       <ErrorState
+        headingLevel={2}
         title="Registro indisponível"
         description={error}
         action={<Button onClick={() => void load()}>Tentar novamente</Button>}

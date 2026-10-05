@@ -75,6 +75,7 @@ export function Settings() {
   if (!data)
     return error ? (
       <ErrorState
+        headingLevel={2}
         title="Configurações indisponíveis"
         description={error}
         action={<Button onClick={() => void load()}>Tentar novamente</Button>}

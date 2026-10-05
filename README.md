@@ -1,6 +1,6 @@
 # Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.7.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F7 acrescenta contato com anexos privados, newsletter com confirmação/descadastro, recuperação de senha, busca em português, FAQ, SEO e preferências de cookies. E-mails e antispam são explicitamente simulados no desenvolvimento local; fornecedores reais e homologação pertencem à F8 autorizada. Situação e validações efetivamente executadas: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.8.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F7 acrescenta contato com anexos privados, newsletter com confirmação/descadastro, recuperação de senha, busca em português, FAQ, SEO e preferências de cookies. A F8 implementa hardening, QA integrado e recuperação local; homologação externa permanece parcial. E-mails e antispam são explicitamente simulados no desenvolvimento local. Situação e validações efetivamente executadas: [relate.md](relate.md).
 
 ## Pré-requisitos
 
@@ -33,7 +33,7 @@ API em `http://127.0.0.1:3001`; Swagger local em `/api/docs`. `/admin/login` abr
 
 O seed usa somente contas e conteúdo explicitamente fictícios. Credenciais locais e procedimento do primeiro ADMIN sem senha padrão em produção: [docs/database.md](docs/database.md). Não executar seed de desenvolvimento fora de `APP_ENV=development`; `seed-production` contém apenas configuração estrutural. Confirmação da newsletter, descadastro e recuperação usam tokens de uso único e entrega transacional persistida. No desenvolvimento, o worker salva a mensagem criptografada em `.local/mail`, sem envio externo ou tokens em logs. Com a API compilada, `pnpm mail:local` lista UUID/tipo/data das capturas; `pnpm mail:local <UUID>` cria um HTML local da mensagem escolhida para abrir o link. Procedimento e limites em [docs/relationship.md](docs/relationship.md).
 
-`APP_ENV` define o ambiente de dados; `NODE_ENV` define modo de execução/build. Build local otimizado usa `APP_ENV=development`, mesmo com `NODE_ENV=production`. `APP_ENV=production` rejeita mocks, cookies inseguros e URLs públicas sem HTTPS. R2, Resend e Turnstile têm adaptadores implementados e configuração validada; a comprovação externa fica na F8. Desenvolvimento usa storage local, `MOCK_INTEGRATIONS`/`NEXT_PUBLIC_MOCK_INTEGRATIONS` em loopback e nenhum fornecedor externo é ativado automaticamente. Relacionamento fica desabilitado por padrão fora do desenvolvimento até configurar seus gates. Analytics e indexação também começam desabilitados.
+`APP_ENV` define o ambiente de dados; `NODE_ENV` define modo de execução/build. Build local otimizado usa `APP_ENV=development`, mesmo com `NODE_ENV=production`. Staging e production exigem URLs públicas HTTPS, cookies Secure e ingress assinado/configurado; production também rejeita conteúdo mock. R2, Resend e Turnstile têm adaptadores implementados e configuração validada; a comprovação externa fica na F8. Desenvolvimento usa storage local, `MOCK_INTEGRATIONS`/`NEXT_PUBLIC_MOCK_INTEGRATIONS` em loopback e nenhum fornecedor externo é ativado automaticamente. Relacionamento fica desabilitado por padrão fora do desenvolvimento até configurar seus gates. Analytics e indexação também começam desabilitados.
 
 ## Verificação
 
@@ -87,8 +87,12 @@ O smoke `test:cms` usa PostgreSQL/HTTP/Edge reais em banco temporário, storage 
 
 Todos os pacotes são privados. Não há publicação npm; bump funcional da etapa acontece na raiz e nos workspaces, acompanhado de plano/relatório e lockfile. Husky/lint-staged formatam arquivos staged; CI e checks completos continuam obrigatórios.
 
-Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F7 e commit local. F8, push, PR, homologação externa e produção dependem de autorização própria.
+Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F8 e commit local. F9, push, PR, homologação externa e produção dependem de autorização própria.
 
 ## Referências
 
 Compatibilidade verificada nas documentações oficiais de [Next.js](https://nextjs.org/docs/app/getting-started/installation), [NestJS](https://docs.nestjs.com/first-steps), [Prisma](https://www.prisma.io/docs/orm/v7/reference/system-requirements) e [Node.js LTS](https://nodejs.org/en/about/previous-releases), com versões dos pacotes conferidas no npm registry. PostgreSQL **17.11** segue a [política oficial de versões](https://www.postgresql.org/support/versioning/); Compose e CI fixam também o digest da imagem oficial.
+
+## F8 — validação local e homologação parcial
+
+Versão corrente: `0.8.0`. Consulte o checkpoint em [plan.md](plan.md), as evidências e inventário no [RP-009](relate.md) e os procedimentos de [operação/recuperação](docs/operations.md) e [QA integrado](docs/f8-qa.md). A fase inclui hardening de tráfego, scanner privado, health/filas, testes de componentes e ensaio real de restauração local. Providers e ambiente externo permanecem sujeitos aos gates registrados; F9 ainda não autorizada.

@@ -34,6 +34,7 @@ export function CmsPage({
   )
     return (
       <ErrorState
+        headingLevel={2}
         title="Acesso restrito"
         description="Seu perfil não tem permissão para gerenciar esta seção."
       />
@@ -46,6 +47,7 @@ export function CmsPage({
   if (!(section in resources) || route.length > 2)
     return (
       <EmptyState
+        headingLevel={2}
         title="Página administrativa não encontrada"
         action={<Link href="/admin">Voltar ao dashboard</Link>}
       />

@@ -1,6 +1,8 @@
 # Ambiente local, CI e publicação
 
-Referência atual: F7, `0.7.0`. Site, CMS, publicação, busca e relacionamento têm implementação local. E-mails/antispam são simulados explicitamente, storage é local e analytics/indexação começam desabilitados. Hosting, homologação externa e produção dependem de gates próprios; o estado dos checks executados fica em `../relate.md`.
+Atualização F8 (`0.8.0`): o pipeline passa a preparar evidências/artifact por SHA, QA Chromium e ensaio de recuperação; execução remota ainda não comprovada. O workflow manual de staging valida readiness e requer environment protegido, sem adapter de deploy. `pnpm test:f8`, `pnpm test:recovery` e `pnpm backup:local` estão descritos em [QA F8](f8-qa.md) e [operação](operations.md). Segredos/ingress/scanner têm novos campos nos exemplos; não habilitar ambiente externo sem seus gates. O ensaio local restaura bancos temporários e objetos privados/públicos, sem reset do desenvolvimento. Homologação permanece parcial.
+
+Referência atual: F8, `0.8.0`, sobre o baseline funcional F7. Site, CMS, publicação, busca e relacionamento têm implementação local, agora acompanhados de segurança, QA e recuperação integrados. E-mails/antispam são simulados explicitamente, storage é local e analytics/indexação começam desabilitados. Hosting, homologação externa e produção dependem de gates próprios; o estado dos checks executados fica em `../relate.md`.
 
 ## Pré-requisitos e configuração local
 

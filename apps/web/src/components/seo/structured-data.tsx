@@ -1,4 +1,5 @@
 import 'server-only';
+import { headers } from 'next/headers';
 import type {
   PublicArticle,
   PublicFaq,
@@ -10,7 +11,7 @@ import { publicUrl } from '@/lib/public-metadata';
 
 type Schema = Record<string, unknown>;
 
-export function JsonLd({ data }: { data: Schema | null | (Schema | null)[] }) {
+export async function JsonLd({ data }: { data: Schema | null | (Schema | null)[] }) {
   const schemas = (Array.isArray(data) ? data : [data]).filter(
     (item): item is Schema => item !== null,
   );
@@ -22,7 +23,10 @@ export function JsonLd({ data }: { data: Schema | null | (Schema | null)[] }) {
     .replace(/&/gu, '\\u0026')
     .replace(/\u2028/gu, '\\u2028')
     .replace(/\u2029/gu, '\\u2029');
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
+  return (
+    <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />
+  );
 }
 
 export function breadcrumbSchema(items: { name: string; path: string }[]): Schema | null {

@@ -1,6 +1,10 @@
 import { notFound } from 'next/navigation';
-import { EditorialDetailView } from '@/components/editorial/detail-view';
+import { Suspense } from 'react';
+import type { PublicArticle } from '@filaretti/types';
+import { Skeleton } from '@filaretti/ui';
+import { EditorialComplementsView, EditorialDetailView } from '@/components/editorial/detail-view';
 import { getArticle, getArticles, getProfessional } from '@/lib/public-api';
+import { loadArticleComplements } from '@/lib/article-complements';
 import { publicMetadata } from '@/lib/public-metadata';
 import { JsonLd, articleSchema, breadcrumbSchema } from '@/components/seo/structured-data';
 
@@ -21,10 +25,6 @@ export async function generateMetadata({ params }: Props) {
 export default async function ArticlePage({ params }: Props) {
   const article = await getArticle((await params).slug);
   if (!article) notFound();
-  const [related, author] = await Promise.all([
-    getArticles({ area: article.practiceAreas[0]?.slug, limit: 4 }),
-    article.author ? getProfessional(article.author.slug) : Promise.resolve(null),
-  ]);
   const metadata = publicMetadata({
     title: article.title,
     path: `/conteudos/${encodeURIComponent(article.slug)}`,
@@ -44,10 +44,39 @@ export default async function ArticlePage({ params }: Props) {
       />
       <EditorialDetailView
         article={article}
-        author={author}
-        related={related.data.filter((candidate) => candidate.id !== article.id).slice(0, 3)}
+        author={null}
+        related={[]}
+        includeComplements={false}
         shareUrl={typeof canonical === 'string' ? canonical : undefined}
       />
+      <Suspense
+        fallback={
+          <div className="editorial-complements-loading">
+            <div className="f-container">
+              <Skeleton label="Carregando informações complementares da publicação" />
+            </div>
+          </div>
+        }
+      >
+        <ArticleComplements article={article} />
+      </Suspense>
     </>
+  );
+}
+
+async function ArticleComplements({ article }: { article: PublicArticle }) {
+  // Optional below-the-fold reads do not hold the title and article body in the route fallback.
+  // Both remain bounded/no-store and fail independently without hiding the publication.
+  const complements = await loadArticleComplements(article, {
+    articles: async (area) => (await getArticles({ area, limit: 4 })).data,
+    professional: getProfessional,
+  });
+  return (
+    <EditorialComplementsView
+      article={article}
+      author={complements.author}
+      related={complements.related}
+      relatedUnavailable={complements.relatedUnavailable}
+    />
   );
 }

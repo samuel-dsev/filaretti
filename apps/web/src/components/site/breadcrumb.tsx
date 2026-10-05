@@ -13,7 +13,9 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
               </span>
             ) : null}
             {item.href && index < items.length - 1 ? (
-              <Link href={item.href}>{item.label}</Link>
+              <Link prefetch={false} href={item.href}>
+                {item.label}
+              </Link>
             ) : (
               <span aria-current={index === items.length - 1 ? 'page' : undefined}>
                 {item.label}

@@ -18,11 +18,7 @@ export const publicationDate = new Intl.DateTimeFormat('pt-BR', {
 
 export function EditorialArticleCard({ article }: { article: PublicArticleSummary }) {
   return (
-    <a
-      href={`/conteudos/${encodeURIComponent(article.slug)}`}
-      className={styles.cardLink}
-      aria-label={`Ler: ${article.title}`}
-    >
+    <a href={`/conteudos/${encodeURIComponent(article.slug)}`} className={styles.cardLink}>
       <EditorialCard
         category={article.categories[0]?.name ?? articleTypeLabels[article.type]}
         title={article.title}

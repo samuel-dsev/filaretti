@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import { isLocalDemoAllowed } from '../../../lib/local-demo';
+import '@/components/admin/styles.css';
+import './demo.css';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {

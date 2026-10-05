@@ -8,6 +8,20 @@ import { HealthService } from './health.service';
 export class HealthController {
   constructor(private readonly health: HealthService) {}
 
+  @Get('live')
+  @Header('Cache-Control', 'no-store')
+  @ApiOperation({ summary: 'Processo HTTP ativo; não consulta dependências' })
+  live() {
+    return { status: 'ok' };
+  }
+
+  @Get('ready')
+  @Header('Cache-Control', 'no-store')
+  @ApiOperation({ summary: 'Readiness com consulta real e limitada ao PostgreSQL' })
+  ready(@Res({ passthrough: true }) response: Response) {
+    return this.check(response);
+  }
+
   @Get()
   @Header('Cache-Control', 'no-store')
   @ApiOperation({ summary: 'Conectividade com PostgreSQL; sem conteúdo de domínio' })

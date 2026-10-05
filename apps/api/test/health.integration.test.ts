@@ -24,6 +24,14 @@ test('health queries a real PostgreSQL database and reflects success', async () 
     );
     assert.deepEqual(await response.json(), { status: 'ok', database: 'up' });
     assert.equal(response.headers.get('cache-control'), 'no-store');
+    for (const path of ['live', 'ready']) {
+      const check = await fetch(`${await app.getUrl()}/health/${path}`);
+      assert.equal(check.status, 200);
+      assert.deepEqual(
+        await check.json(),
+        path === 'live' ? { status: 'ok' } : { status: 'ok', database: 'up' },
+      );
+    }
   } finally {
     await app.close();
   }

@@ -18,9 +18,72 @@ const web = {
 };
 
 describe('configuration boundaries', () => {
+  it('requires explicit signed ingress outside development', () => {
+    expect(() =>
+      validateWebEnvironment({ ...web, APP_ENV: 'staging', NEXT_PUBLIC_MOCK_INTEGRATIONS: false }),
+    ).toThrow('BFF_CLIENT_IP_SECRET');
+    expect(() =>
+      validateApiEnvironment({
+        ...api,
+        APP_ENV: 'staging',
+        MOCK_INTEGRATIONS: false,
+        RELATIONSHIP_ENABLED: false,
+      }),
+    ).toThrow('BFF_CLIENT_IP_SECRET');
+    expect(() => validateWebEnvironment({ ...web, BFF_CLIENT_IP_SECRET: 'invalid' })).toThrow(
+      'BFF_CLIENT_IP_SECRET',
+    );
+    expect(
+      validateWebEnvironment({
+        ...web,
+        APP_ENV: 'staging',
+        NEXT_PUBLIC_MOCK_INTEGRATIONS: false,
+        NEXT_PUBLIC_SITE_URL: 'https://staging.example.invalid',
+        BFF_CLIENT_IP_SECRET: 'a'.repeat(64),
+        WEB_CLIENT_IP_HEADER: 'x-real-ip',
+        WEB_TRUSTED_PROXY_CONFIRMED: true,
+      }).appEnvironment,
+    ).toBe('staging');
+    expect(() =>
+      validateWebEnvironment({
+        ...web,
+        APP_ENV: 'staging',
+        NEXT_PUBLIC_MOCK_INTEGRATIONS: false,
+        BFF_CLIENT_IP_SECRET: 'a'.repeat(64),
+        WEB_CLIENT_IP_HEADER: 'x-real-ip',
+        WEB_TRUSTED_PROXY_CONFIRMED: true,
+      }),
+    ).toThrow('NEXT_PUBLIC_SITE_URL');
+    expect(() =>
+      validateApiEnvironment({
+        ...api,
+        APP_ENV: 'staging',
+        MOCK_INTEGRATIONS: false,
+        RELATIONSHIP_ENABLED: false,
+        BFF_CLIENT_IP_SECRET: 'a'.repeat(64),
+      }),
+    ).toThrow('COOKIE_SECURE');
+  });
+  it('keeps scanner disabled by default and requires a private network for external ClamAV', () => {
+    expect(validateApiEnvironment(api).CONTACT_SCANNER_DRIVER).toBe('disabled');
+    expect(() =>
+      validateApiEnvironment({
+        ...api,
+        APP_ENV: 'staging',
+        MOCK_INTEGRATIONS: false,
+        RELATIONSHIP_ENABLED: false,
+        BFF_CLIENT_IP_SECRET: 'a'.repeat(64),
+        CONTACT_SCANNER_DRIVER: 'clamav',
+      }),
+    ).toThrow('CLAMAV_PRIVATE_NETWORK_CONFIRMED');
+  });
   it('allows offline local startup without external integrations', () => {
     expect(validateApiEnvironment(api).RESEND_ENABLED).toBe(false);
     expect(validateWebEnvironment({ ...web, NODE_ENV: 'production' }).mockContent).toBe(true);
+    expect(
+      validateWebEnvironment({ ...web, WEB_CLIENT_IP_HEADER: '', BFF_CLIENT_IP_SECRET: '' })
+        .mockContent,
+    ).toBe(true);
   });
   it('parses false and rejects ambiguous flags instead of treating them as truthy', () => {
     expect(validateApiEnvironment({ ...api, MOCK_CONTENT: 'false' }).MOCK_CONTENT).toBe(false);
@@ -46,6 +109,7 @@ describe('configuration boundaries', () => {
         APP_ENV: 'production',
         MOCK_CONTENT: 'false',
         COOKIE_SECURE: 'true',
+        BFF_CLIENT_IP_SECRET: 'a'.repeat(64),
         WEB_PUBLIC_URL: 'https://test.invalid',
         API_PUBLIC_URL: 'https://api.test.invalid',
       }).APP_ENV,

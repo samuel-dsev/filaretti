@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import type {
   AdminContact,
   AdminContactsResponse,
@@ -31,6 +31,7 @@ const date = (value: string) =>
   new Date(value).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 
 export function Contacts({ initialPage = 1 }: { initialPage?: number }) {
+  const openerRef = useRef<HTMLButtonElement>(null);
   const [data, setData] = useState<AdminContactsResponse>();
   const [page, setPage] = useState(initialPage);
   const [status, setStatus] = useState('');
@@ -62,7 +63,7 @@ export function Contacts({ initialPage = 1 }: { initialPage?: number }) {
         .finally(() => {
           setLoading(false);
         }),
-    [page, search, status],
+    [page, search, status, setData, setError, setLoading],
   );
   useEffect(() => {
     void load();
@@ -196,7 +197,10 @@ export function Contacts({ initialPage = 1 }: { initialPage?: number }) {
                             variant="ghost"
                             size="sm"
                             disabled={pending}
-                            onClick={() => void open(record)}
+                            onClick={(event) => {
+                              openerRef.current = event.currentTarget;
+                              void open(record);
+                            }}
                           >
                             Ver solicitação
                           </Button>
@@ -241,6 +245,7 @@ export function Contacts({ initialPage = 1 }: { initialPage?: number }) {
         </div>
       )}
       <Dialog
+        returnFocusRef={openerRef}
         open={Boolean(selected)}
         onClose={() => {
           if (!pending) {

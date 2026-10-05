@@ -19,6 +19,7 @@ export function ProfessionalIndexView({ professionals, pagination }: Professiona
       </div>
       <Hero eyebrow="Equipe" title="Profissionais" />
       <div className="f-container institution-index-content">
+        <h2 className="f-sr-only">Perfis publicados</h2>
         <p className="institution-result-count">
           {pagination.total} {pagination.total === 1 ? 'perfil publicado' : 'perfis publicados'}
         </p>

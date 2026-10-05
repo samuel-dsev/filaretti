@@ -83,6 +83,7 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                     </Button>
                   ) : item.href ? (
                     <Link
+                      prefetch={false}
                       href={item.href}
                       className="site-nav-link"
                       onClick={() => setActiveMenu(null)}
@@ -134,7 +135,7 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
               <ul className="site-mega-links">
                 {activeItem.children.map((link) => (
                   <li key={`${link.label}-${link.href}`}>
-                    <Link href={link.href} onClick={() => setActiveMenu(null)}>
+                    <Link prefetch={false} href={link.href} onClick={() => setActiveMenu(null)}>
                       <span>
                         <strong>{link.label}</strong>
                         {link.description ? <small>{link.description}</small> : null}
@@ -164,7 +165,11 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                     <ul>
                       {item.children.map((link) => (
                         <li key={`${link.label}-${link.href}`}>
-                          <Link href={link.href} onClick={() => setMobileOpen(false)}>
+                          <Link
+                            prefetch={false}
+                            href={link.href}
+                            onClick={() => setMobileOpen(false)}
+                          >
                             {link.label}
                             <ArrowIcon />
                           </Link>
@@ -173,7 +178,7 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                     </ul>
                   </>
                 ) : item.href ? (
-                  <Link href={item.href} onClick={() => setMobileOpen(false)}>
+                  <Link prefetch={false} href={item.href} onClick={() => setMobileOpen(false)}>
                     {item.label}
                     <ArrowIcon />
                   </Link>

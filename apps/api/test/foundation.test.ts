@@ -28,6 +28,11 @@ test('HTTP errors, request IDs and logging never disclose request secrets', asyn
     assert.match(body.error.requestId, /^[0-9a-f-]{36}$/);
     assert.equal(response.headers.get('x-request-id'), body.error.requestId);
     assert.equal(response.headers.get('cache-control'), 'no-store');
+    assert.equal(response.headers.get('x-powered-by'), null);
+    assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
+    assert.equal(response.headers.get('x-frame-options'), 'DENY');
+    assert.equal(response.headers.get('access-control-allow-origin'), null);
+    assert.equal(response.headers.get('strict-transport-security'), null);
     assert.equal(JSON.stringify(body).includes(marker), false);
     const malformed = await fetch(`${url}/api/v1/absent`, {
       method: 'POST',
@@ -56,6 +61,12 @@ test('unavailable database returns bounded 503 and no connection credentials', a
     assert.deepEqual(await response.json(), { status: 'error', database: 'down' });
     assert.equal(Date.now() - started < 3000, true);
     assert.equal(logs.join('\n').includes('secret-not-for-logs'), false);
+    const live = await fetch(`${await app.getUrl()}/health/live`);
+    assert.equal(live.status, 200);
+    assert.deepEqual(await live.json(), { status: 'ok' });
+    const ready = await fetch(`${await app.getUrl()}/health/ready`);
+    assert.equal(ready.status, 503);
+    assert.deepEqual(await ready.json(), { status: 'error', database: 'down' });
   } finally {
     await app.close();
   }
@@ -89,6 +100,45 @@ test('Swagger is available only in development and disabled for production', asy
           ),
         );
       }
+    } finally {
+      await app.close();
+    }
+  }
+});
+
+test('restricted staging headers keep CORS closed and emit HSTS only for configured HTTPS', async () => {
+  for (const protocol of ['http:', 'https:']) {
+    const app = await createApplication(
+      {
+        ...testEnvironment({
+          APP_ENV: 'staging',
+          MOCK_CONTENT: false,
+          MOCK_INTEGRATIONS: false,
+          RELATIONSHIP_ENABLED: false,
+          BFF_CLIENT_IP_SECRET: 'cd'.repeat(32),
+          COOKIE_SECURE: true,
+          API_PUBLIC_URL: 'https://api.staging.example.invalid',
+          WEB_PUBLIC_URL: 'https://staging.example.invalid',
+        }),
+        // Exercise defensive headers independently of bootstrap validation, which rejects HTTP staging.
+        API_PUBLIC_URL: `${protocol}//api.staging.example.invalid`,
+        WEB_PUBLIC_URL: `${protocol}//staging.example.invalid`,
+      },
+      new SanitizedLogger(() => undefined),
+    );
+    await app.listen(0, '127.0.0.1');
+    try {
+      const response = await fetch(`${await app.getUrl()}/health/live`, {
+        headers: { Origin: 'https://foreign.example.invalid', 'X-Forwarded-Proto': 'https' },
+      });
+      assert.equal(response.status, 200);
+      assert.equal(response.headers.get('access-control-allow-origin'), null);
+      assert.equal(
+        response.headers.get('strict-transport-security'),
+        protocol === 'https:' ? 'max-age=31536000' : null,
+      );
+      assert.ok(response.headers.get('content-security-policy')?.includes("default-src 'none'"));
+      assert.equal((await fetch(`${await app.getUrl()}/api/docs-json`)).status, 404);
     } finally {
       await app.close();
     }

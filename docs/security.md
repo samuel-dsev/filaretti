@@ -1,5 +1,9 @@
 # Segurança e tratamento de dados
 
+Atualização F8 (`0.8.0`): CSP com nonce por documento, headers de proteção, HSTS condicionado a HTTPS configurado, CORS fechado, IP assinado pelo BFF e scanner privado foram implementados e exercitados localmente. `/health/live` e `/health/ready` distinguem processo/banco; `/api/v1/admin/operations` oferece sinais sanitizados exclusivos de ADMIN. [Backend F8](f8-backend.md), [frontend F8](f8-frontend.md) e [operação](operations.md) documentam contratos, recuperação e limites. As referências anteriores a controles “pendentes na F8” abaixo registram o baseline; os gates externos continuam pendentes no RP-009.
+
+Staging e production exigem URLs públicas HTTPS, cookies Secure e ingress confirmado com identidade HMAC. O bootstrap falha sem esses controles; HTTP interno privado não determina a segurança da origem pública. A configuração e os testes locais não substituem a verificação do TLS/ingress no provedor real.
+
 Atualização F7 (`0.7.0`): o [CMS](cms.md) mantém sessão/roles, preview, mídia e agendamento; [relationship.md](relationship.md) descreve contato/anexos privados, opt-in, entrega criptografada, assinatura de webhook, retenção e consentimento. R2, Resend e Turnstile têm adaptadores; sua validação externa permanece na F8. Admin/preview usam no-store/noindex/no-referrer; o BFF administrativo preserva Origin/CSRF e cookies HttpOnly. As seções F2–F5 descrevem a origem dos controles, com as atualizações correntes abaixo.
 
 Referência: F2, 03/10/2026. Os controles descritos são implementados na API local; evidências e limitações do aceite ficam em `relate.md`. Fornecedores, homologação e produção permanecem nas fases próprias.

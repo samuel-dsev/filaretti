@@ -4,6 +4,7 @@ packages:
 
 allowBuilds:
   '@nestjs/core': false
+  '@parcel/watcher': false
   '@prisma/engines': true
   '@scarf/scarf': false
   argon2: true
@@ -20,6 +21,10 @@ minimumReleaseAgeExclude:
   - '@turbo/windows-64@2.11.7'
   - '@turbo/windows-arm64@2.11.7'
   - turbo@2.11.7
+  - data-urls@8.0.0
+  - jsdom@30.1.2
+  - tr46@7.0.0
+  - whatwg-url@17.2.0
 
 saveExact: true
 engineStrict: true

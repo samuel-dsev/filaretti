@@ -1,0 +1,29 @@
+name: Manual staging readiness gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Commit SHA reviewed for protected staging
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  readiness:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.revision }}
+      - name: Validate reviewed revision and environment approval
+        env:
+          REVIEWED_REVISION: ${{ inputs.revision }}
+          STAGING_AUTHORIZED: ${{ vars.STAGING_AUTHORIZED }}
+          STAGING_URL: ${{ vars.STAGING_URL }}
+          STAGING_INGRESS_VERIFIED: ${{ vars.STAGING_INGRESS_VERIFIED }}
+          STAGING_BACKUP_VERIFIED: ${{ vars.STAGING_BACKUP_VERIFIED }}
+        run: node scripts/staging-gate.mjs

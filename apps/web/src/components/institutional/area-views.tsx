@@ -14,6 +14,7 @@ export function AreaIndexView({ areas, pagination }: AreaIndexViewProps) {
       </div>
       <Hero eyebrow="Atuação" title="Áreas de atuação" />
       <div className="f-container institution-index-content">
+        <h2 className="f-sr-only">Áreas publicadas</h2>
         <p className="institution-result-count">
           {pagination.total} {pagination.total === 1 ? 'área publicada' : 'áreas publicadas'}
         </p>

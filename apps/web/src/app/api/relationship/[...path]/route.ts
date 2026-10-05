@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { relationshipEndpoint } from '@/lib/relationship-routing';
 import { validateWebEnvironment } from '@filaretti/config';
+import { signVisitorHeaders } from '@/lib/bff-client-ip';
 
 export const dynamic = 'force-dynamic';
 const cacheHeaders = {
@@ -68,7 +69,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       body.set(chunk, offset);
       offset += chunk.byteLength;
     }
-    const headers = new Headers();
+    const headers = signVisitorHeaders(request, 'POST', endpoint);
     const contentType = request.headers.get('content-type');
     if (contentType) headers.set('Content-Type', contentType);
     headers.set('Origin', request.headers.get('origin')!);

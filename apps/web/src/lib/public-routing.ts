@@ -28,6 +28,13 @@ export function publicRouteResource(pathname: string): PublicRouteResource | nul
   return { endpoint: `/${collection}/${slug}`, isDetail: true };
 }
 
+/** Only a bounded public detail path may preload an article in the institutional layout. */
+export function publicArticleSlug(pathname: string): string | null {
+  const resource = publicRouteResource(pathname);
+  if (!resource?.isDetail || !resource.endpoint.startsWith('/articles/')) return null;
+  return resource.endpoint.slice('/articles/'.length);
+}
+
 export function publicPageNumber(value: string | string[] | undefined): number {
   if (typeof value !== 'string' || !/^[1-9]\d{0,5}$/u.test(value)) return 1;
   const page = Number(value);

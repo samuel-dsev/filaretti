@@ -1,6 +1,6 @@
 {
   "name": "filaretti",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "packageManager": "pnpm@11.25.0",
   "engines": {
@@ -29,13 +29,21 @@
     "setup:cms-local": "node scripts/setup-cms-local.mjs",
     "prepare": "husky",
     "test:relationship": "node scripts/test-relationship.mjs",
-    "mail:local": "node scripts/local-mail.mjs"
+    "mail:local": "node scripts/local-mail.mjs",
+    "test:f8": "node scripts/test-f8.mjs",
+    "test:recovery": "node scripts/test-recovery.mjs",
+    "backup:local": "node scripts/backup-local.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@types/jest": "30.0.0",
     "@types/node": "24.19.1",
     "eslint": "9.39.5",
     "husky": "9.1.7",
+    "jest": "30.5.2",
+    "lighthouse": "13.5.0",
     "lint-staged": "17.6.0",
+    "playwright": "1.63.0",
     "prettier": "3.9.9",
     "turbo": "2.11.7",
     "typescript": "5.9.3"
