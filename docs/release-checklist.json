@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "version": "0.9.0",
+  "commit": null,
+  "batchSha256": null,
+  "finalOrigin": null,
+  "approvals": {
+    "content": null,
+    "migration": null,
+    "privacyRetention": null,
+    "professionalPresentation": null
+  },
+  "evidence": {
+    "f8": null,
+    "ci": null,
+    "providers": null,
+    "backupRestore": null,
+    "accessibility": null,
+    "seo": null,
+    "mediaIntegrity": null,
+    "forms": null
+  },
+  "operations": {
+    "owner": null,
+    "cutoverWindow": null,
+    "rollbackOwner": null,
+    "hosting": null,
+    "budgetApproved": false,
+    "dnsApproved": false
+  },
+  "candidatePaths": []
+}

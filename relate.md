@@ -2,18 +2,90 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                                      |
-| ------------------ | ------------------------------------------------------------------------------------------- |
-| Última atualização | 05/10/2026 — RP-009                                                                         |
-| Etapa              | **F8: entrega local verificada; homologação parcial**                                       |
-| Versão             | `0.8.0`, oito manifests privados alinhados                                                  |
-| Git                | `dev`; base F7 `b52000281dbf34b89212065c8c578a99bf39e056`; commit local F8 previsto abaixo  |
-| Autorização        | “Prossiga para a F8”; F9, push, PR, deploy/DNS e fornecedores reais não autorizados         |
-| Checkpoint         | Retomar gates externos, CI real, backup aprovado e browsers/leitor de tela; F9 não iniciada |
+| Campo              | Estado                                                                                         |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| Última atualização | 05/10/2026 — RP-010                                                                            |
+| Etapa              | **F9: implementação local verificada; lote/migração/release oficial pendentes; F8 parcial**    |
+| Versão             | `0.9.0`, oito manifests privados alinhados                                                     |
+| Git                | `dev`; base F8 `222f61ec8e4ec13dcf3a6e8da6d26c8305c9f697`; commit local F9 previsto abaixo     |
+| Autorização        | “Continue a implementação da F9 do projeto”; carga real/F10/push/PR/deploy/DNS não autorizados |
+| Checkpoint         | Receber inventário/materiais aprovados e fechar F8 externa para preparar candidata oficial     |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo; este fechamento usa a data 05/10/2026 do cliente, com timestamps UTC originais nas evidências.
 
 ## Histórico
+
+### RP-010 — 05/10/2026 — F9 — Migração e gates da release locais
+
+**Escopo autorizado:** “Continue a implementação da F9 do projeto”. O checkout ainda estava em F8 local, sem implementação anterior da F9. O pedido atual autoriza os mecanismos F9 independentes, preservando as pendências da homologação F8 e os gates de materiais/ambiente/carga real. **Estado: entrega técnica local; F9 permanece parcial até inventário, lote, aprovações e candidata oficiais.**
+
+**Versão:** `0.8.0` → `0.9.0`, oito manifests privados alinhados. Nenhuma dependência adicionada, schema/migration alterada ou interface pública modificada. O build da web reutiliza a base existente. Não iniciar F10 por consequência desta entrega.
+
+**Git/cwd:** `C:\Users\Samuel\Documents\Projetos\Filaretti`, branch `dev`, inicialmente limpa, três commits à frente de `origin/dev`. Commit F8 real confirmado: `222f61ec8e4ec13dcf3a6e8da6d26c8305c9f697`. Nenhuma branch/repositório adicional criado. Commit previsto: `feat(release): prepara migracao e gates locais da F9 (v0.9.0)`; SHA informado após commit e registrado na próxima retomada. Push, PR, carga real, contas externas, deploy e DNS não executados.
+
+#### Arquivos criados, alterados e removidos
+
+Criados (15):
+
+- `apps/api/scripts/migration.ts`
+- `apps/api/scripts/release-check.ts`
+- `apps/api/src/release/candidate-http.ts`
+- `apps/api/src/release/markers.ts`
+- `apps/api/src/release/migration-contract.ts`
+- `apps/api/src/release/migration-importer.ts`
+- `apps/api/src/release/release-evidence.ts`
+- `apps/api/src/release/release-gate.ts`
+- `apps/api/test/fixtures/migration-batch.json`
+- `apps/api/test/migration.integration.test.ts`
+- `apps/api/test/release-evidence.integration.test.ts`
+- `apps/api/test/release-gate.integration.test.ts`
+- `docs/migration.md`
+- `docs/migration-batch.template.json`
+- `docs/release-checklist.json`
+
+Alterados (14): `README.md`, `docs/database.md`, `docs/deployment.md`, `plan.md`, `relate.md`, `apps/api/prisma/tsconfig.json`, `package.json`, `apps/api/package.json`, `apps/web/package.json`, `packages/config/package.json`, `packages/types/package.json`, `packages/ui/package.json`, `packages/eslint-config/package.json` e `packages/tsconfig/package.json`.
+
+Removidos: nenhum. Schema, migrations aplicadas e lockfile preservados. Builds/dist-test e recursos dos ensaios são locais/ignorados; bancos temporários próprios são removidos pelos runners. Dados/volume de desenvolvimento não são resetados.
+
+#### Implementação, decisões e limites
+
+- **Lote:** schema versionado com limite de tamanho/quantidades, campos desconhecidos rejeitados, IDs/slugs/vínculos validados pelos DTOs e TipTap atuais. Somente conteúdo/taxonomias/FAQ/settings; publicação explícita UTC, sem agendamento. Não importar usuários, senhas, contatos, assinantes, sessões, tokens, outbox ou bytes de mídia. Páginas precisam de template realmente renderizado.
+- **Inventário:** origem HTTPS, títulos/descrições e caminhos de ativos; decisões keep, redirect301 ou retirada com referência. Não rastreia/alterar o site antigo. Query, percent encoding, trailing slash e formatos incompatíveis precisam de revisão explícita. O template começa vazio, sem inventar o site antigo ou aprovação.
+- **Importação:** dry-run padrão e READ ONLY; apply requer ADMIN ativo, ambiente compatível, confirmação SHA-256/nome do banco e conferência `current_database()`. Fixture só em banco descartável do runner; produção exige flag adicional em processo autorizado. Essa flag não concede autorização humana. Trava6006001 compartilhada com CMS e transação Serializable. IDs/slugs existentes geram conflito; única exceção é singleton settings estrutural integralmente vazio. Falha reverte todo lote. Recibo em audit conserva digests; replay conserva edições do CMS e não duplica registros.
+- **Congelamento:** snapshot de registros/vínculos/versões/datas/redirects aprovado pela importação. Gate recusa recibo ausente/digest diferente ou edição posterior, sem desfazer a edição. Material alterado requer nova revisão/candidata isolada. Digests identificam conteúdo JSON canônico e não aprovam material por si mesmos.
+- **Mocks:** flags de produção, doze modelos `isMock` paginados por200 e marcadores textuais/links/contas/metadata; JSON profundo/cíclico/grande falha fechado. Validação editorial, quatro páginas obrigatórias, ADMIN, settings, mídia pública/privada/local/alt/origem/licença e redirects sem loops/sombra/destino privado. Relatórios contêm apenas códigos/recursos/contagens/índices, sem segredos ou dados pessoais. Não escolhe quais mocks apagar; desenvolvimento mantém seus fixtures.
+- **Release:** checklist de commit/digest/domínio/aprovações/evidências/responsáveis/hosting/orçamento/janela/rollback/DNS começa pendente. Git alterado, configuração incoerente, placeholders estáticos, fixture, falta de evidência, snapshot alterado e HTTP não executado bloqueiam `ready`. Aprovações declaradas no JSON precisam corresponder a documentos reais; não são assinaturas nem validação jurídica automática.
+- **HTTP:** mecanismo verifica HTTPS da origem final configurada, sem credenciais/redirect-following, limites/timeout, URLs públicas, canonical, indexação, título/h1, ausência de ficção e sitemap exato comparado ao catálogo API. Mapeamentos exigem 301/Location aprovado ou retirada404/410. Catálogo distingue rotas renderizadas de URLs indexáveis. Fixture de HTTP usa servidor próprio em loopback; nenhum host externo é consultado neste ensaio. Formulários/bytes/buckets/fornecedores têm evidências externas próprias.
+- **Apresentação:** Home/escritório ainda usam `PlaceholderArtwork`; perfis/cards têm fallback demonstrativo. Gate os aponta explicitamente, preservando o trabalho visual até receber mídia aprovada. Não confundir atributo HTML de formulário com ativo de demonstração.
+- **Equipe:** subagente de revisão/QA documentou contratos e escreveu integração; subagente de gate implementou scanner/ensaios isolados. Principal integrou, corrigiu o código, revisou falhas e executou checks. Arquivos tiveram responsáveis distintos; nenhum agente fez ação externa/commit independente.
+
+#### Validação
+
+| Check                            | Resultado                                                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Checkout/branch/base             | `dev` limpa sobre `222f61e`; checkout real confirmado                                                                                 |
+| `pnpm install --frozen-lockfile` | Passou; lockfile preservado                                                                                                           |
+| `pnpm lint`                      | Passou; primeira rodada encontrou variável não usada, corrigida                                                                       |
+| `pnpm typecheck`                 | Passou; inclui scripts CLI no tsconfig de ferramentas                                                                                 |
+| `pnpm build`                     | Passou; API/pacotes e web otimizada local                                                                                             |
+| `pnpm test`                      | 89 aprovados: 12 configuração, 60 web Node, 6 Vitest/RTL, 4 fundação HTTP e 7 Jest                                                    |
+| `pnpm test:integration`          | 95 aprovados, zero falhas/skips; PostgreSQL17 real, migrations/seeds, importação/rollback/recibo/drift, mocks e projeção sitemap      |
+| HTTP F9 complementar             | 4 casos dirigidos aprovados após incluir 301/Location e retirada404/410; servidor loopback, sem candidata externa                     |
+| `migration:plan --offline`       | Passou: fixture6 registros/2 URLs, `databaseChecked=false`; digest `c4203c1b6e3be92c00a15657daf099da8bb810b173570cd2439cbdc9eb2be179` |
+| `release:check --offline`        | Bloqueou corretamente com `ready=false`/exit1: fixture, evidências, placeholders e runtime não verificado                             |
+| Formatação/diff                  | Prettier nos arquivos da entrega, `format:check` e `git diff --check` aprovados no fechamento                                         |
+
+A primeira integração funcional tinha94 testes,89 aprovados e5 falhas contabilizando testes pais. Corrigido prefixo de `/conteudos/` que impedia detectar redirect encobrindo artigo publicado. Duas fixtures tentavam violar constraints já corretas do banco (URL pública em mídia privada e redirect externo): testes passaram a confirmar a rejeição e a inspecionar estados permitidos, com cleanup em finally. Datas participam do snapshot canônico; teste adicional verifica mudança de publishedAt e restauração somente da fixture própria. A rodada final de95 casos passou integralmente. O warning preexistente do driver pg sobre consultas concorrentes continua documentado; não representa falha nem prova compatibilidade com pg9.
+
+#### Pendências e ponto exato de retomada
+
+1. Obter URL/inventário completo do site antigo e materiais oficiais aprovados; a pergunta desta retomada ainda não teve resposta. Não inventar títulos, biografias, logo, fotos, contatos ou políticas para preencher o lote real.
+2. Fechar homologação F8: fornecedores/storage/scanner/ingress/TLS/worker, CI remoto, backups/restauração/alertas, browsers/dispositivos/leitor de tela e SEO. A F8 permanece parcial; os checks F9 locais não substituem esses aceites.
+3. Preparar/revisar lote e mapeamentos reais, mídia com bytes/hashes/direitos/alt, substituir apresentação demonstrativa e preencher referências de aprovação/evidência somente após obtidas.
+4. No ambiente isolado explicitamente autorizado, provisionar ADMIN/seed estrutural, executar dry-run, revisar digest e executar carga aprovada; verificar snapshots, formulários, HTTP/canonical/robots/sitemap/301/retiradas reais e registrar artefato do commit.
+5. Aprovar plano de corte, responsável, hosting/orçamento, janela, backup e rollback. Somente depois solicitar autorização específica F10 para produção/carga/DNS/corte.
+
+**Ponto de parada:** F9 local em`0.9.0`; F8 e F9 permanecem parciais nos aceites externos. Última fase com aceite integral continua F7. Nenhum deploy/push/PR/DNS/carga real/envio externo realizado. Aguardar informações/aprovações para continuar a parte dependente; F10 não iniciada.
 
 ### RP-009 — 05/10/2026 — F8 — Entrega local; homologação parcial
 

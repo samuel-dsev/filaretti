@@ -1,6 +1,19 @@
 # Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.8.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F7 acrescenta contato com anexos privados, newsletter com confirmação/descadastro, recuperação de senha, busca em português, FAQ, SEO e preferências de cookies. A F8 implementa hardening, QA integrado e recuperação local; homologação externa permanece parcial. E-mails e antispam são explicitamente simulados no desenvolvimento local. Situação e validações efetivamente executadas: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.9.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F7 acrescenta contato com anexos privados, newsletter com confirmação/descadastro, recuperação de senha, busca em português, FAQ, SEO e preferências de cookies. A F8 implementa hardening, QA integrado e recuperação local; homologação externa permanece parcial. A F9 prepara importação transacional, inventário de URLs e gates contra mocks e alterações após aprovação; materiais e aceite externos permanecem pendentes. E-mails e antispam são explicitamente simulados no desenvolvimento local. Situação e validações efetivamente executadas: [relate.md](relate.md).
+
+## Migração e preparação da release
+
+Procedimento e contratos em [docs/migration.md](docs/migration.md). `pnpm migration:plan` executa dry-run sem escrever; `pnpm migration:apply` exige operador ADMIN, confirmação do digest e do banco isolado. `pnpm release:check` verifica evidências, configuração, banco e código; `--http` verifica também a candidata HTTPS autorizada. Os scripts recebem configuração do ambiente seguro do processo, sem carregar `.env` automaticamente. Caminhos de entrada são relativos à raiz do checkout ou absolutos.
+
+Para conferir somente os mecanismos de arquivo, sem banco ou acesso externo:
+
+```powershell
+rtk proxy pnpm migration:plan --offline --batch apps/api/test/fixtures/migration-batch.json
+rtk proxy pnpm release:check --offline --batch apps/api/test/fixtures/migration-batch.json
+```
+
+O segundo comando deve sair com código 1 e `ready=false`: fixture, materiais, evidências e apresentação definitiva ainda bloqueiam a candidata. O template [migration-batch.template.json](docs/migration-batch.template.json) e o [release-checklist.json](docs/release-checklist.json) começam pendentes. Esses comandos não comprovam migração, homologação ou produção reais.
 
 ## Pré-requisitos
 

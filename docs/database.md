@@ -1,5 +1,7 @@
 # Banco de dados
 
+F9 (`0.9.0`) acrescenta ferramentas de [migração](migration.md), preservando schema e as quatro migrations existentes. O lote cria somente conteúdo institucional/editorial e redirects; usa ADMIN preexistente, não transporta usuários/contatos/assinantes, e grava `audit_events` com action `migration.imported`, resource `migration-batch`, UUID e digests SHA-256 do lote/snapshot. Trava `6006001` compartilhada com o CMS, transação Serializable e IDs/slugs estáveis impedem sobrescrita/duplicação. Reexecução conserva edições posteriores; o gate da release detecta alteração no snapshot e exige nova revisão da candidata. Somente settings estrutural integralmente vazio pode receber a carga inicial; configuração existente gera conflito. Dry-run e gate abrem transações PostgreSQL READ ONLY. Fixtures aplicam exclusivamente em banco descartável `filaretti_test_<uuid>` criado pelo runner; banco/volume persistente de desenvolvimento são preservados.
+
 Referência atual F7 (`0.7.0`): mídia, preview e outbox da F6 continuam em [cms.md](cms.md); a migration aditiva da F7 implementa arquivos privados de contato, tickets de download, deduplicação de webhook, idempotência e versões de relacionamento. Migrations anteriores foram preservadas. Evidências de aplicação e checks efetivamente executados: `../relate.md`.
 
 F2, 03/10/2026. Schema, duas migrations, seeds e serviço Prisma implementados. As evidências de execução com PostgreSQL real e o aceite integrado ficam em `../relate.md`; validação estática do schema não comprova aplicação de migrations.

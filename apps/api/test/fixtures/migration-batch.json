@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "batchId": "1eae3f65-37ef-4b63-a42d-805c2144cf86",
+  "fixture": true,
+  "legacyOrigin": "https://site-antigo.example.invalid",
+  "approval": null,
+  "records": [
+    {
+      "kind": "category",
+      "id": "90207350-1479-402d-babd-55633dd7ea9f",
+      "data": { "name": "Categoria fictícia de migração", "slug": "categoria-migracao-ficticia" }
+    },
+    {
+      "kind": "tag",
+      "id": "859bd1b1-2a54-41b2-a4fb-6a9ed13849d7",
+      "data": { "name": "Tag fictícia de migração", "slug": "tag-migracao-ficticia" }
+    },
+    {
+      "kind": "practiceArea",
+      "id": "ce1480c8-2683-4b5e-9c32-f0a0d3c60863",
+      "data": {
+        "name": "Área fictícia de migração",
+        "slug": "area-migracao-ficticia",
+        "summary": "Fixture local sem conteúdo profissional real.",
+        "description": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Descrição fictícia de teste." }]
+            }
+          ]
+        },
+        "services": []
+      }
+    },
+    {
+      "kind": "professional",
+      "id": "9b94b30a-5b44-4a6c-acbc-35e6cfa648aa",
+      "data": {
+        "name": "Profissional fictício de migração",
+        "slug": "profissional-migracao-ficticio",
+        "title": "Identidade fictícia sem credenciais reais",
+        "bio": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Biografia fictícia de teste." }]
+            }
+          ]
+        },
+        "education": [],
+        "experience": [],
+        "practiceAreaIds": ["ce1480c8-2683-4b5e-9c32-f0a0d3c60863"]
+      }
+    },
+    {
+      "kind": "article",
+      "id": "0664fcd5-5261-46cc-ab60-2a7dd857c528",
+      "status": "PUBLISHED",
+      "publishedAt": "2026-01-01T12:00:00Z",
+      "data": {
+        "title": "Publicação fictícia de migração",
+        "slug": "publicacao-migracao-ficticia",
+        "excerpt": "Conteúdo fictício para validar a importação local.",
+        "content": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                { "type": "text", "text": "Conteúdo fictício, sem aprovação para produção." }
+              ]
+            }
+          ]
+        },
+        "type": "ARTICLE",
+        "authorId": "9b94b30a-5b44-4a6c-acbc-35e6cfa648aa",
+        "categoryIds": ["90207350-1479-402d-babd-55633dd7ea9f"],
+        "tagIds": ["859bd1b1-2a54-41b2-a4fb-6a9ed13849d7"],
+        "practiceAreaIds": ["ce1480c8-2683-4b5e-9c32-f0a0d3c60863"]
+      }
+    },
+    {
+      "kind": "faq",
+      "id": "98b7e195-4dcf-4706-9c6a-2350d2a74c59",
+      "data": {
+        "question": "Pergunta fictícia de migração?",
+        "answer": {
+          "type": "doc",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Resposta fictícia para teste local." }]
+            }
+          ]
+        },
+        "practiceAreaId": "ce1480c8-2683-4b5e-9c32-f0a0d3c60863"
+      }
+    }
+  ],
+  "urls": [
+    {
+      "sourcePath": "/noticia-ficticia-antiga",
+      "decision": "redirect",
+      "targetPath": "/conteudos/publicacao-migracao-ficticia",
+      "removalApproval": null,
+      "title": "Título fictício antigo",
+      "description": "Metadata fictícia de origem",
+      "assetPaths": ["/arquivos/ilustracao-ficticia.png"]
+    },
+    {
+      "sourcePath": "/pagina-ficticia-retirada",
+      "decision": "remove",
+      "targetPath": null,
+      "removalApproval": "fixture/sem-aprovacao-real",
+      "title": "Página fictícia retirada",
+      "description": "Somente decisão auditada no lote de teste",
+      "assetPaths": []
+    }
+  ]
+}
