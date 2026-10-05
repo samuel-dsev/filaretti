@@ -203,7 +203,12 @@ export class MediaService {
   async publicAsset(key: string) {
     if (!storageKeyPattern.test(key)) throw new NotFoundException();
     const row = await this.db.media.findFirst({
-      where: { storageKey: key, visibility: 'PUBLIC', contactAttachments: { none: {} } },
+      where: {
+        storageKey: key,
+        visibility: 'PUBLIC',
+        contactAttachments: { none: {} },
+        ...(this.environment.APP_ENV === 'production' ? { isMock: false } : {}),
+      },
     });
     if (!row || row.publicUrl !== `/media/public/${key}`) throw new NotFoundException();
     return {

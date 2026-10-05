@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                                                                 |
-| ---------------------- | -------------------------------------------------------------------------------------------------------- |
-| Última atualização     | 05/10/2026 — F9 implementada localmente; migração oficial pendente                                       |
-| Último relatório       | `RP-010`, em `relate.md`                                                                                 |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                                        |
-| Última entrega técnica | **F9 local: importador transacional, inventário e gates da release; aceite externo pendente**            |
-| Versão de referência   | `0.9.0`, oito manifests privados alinhados                                                               |
-| Etapa corrente         | **F9 parcial; F8 permanece com homologação parcial**                                                     |
-| Próximo passo          | Receber inventário/materiais aprovados, fechar F8 externa e revisar candidata e corte                    |
-| Autorização            | “Continue a implementação da F9 do projeto”; carga real, F10, push, PR e deploy não autorizados          |
-| Git                    | `dev`, remoto `origin`; base F8 `222f61ec8e4ec13dcf3a6e8da6d26c8305c9f697`; commit F9 previsto no RP-010 |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                           |
+| Campo                  | Situação                                                                                                          |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Última atualização     | 05/10/2026 — F10 local e revisão F0–F10; aceites externos pendentes                                               |
+| Último relatório       | `RP-011`, em `relate.md`                                                                                          |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                                                 |
+| Última entrega técnica | **F10 local: gate operacional, candidata controlada/pública, manuais e seis correções da revisão**                |
+| Versão de referência   | `0.10.0`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado                               |
+| Etapa corrente         | **F10 local verificada; F8/F9/F10 parciais nos aceites externos**                                                 |
+| Próximo passo          | Obter materiais/inventário/ambiente e evidências F8/F9 para candidata oficial e corte revisável                   |
+| Autorização            | Continuar F10 e revisar todas as fases; ambiente/carga/deploy/DNS específicos e push/PR não definidos/autorizados |
+| Git                    | `dev`, remoto `origin`; base F9 `fff682d0a60f7c95fb7f927d1d3e6812f91695fd`; commit F10 previsto no RP-011         |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                                    |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -66,19 +66,19 @@ Usar migrations versionadas, relações e políticas de exclusão explícitas. A
 
 ## 4. Grandes atualizações e ordem cronológica
 
-| Etapa | Versão prevista | Entrega principal                             | Dependência                                     | Estado                                                                    |
-| ----- | --------------- | --------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------------- |
-| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                                    | **Concluída — RP-000**                                                    |
-| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026                        | **Concluída — RP-002**                                                    |
-| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1; autorizada pelo usuário                     | **Concluída — RP-003**                                                    |
-| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026                    | **Concluída — RP-004**                                                    |
-| F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026                    | **Concluída — RP-005**                                                    |
-| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026                    | **Concluída — RP-006**                                                    |
-| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5; autorizada em 03/10/2026                    | **Concluída — RP-007**                                                    |
-| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6; autorizada em 04/10/2026                    | **Concluída — RP-008**                                                    |
-| F8    | 0.8.0           | Validação integrada e homologação             | F7; autorizada em 04/10/2026                    | **Parcial — entrega local RP-009; gates externos e QA pendentes**         |
-| F9    | 0.9.0           | Migração e preparação da release              | Autorizada em 05/10; F8/material real pendentes | **Parcial — mecanismos locais RP-010; lote/candidata oficiais pendentes** |
-| F10   | 1.0.0           | Publicação e validação operacional da V1      | F9 + autorização de produção                    | Pendente                                                                  |
+| Etapa | Versão prevista | Entrega principal                             | Dependência                                     | Estado                                                                        |
+| ----- | --------------- | --------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------- |
+| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                                    | **Concluída — RP-000**                                                        |
+| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026                        | **Concluída — RP-002**                                                        |
+| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1; autorizada pelo usuário                     | **Concluída — RP-003**                                                        |
+| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026                    | **Concluída — RP-004**                                                        |
+| F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026                    | **Concluída — RP-005**                                                        |
+| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026                    | **Concluída — RP-006**                                                        |
+| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5; autorizada em 03/10/2026                    | **Concluída — RP-007**                                                        |
+| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6; autorizada em 04/10/2026                    | **Concluída — RP-008**                                                        |
+| F8    | 0.8.0           | Validação integrada e homologação             | F7; autorizada em 04/10/2026                    | **Parcial — entrega local RP-009; gates externos e QA pendentes**             |
+| F9    | 0.9.0           | Migração e preparação da release              | Autorizada em 05/10; F8/material real pendentes | **Parcial — mecanismos locais RP-010; lote/candidata oficiais pendentes**     |
+| F10   | 1.0.0           | Publicação e validação operacional da V1      | Autorizada em 05/10; F8/F9 e ambiente pendentes | **Parcial — mecanismos locais/revisão RP-011 em 0.10.0; publicação pendente** |
 
 Cada etapa termina com validação, documentação, commit local quando o Git estiver preparado, relatório e pausa. Os subpassos pertencem à mesma atualização; não autorizam executar a etapa seguinte. Segurança, testes e acessibilidade começam na fundação e acompanham todas as entregas.
 
@@ -223,6 +223,10 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**05/10/2026 — RP-011 — F10 local e revisão completa F0–F10:** pedido “continue a implementação f10 do projeto, apos, faça uma revisão completa se todas as fases foram implementadas corretamente”; base F9 real `fff682d`, `dev` inicialmente limpa. Versão local `0.10.0`, com `1.0.0` reservada à V1 aprovada/operacional. Gate offline de treze etapas, identidade/digests do artefato e reports, ordem temporal, candidata e smokes controlados/públicos, corte e rollback, observação e handoff. Plano/manifesto operacionais começam pendentes. Seis defeitos confirmados corrigidos: mocks públicos residuais em produção, gate exigindo indexação antes do corte, CTA newsletter desatualizado, status das políticas retiradas, retry de sessão após outage/401 e evento de copiar link. Relatório/matriz em `docs/phase-review.md`; publicação e manual em `docs/go-live.md` e `docs/cms-handbook.md`. Instalação frozen, lint/typecheck/build,110 testes,100 integrações PostgreSQL,44 contrastes, seis checks de recuperação e audit passaram. QA F8 sem Lighthouse:88 checks/248 layouts/115 análises axe; CMS25/81, relacionamento19/70; zero falhas e recursos próprios removidos. Gates offline bloquearam corretamente ausência de evidências; não comprovam produção. F0–F7 implementadas localmente; F8–F10 permanecem parciais. **Ponto de retomada: obter ambiente/materiais/evidências F8/F9 para candidata oficial e ações externas específicas, sem inventar aprovação/carga/deploy/DNS.**
+
+### Registro anterior — RP-010 (histórico)
 
 **05/10/2026 — RP-010 — F9 local, migração e release oficial pendentes:** pedido “Continue a implementação da F9 do projeto”; base real `222f61e`, `dev` inicialmente limpo. Versão `0.9.0`. Contrato estrito reutiliza DTO/TipTap, IDs/slugs estáveis, mapas keep/301/remove e aprovação com digest. Importador usa dry-run READ ONLY, apply confirmado por banco/digest/ADMIN/ambiente, transação/trava e recibo; não sobrescreve CMS nem transporta usuários/contatos/assinantes. Snapshot bloqueia alterações depois da importação; mocks/textos/ativos/contas, templates, redirects e catálogo público são inspecionados. Gate inclui evidências, configuração, Git/código e mecanismo HTTP HTTPS para canonical/robots/sitemap/301/retiradas, sem deploy. Fixture e templates revisáveis mantêm materiais/aprovações ausentes. Integração PostgreSQL final: 95 aprovados, zero skips; checks finais complementares no RP-010. F8 permanece parcial e é dependência do aceite externo, mas o pedido atual autoriza o trabalho independente F9. **Ponto de parada: receber inventário do site antigo e materiais aprovados, fechar gates F8 e revisar candidata isolada antes de qualquer carga/corte real. F10 exige autorização própria.**
 

@@ -29,6 +29,14 @@ test('status gate restricts backend requests to known public resources and slugs
   assert.equal(publicRouteResource('/conteudos/%2e%2e').endpoint, '');
 });
 
+test('published policy pages check availability before streaming so withdrawal retains HTTP 404', () => {
+  for (const slug of ['privacidade', 'cookies'])
+    assert.deepEqual(publicRouteResource(`/${slug}`), {
+      endpoint: `/pages/${slug}`,
+      isDetail: true,
+    });
+});
+
 test('guide PDF allowlist rejects private paths, remote origins, incorrect MIME and unsafe sizes', () => {
   const pdf = {
     id: 'fixture',

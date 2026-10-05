@@ -1,5 +1,7 @@
 # API e contratos
 
+Revisão F10 local (`0.10.0`): em `APP_ENV=production`, listagens/detalhes públicos omitem registros `isMock`, artigos com autor mock, relações/taxonomias/fotos/capas/PDFs mock e FAQ de área mock; mídia direta mock retorna 404. Settings mock falha com 404. Projeções administrativas e fixtures de development/staging permanecem disponíveis. [phase-review.md](phase-review.md) registra as regressões. Liveness/readiness e sinais operacionais ADMIN estão implementados na F8 e documentados em [operations.md](operations.md).
+
 Referência atual F7 (`0.7.0`): [cms.md](cms.md) documenta painel, mídia, preview, agendamento e redirects; [relationship.md](relationship.md) descreve contato, newsletter, entrega transacional, privacidade e seus gates. O Swagger local reflete os endpoints implementados. Resultados dos checks ficam em `../relate.md`.
 
 Referência: F2, 03/10/2026. As rotas abaixo existem na API NestJS; interface administrativa e páginas conectadas entram nas fases seguintes. A validação integrada usa HTTP e PostgreSQL reais em banco de teste isolado.

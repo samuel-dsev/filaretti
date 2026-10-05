@@ -241,8 +241,10 @@ export function ContactChannels({ settings }: { settings: PublicSiteSettings }) 
       <aside className="institution-newsletter" aria-labelledby="newsletter-heading">
         <p className="site-eyebrow">Newsletter</p>
         <h3 id="newsletter-heading">Receber conteúdos</h3>
-        <p>A inscrição na newsletter estará disponível em uma próxima etapa.</p>
-        <p className="institution-availability-note">Nenhum dado é coletado por esta seção.</p>
+        <p>Solicite a inscrição e confirme pelo link enviado ao seu e-mail.</p>
+        <LinkButton href="/newsletter" variant="secondary">
+          Receber conteúdos<span aria-hidden="true">↗</span>
+        </LinkButton>
       </aside>
     </div>
   );

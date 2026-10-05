@@ -1,6 +1,6 @@
 {
   "name": "filaretti",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "private": true,
   "packageManager": "pnpm@11.25.0",
   "engines": {
@@ -35,7 +35,8 @@
     "backup:local": "node scripts/backup-local.mjs",
     "migration:plan": "pnpm --filter @filaretti/api exec tsx scripts/migration.ts",
     "migration:apply": "pnpm --filter @filaretti/api exec tsx scripts/migration.ts --apply",
-    "release:check": "pnpm --filter @filaretti/api exec tsx scripts/release-check.ts"
+    "release:check": "pnpm --filter @filaretti/api exec tsx scripts/release-check.ts",
+    "go-live:check": "pnpm --filter @filaretti/api exec tsx scripts/operations-check.ts"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

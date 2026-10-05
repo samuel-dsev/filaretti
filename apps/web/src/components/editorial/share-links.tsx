@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Button, FormField, Input } from '@filaretti/ui';
+import { trackAnalytics } from '@/components/privacy/consent-provider';
 
 export function ShareLinks({ title, url }: { title: string; url: string }) {
   const [status, setStatus] = useState('');
@@ -22,6 +23,7 @@ export function ShareLinks({ title, url }: { title: string; url: string }) {
     setManualCopy(false);
     try {
       await navigator.clipboard.writeText(url);
+      trackAnalytics('article_share');
       setStatus('Link copiado.');
     } catch {
       setStatus('Não foi possível copiar automaticamente. Selecione e copie o endereço abaixo.');
@@ -59,7 +61,6 @@ export function ShareLinks({ title, url }: { title: string; url: string }) {
           E-mail <span aria-hidden="true">↗</span>
         </a>
         <Button
-          data-analytics-event="article_share"
           variant="secondary"
           size="sm"
           onClick={copyLink}

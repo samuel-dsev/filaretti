@@ -50,9 +50,14 @@ function publicMediaUrl(value: string, kind: 'image' | 'pdf'): boolean {
   }
   return value.startsWith('https://');
 }
-export function media(value: EditorialMedia | null, kind?: 'image' | 'pdf'): PublicMedia | null {
+export function media(
+  value: EditorialMedia | null,
+  kind?: 'image' | 'pdf',
+  excludeMocks = false,
+): PublicMedia | null {
   if (
     !value ||
+    (excludeMocks && value.isMock) ||
     value.visibility !== MediaVisibility.PUBLIC ||
     value._count.contactAttachments !== 0 ||
     !value.publicUrl ||

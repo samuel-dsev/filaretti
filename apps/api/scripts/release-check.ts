@@ -27,8 +27,12 @@ async function main() {
       batch: { type: 'string' },
       http: { type: 'boolean', default: false },
       offline: { type: 'boolean', default: false },
+      phase: { type: 'string', default: 'public' },
     },
   });
+  if (values.phase !== 'controlled' && values.phase !== 'public')
+    throw new Error('INVALID_RELEASE_PHASE');
+  const phase = values.phase;
   const root = resolve(__dirname, '../../..');
   const manifest = (await readJson(resolve(root, 'package.json'))) as { version: string };
   const commit = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], {
@@ -92,7 +96,7 @@ async function main() {
         web.appEnvironment === 'production' &&
         !web.mockContent &&
         !web.mockIntegrations &&
-        web.seoIndexingEnabled &&
+        web.seoIndexingEnabled === (phase === 'public') &&
         evidence.checklist?.finalOrigin === api.WEB_PUBLIC_URL &&
         evidence.checklist.finalOrigin === web.publicSiteUrl;
     } catch {
@@ -131,6 +135,7 @@ async function main() {
             fetch,
             await sitemapReleasePaths(db),
             batch?.urls ?? [],
+            phase,
           );
       }
     } else if (!values.offline)
@@ -150,8 +155,11 @@ async function main() {
   process.stdout.write(
     JSON.stringify({
       ready,
+      phase,
+      checkedAt: new Date().toISOString(),
       version: manifest.version,
       commit,
+      finalOrigin: evidence.checklist?.finalOrigin ?? null,
       fixture: batch?.fixture ?? null,
       batchSha256: batch?.sha256 ?? null,
       evidence: { ready: evidence.ready, issues: evidence.issues },

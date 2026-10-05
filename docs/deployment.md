@@ -1,10 +1,12 @@
 # Ambiente local, CI e publicação
 
+Atualização F10 local (`0.10.0`): [go-live.md](go-live.md) documenta o gate operacional, artefato/reports por digest, smokes e rollback; [phase-review.md](phase-review.md) registra a revisão de todas as fases. `release:check --phase controlled` verifica a candidata com indexação desligada; `--phase public` verifica após corte. `go-live:check` é somente leitura/offline e não implanta serviços. F8–F10 continuam parciais nos aceites externos; `1.0.0` não foi publicada.
+
 Atualização F9 (`0.9.0`): [migração e release](migration.md) documenta importador create-only transacional, dry-run, confirmações de banco/digest, recibo com snapshot e gate somente leitura. [Checklist](release-checklist.json) e [lote modelo](migration-batch.template.json) permanecem pendentes. Carga real, ambiente externo e corte não foram executados; homologação F8 continua parcial. Executar os scripts com ambiente seguro explicitamente provisionado; eles não carregam `.env` automaticamente nem concedem autorização por uma flag.
 
 Atualização F8 (`0.8.0`): o pipeline passa a preparar evidências/artifact por SHA, QA Chromium e ensaio de recuperação; execução remota ainda não comprovada. O workflow manual de staging valida readiness e requer environment protegido, sem adapter de deploy. `pnpm test:f8`, `pnpm test:recovery` e `pnpm backup:local` estão descritos em [QA F8](f8-qa.md) e [operação](operations.md). Segredos/ingress/scanner têm novos campos nos exemplos; não habilitar ambiente externo sem seus gates. O ensaio local restaura bancos temporários e objetos privados/públicos, sem reset do desenvolvimento. Homologação permanece parcial.
 
-Referência atual: F8, `0.8.0`, sobre o baseline funcional F7. Site, CMS, publicação, busca e relacionamento têm implementação local, agora acompanhados de segurança, QA e recuperação integrados. E-mails/antispam são simulados explicitamente, storage é local e analytics/indexação começam desabilitados. Hosting, homologação externa e produção dependem de gates próprios; o estado dos checks executados fica em `../relate.md`.
+Referência atual: F10 local, `0.10.0`, sobre o baseline funcional F7 e os mecanismos F8/F9. Site, CMS, publicação, busca e relacionamento têm implementação local, acompanhados de segurança, QA, recuperação e gates integrados. E-mails/antispam são simulados explicitamente, storage é local e analytics/indexação começam desabilitados. Hosting, homologação externa e produção dependem de gates próprios; o estado dos checks executados fica em `../relate.md`.
 
 ## Pré-requisitos e configuração local
 

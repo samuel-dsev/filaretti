@@ -902,6 +902,30 @@ async function qaChecks() {
       assert.ok(response.headers.get('content-security-policy'), `${name} CSP`);
     }
   });
+  await check('withdrawn privacy and cookie pages return HTTP 404 before streaming', async () => {
+    for (const slug of ['privacidade', 'cookies']) {
+      const original = (await database.query('SELECT id,status FROM pages WHERE slug=$1', [slug]))
+        .rows[0];
+      assert.ok(original, 'Owned policy fixture exists');
+      try {
+        await database.query("UPDATE pages SET status='ARCHIVED' WHERE id=$1", [original.id]);
+        await request(`${webOrigin}/${slug}`, 404);
+      } finally {
+        await database.query('UPDATE pages SET status=$1::"PublicationStatus" WHERE id=$2', [
+          original.status,
+          original.id,
+        ]);
+      }
+      assert.equal((await request(`${webOrigin}/${slug}`)).response.status, 200);
+    }
+  });
+  await check('home and office expose the implemented newsletter route', async () => {
+    for (const path of ['/', '/o-escritorio']) {
+      const { body } = await request(`${webOrigin}${path}`);
+      assert.match(body, /href="\/newsletter"/u);
+      assert.doesNotMatch(body, /disponível em próxima etapa/iu);
+    }
+  });
   await check('public documents exclude administration and demo styles', async () => {
     const styles = {};
     for (const [name, path] of [

@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   Prisma,
   PublicationStatus,
@@ -80,14 +80,14 @@ const faqInclude = { practiceArea: true } satisfies Prisma.FaqInclude;
 type ProfessionalRecord = Prisma.ProfessionalGetPayload<{ include: typeof professionalInclude }>;
 type AreaRecord = Prisma.PracticeAreaGetPayload<{ include: typeof areaInclude }>;
 type FaqRecord = Prisma.FaqGetPayload<{ include: typeof faqInclude }>;
-function professional(record: ProfessionalRecord): PublicProfessional {
+function professional(record: ProfessionalRecord, excludeMocks = false): PublicProfessional {
   return {
-    ...professionalSummary(record),
+    ...professionalSummary(record, excludeMocks),
     bio: publicContent(record.bio),
     education: strings(record.education),
     experience: strings(record.experience),
     practiceAreas: record.practiceAreas
-      .filter((row) => row.practiceArea.isActive)
+      .filter((row) => row.practiceArea.isActive && (!excludeMocks || !row.practiceArea.isMock))
       .map((row) => taxonomy(row.practiceArea)),
   };
 }
@@ -102,15 +102,15 @@ function professionalAdmin(record: ProfessionalRecord) {
     isMock: record.isMock,
   };
 }
-function area(record: AreaRecord): PublicPracticeArea {
+function area(record: AreaRecord, excludeMocks = false): PublicPracticeArea {
   return {
     ...taxonomy(record),
     summary: record.summary,
     description: publicContent(record.description),
     services: strings(record.services),
     professionals: record.professionals
-      .filter((row) => row.professional.isActive)
-      .map((row) => professionalSummary(row.professional)),
+      .filter((row) => row.professional.isActive && (!excludeMocks || !row.professional.isMock))
+      .map((row) => professionalSummary(row.professional, excludeMocks)),
   };
 }
 function areaAdmin(record: AreaRecord) {
@@ -236,8 +236,11 @@ export class InstitutionService {
     private readonly db: PrismaService,
     @Inject(DOMAIN_ENVIRONMENT) private readonly environment: ApiEnvironment,
   ) {}
+  private publicEligibility(administrative = false) {
+    return !administrative && this.environment.APP_ENV === 'production' ? { isMock: false } : {};
+  }
   async listTaxonomies(kind: TaxonomyKind, query: PaginationDto, administrative = false) {
-    const where = administrative ? {} : { isActive: true };
+    const where = administrative ? {} : { isActive: true, ...this.publicEligibility() };
     const options = { where, ...paging(query), orderBy: alphabeticalOrder(query) };
     const [rows, total] =
       kind === 'category'
@@ -249,7 +252,9 @@ export class InstitutionService {
     return paginated(rows.map(administrative ? taxonomyAdmin : taxonomy), total, query);
   }
   async taxonomyDetail(kind: TaxonomyKind, key: string, administrative = false) {
-    const where = administrative ? { id: key } : { slug: key, isActive: true };
+    const where = administrative
+      ? { id: key }
+      : { slug: key, isActive: true, ...this.publicEligibility() };
     const row = exists(
       kind === 'category'
         ? await this.db.category.findFirst({ where })
@@ -326,7 +331,8 @@ export class InstitutionService {
     );
   }
   async professionals(query: PaginationDto, administrative = false) {
-    const where = administrative ? {} : { isActive: true };
+    const excludeMocks = !administrative && this.environment.APP_ENV === 'production';
+    const where = administrative ? {} : { isActive: true, ...this.publicEligibility() };
     const [rows, total] = await this.db.$transaction([
       this.db.professional.findMany({
         where,
@@ -336,16 +342,26 @@ export class InstitutionService {
       }),
       this.db.professional.count({ where }),
     ]);
-    return paginated(rows.map(administrative ? professionalAdmin : professional), total, query);
+    return paginated(
+      rows.map((row) =>
+        administrative ? professionalAdmin(row) : professional(row, excludeMocks),
+      ),
+      total,
+      query,
+    );
   }
   async professionalDetail(key: string, administrative = false) {
     const row = exists(
       await this.db.professional.findFirst({
-        where: administrative ? { id: key } : { slug: key, isActive: true },
+        where: administrative
+          ? { id: key }
+          : { slug: key, isActive: true, ...this.publicEligibility() },
         include: professionalInclude,
       }),
     );
-    return administrative ? professionalAdmin(row) : professional(row);
+    return administrative
+      ? professionalAdmin(row)
+      : professional(row, this.environment.APP_ENV === 'production');
   }
   async createProfessional(dto: ProfessionalDto, actor: Actor) {
     return databaseWrite(() =>
@@ -438,7 +454,8 @@ export class InstitutionService {
     );
   }
   async areas(query: PaginationDto, administrative = false) {
-    const where = administrative ? {} : { isActive: true };
+    const excludeMocks = !administrative && this.environment.APP_ENV === 'production';
+    const where = administrative ? {} : { isActive: true, ...this.publicEligibility() };
     const [rows, total] = await this.db.$transaction([
       this.db.practiceArea.findMany({
         where,
@@ -448,16 +465,22 @@ export class InstitutionService {
       }),
       this.db.practiceArea.count({ where }),
     ]);
-    return paginated(rows.map(administrative ? areaAdmin : area), total, query);
+    return paginated(
+      rows.map((row) => (administrative ? areaAdmin(row) : area(row, excludeMocks))),
+      total,
+      query,
+    );
   }
   async areaDetail(key: string, administrative = false) {
     const row = exists(
       await this.db.practiceArea.findFirst({
-        where: administrative ? { id: key } : { slug: key, isActive: true },
+        where: administrative
+          ? { id: key }
+          : { slug: key, isActive: true, ...this.publicEligibility() },
         include: areaInclude,
       }),
     );
-    return administrative ? areaAdmin(row) : area(row);
+    return administrative ? areaAdmin(row) : area(row, this.environment.APP_ENV === 'production');
   }
   async createArea(dto: PracticeAreaDto, actor: Actor) {
     return databaseWrite(() =>
@@ -534,7 +557,11 @@ export class InstitutionService {
   async pages(query: PaginationDto, administrative = false) {
     const where: Prisma.PageWhereInput = administrative
       ? {}
-      : { status: PublicationStatus.PUBLISHED, publishedAt: { lte: new Date() } };
+      : {
+          status: PublicationStatus.PUBLISHED,
+          publishedAt: { lte: new Date() },
+          ...this.publicEligibility(),
+        };
     const [rows, total] = await this.db.$transaction([
       this.db.page.findMany({ where, ...paging(query), orderBy: documentOrder(query) }),
       this.db.page.count({ where }),
@@ -546,7 +573,12 @@ export class InstitutionService {
       await this.db.page.findFirst({
         where: administrative
           ? { id: key }
-          : { slug: key, status: PublicationStatus.PUBLISHED, publishedAt: { lte: new Date() } },
+          : {
+              slug: key,
+              status: PublicationStatus.PUBLISHED,
+              publishedAt: { lte: new Date() },
+              ...this.publicEligibility(),
+            },
       }),
     );
     return administrative ? pageAdmin(row) : page(row);
@@ -659,8 +691,23 @@ export class InstitutionService {
     const where: Prisma.FaqWhereInput = {
       ...(administrative
         ? {}
-        : { isActive: true, OR: [{ practiceAreaId: null }, { practiceArea: { isActive: true } }] }),
-      ...(query.area ? { practiceArea: { slug: query.area, isActive: true } } : {}),
+        : {
+            isActive: true,
+            ...this.publicEligibility(),
+            OR: [
+              { practiceAreaId: null },
+              { practiceArea: { isActive: true, ...this.publicEligibility() } },
+            ],
+          }),
+      ...(query.area
+        ? {
+            practiceArea: {
+              slug: query.area,
+              isActive: true,
+              ...this.publicEligibility(administrative),
+            },
+          }
+        : {}),
     };
     const [rows, total] = await this.db.$transaction([
       this.db.faq.findMany({
@@ -682,7 +729,11 @@ export class InstitutionService {
             ? {}
             : {
                 isActive: true,
-                OR: [{ practiceAreaId: null }, { practiceArea: { isActive: true } }],
+                ...this.publicEligibility(),
+                OR: [
+                  { practiceAreaId: null },
+                  { practiceArea: { isActive: true, ...this.publicEligibility() } },
+                ],
               }),
         },
         include: faqInclude,
@@ -751,6 +802,8 @@ export class InstitutionService {
   }
   async settings(administrative = false) {
     const row = exists(await this.db.siteSetting.findUnique({ where: { id: 'site' } }));
+    if (!administrative && this.environment.APP_ENV === 'production' && row.isMock)
+      throw new NotFoundException();
     return administrative
       ? { ...settings(row), version: row.version, isMock: row.isMock }
       : settings(row);

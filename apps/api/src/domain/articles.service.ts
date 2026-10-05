@@ -49,16 +49,17 @@ type ArticleRecord = Prisma.ArticleGetPayload<{ include: typeof include }>;
 type Actor = AuthenticatedRequest['user'];
 export function professionalSummary(
   record: Prisma.ProfessionalGetPayload<{ include: { photoMedia: typeof publicMediaInclude } }>,
+  excludeMocks = false,
 ): ProfessionalSummary {
   return {
     id: record.id,
     slug: record.slug,
     name: record.name,
     title: record.title,
-    photo: media(record.photoMedia, 'image'),
+    photo: media(record.photoMedia, 'image', excludeMocks),
   };
 }
-function summary(record: ArticleRecord): PublicArticleSummary {
+function summary(record: ArticleRecord, excludeMocks = false): PublicArticleSummary {
   return {
     id: record.id,
     slug: record.slug,
@@ -69,22 +70,27 @@ function summary(record: ArticleRecord): PublicArticleSummary {
     publishedAt: record.publishedAt?.toISOString() ?? '',
     updatedAt: record.updatedAt.toISOString(),
     readingTimeMinutes: record.readingTimeMinutes,
-    author: record.author.isActive ? professionalSummary(record.author) : null,
-    cover: media(record.coverMedia, 'image'),
+    author:
+      record.author.isActive && (!excludeMocks || !record.author.isMock)
+        ? professionalSummary(record.author, excludeMocks)
+        : null,
+    cover: media(record.coverMedia, 'image', excludeMocks),
     categories: record.categories
-      .filter((row) => row.category.isActive)
+      .filter((row) => row.category.isActive && (!excludeMocks || !row.category.isMock))
       .map((row) => taxonomy(row.category)),
-    tags: record.tags.filter((row) => row.tag.isActive).map((row) => taxonomy(row.tag)),
+    tags: record.tags
+      .filter((row) => row.tag.isActive && (!excludeMocks || !row.tag.isMock))
+      .map((row) => taxonomy(row.tag)),
     practiceAreas: record.practiceAreas
-      .filter((row) => row.practiceArea.isActive)
+      .filter((row) => row.practiceArea.isActive && (!excludeMocks || !row.practiceArea.isMock))
       .map((row) => taxonomy(row.practiceArea)),
   };
 }
-function detail(record: ArticleRecord): PublicArticle {
+function detail(record: ArticleRecord, excludeMocks = false): PublicArticle {
   return {
-    ...summary(record),
+    ...summary(record, excludeMocks),
     content: publicContent(record.content),
-    pdf: media(record.pdfMedia, 'pdf'),
+    pdf: media(record.pdfMedia, 'pdf', excludeMocks),
     seoTitle: record.seoTitle,
     seoDescription: record.seoDescription,
   };
@@ -142,10 +148,11 @@ function order(query: ArticleQueryDto): Prisma.ArticleOrderByWithRelationInput[]
     { id: 'asc' },
   ];
 }
-const publicWhere = (now = new Date()): Prisma.ArticleWhereInput => ({
+const publicWhere = (now = new Date(), excludeMocks = false): Prisma.ArticleWhereInput => ({
   status: PublicationStatus.PUBLISHED,
   publishedAt: { lte: now },
-  author: { isActive: true },
+  author: { isActive: true, ...(excludeMocks ? { isMock: false } : {}) },
+  ...(excludeMocks ? { isMock: false } : {}),
 });
 
 @Injectable()
@@ -156,28 +163,30 @@ export class ArticlesService {
   ) {}
   async publicFilters(): Promise<PublicEditorialFilters> {
     const now = new Date();
-    const where = publicWhere(now);
+    const excludeMocks = this.environment.APP_ENV === 'production';
+    const where = publicWhere(now, excludeMocks);
+    const eligible = { isActive: true, ...(excludeMocks ? { isMock: false } : {}) };
     const select = { id: true, slug: true, name: true } as const;
     const orderBy = [{ name: 'asc' }, { id: 'asc' }] as const;
     const [areas, categories, authors, tags, years] = await this.db.$transaction(
       [
         this.db.practiceArea.findMany({
-          where: { isActive: true, articles: { some: { article: where } } },
+          where: { ...eligible, articles: { some: { article: where } } },
           select,
           orderBy: [...orderBy],
         }),
         this.db.category.findMany({
-          where: { isActive: true, articles: { some: { article: where } } },
+          where: { ...eligible, articles: { some: { article: where } } },
           select,
           orderBy: [...orderBy],
         }),
         this.db.professional.findMany({
-          where: { isActive: true, articles: { some: where } },
+          where: { ...eligible, articles: { some: where } },
           select,
           orderBy: [...orderBy],
         }),
         this.db.tag.findMany({
-          where: { isActive: true, articles: { some: { article: where } } },
+          where: { ...eligible, articles: { some: { article: where } } },
           select,
           orderBy: [...orderBy],
         }),
@@ -185,6 +194,7 @@ export class ArticlesService {
           SELECT DISTINCT EXTRACT(YEAR FROM a.published_at AT TIME ZONE 'UTC')::integer AS year
           FROM articles a JOIN professionals p ON p.id = a.author_id
           WHERE a.status = 'PUBLISHED' AND a.published_at <= ${now} AND p.is_active = TRUE
+            AND (${!excludeMocks} OR (a.is_mock = FALSE AND p.is_mock = FALSE))
           ORDER BY year DESC
         `,
       ],
@@ -193,18 +203,30 @@ export class ArticlesService {
     return { areas, categories, authors, tags, years: years.map((row) => row.year) };
   }
   async publicList(query: ArticleQueryDto) {
-    const where: Prisma.ArticleWhereInput = { AND: [publicWhere(), filters(query)] };
+    const excludeMocks = this.environment.APP_ENV === 'production';
+    const where: Prisma.ArticleWhereInput = {
+      AND: [publicWhere(new Date(), excludeMocks), filters(query)],
+    };
     const [records, total] = await this.db.$transaction([
       this.db.article.findMany({ where, include, ...paging(query), orderBy: order(query) }),
       this.db.article.count({ where }),
     ]);
-    return paginated(records.map(summary), total, query);
+    return paginated(
+      records.map((record) => summary(record, excludeMocks)),
+      total,
+      query,
+    );
   }
   async publicDetail(slug: string) {
+    const excludeMocks = this.environment.APP_ENV === 'production';
     return detail(
       exists(
-        await this.db.article.findFirst({ where: { AND: [publicWhere(), { slug }] }, include }),
+        await this.db.article.findFirst({
+          where: { AND: [publicWhere(new Date(), excludeMocks), { slug }] },
+          include,
+        }),
       ),
+      excludeMocks,
     );
   }
   async adminList(query: AdminArticleQueryDto, actor: Actor) {

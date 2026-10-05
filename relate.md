@@ -2,18 +2,82 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                                         |
-| ------------------ | ---------------------------------------------------------------------------------------------- |
-| Última atualização | 05/10/2026 — RP-010                                                                            |
-| Etapa              | **F9: implementação local verificada; lote/migração/release oficial pendentes; F8 parcial**    |
-| Versão             | `0.9.0`, oito manifests privados alinhados                                                     |
-| Git                | `dev`; base F8 `222f61ec8e4ec13dcf3a6e8da6d26c8305c9f697`; commit local F9 previsto abaixo     |
-| Autorização        | “Continue a implementação da F9 do projeto”; carga real/F10/push/PR/deploy/DNS não autorizados |
-| Checkpoint         | Receber inventário/materiais aprovados e fechar F8 externa para preparar candidata oficial     |
+| Campo              | Estado                                                                                                      |
+| ------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Última atualização | 05/10/2026 — RP-011                                                                                         |
+| Etapa              | **F10 local/revisão verificada; F8/F9/F10 parciais nos aceites externos**                                   |
+| Versão             | `0.10.0`, oito manifests privados alinhados; V1 `1.0.0` não publicada                                       |
+| Git                | `dev`; base F9 `fff682d0a60f7c95fb7f927d1d3e6812f91695fd`; commit local F10 previsto abaixo                 |
+| Autorização        | Continuar F10 + revisão completa; alvo/ações externas de produção, carga, DNS e push/PR pendentes           |
+| Checkpoint         | Obter materiais/inventário/ambiente/evidências F8/F9 para candidata oficial e ações de produção específicas |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo; este fechamento usa a data 05/10/2026 do cliente, com timestamps UTC originais nas evidências.
 
 ## Histórico
+
+### RP-011 — 05/10/2026 — F10 local e revisão completa F0–F10
+
+**Escopo autorizado:** “continue a implementação f10 do projeto, apos, faça uma revisão completa se todas as fases foram implementadas corretamente”. A F9 local já estava commitada; nenhum trabalho F10 existia. O pedido autoriza a preparação F10 independente e a revisão/correção das fases anteriores. Ambiente de produção, materiais/lote aprovados e evidências F8/F9 ainda não foram fornecidos; a pergunta de referências desta retomada permanece sem resposta. Nenhuma aprovação externa foi inferida. **Estado: implementação/revisão local verificadas; F8–F10 parciais nos aceites externos.**
+
+**Versão:** `0.9.0` → `0.10.0`, oito manifests privados alinhados; `docs/release-checklist.json` acompanha a versão local. `1.0.0` permanece o alvo operacional, sem publicar/registrar falsa conclusão de produção. Nenhuma dependência, schema ou migration aplicada alterada; lockfile preservado.
+
+**Git/cwd:** `C:\Users\Samuel\Documents\Projetos\Filaretti`; pasta inicial `Projeto` ausente. `dev` inicialmente limpa; commit F9 real `fff682d0a60f7c95fb7f927d1d3e6812f91695fd`, confirmado no Git. Commit previsto: `feat(operations): prepara F10 e corrige revisao das fases (v0.10.0)`. SHA informado após commit e registrado na próxima retomada, conforme AGENTS. Nenhum push/PR/deploy/DNS/carga real/envio externo.
+
+#### Implementação e revisão
+
+- Gate operacional **offline/somente leitura**, treze etapas sequenciais e schema estrito. Verifica commit/versão, bytes do arquivo de artefato por SHA-256, manifesto de produção, origem HTTPS, lote, timestamps, janela de corte, responsáveis, escopos documentais e reports F9 controlados/públicos por digest. Recusa build QA development/mocks e checkout `0.10.0` como V1 `1.0.0`. `actionAuthorized=false` sempre; referências identificam registros do operador, sem autenticar documentos ou conceder permissão.
+- Histórico incompleto/falho bloqueia conclusão; falha com mutações registradas exige rollback. Recibo de recuperação válido termina `rolled-back` e `ready=false`; identidade/pré-requisitos inválidos não viram prova de recuperação. Não executa deploy, DNS, banco, restore, rede, scheduler ou e-mail. CLI não lê `.env` automaticamente; entrada JSON limitada a 1 MB e artefato regular a 5 GB.
+- Gate F9 diferencia `--phase controlled` e `--phase public` (padrão compatível). Controlado exige `SEO_INDEXING_ENABLED=false`, sitemap vazio, robots bloqueado sem Allow/agent que o contorne e noindex; público exige `SEO_INDEXING_ENABLED=true` e catálogo indexável exato depois do corte. Reports conservam fase, timestamp, origem, versão, commit e lote. Proteção de acesso e fluxos reais mantêm evidências próprias.
+- Revisão completa por subagentes backend/frontend/operação e integração principal. **Seis defeitos confirmados/corrigidos:** mocks residuais em leituras/relações/mídia públicas de produção; gate exigindo indexação antes do corte; CTA newsletter obsoleto; políticas retiradas com status incorreto após streaming; indisponibilidade seguida de 401 preservando erro de sessão; cópia de link sem evento de compartilhamento consentido. Testes de regressão confirmam comportamento e preservam fixtures administrativos/locais.
+- Manual CMS, procedimentos de manutenção/publicação/rollback, templates sem aprovação inventada e matriz por fase entregues. F0–F7 têm implementação local prevista; F8–F10 continuam parciais. Placeholders visuais ficam preservados até material oficial, identificados pelo gate; nenhum conteúdo/biografia/política/direito de mídia real foi inventado.
+
+#### Arquivos criados, alterados e removidos
+
+Criados (12):
+
+- `apps/api/scripts/operations-check.ts`
+- `apps/api/src/release/operations-gate.ts`
+- `apps/api/test/operations-gate.test.ts`
+- `apps/api/test/production-public.integration.test.ts`
+- `apps/web/test/f8-policy-routing.test.mjs`
+- `apps/web/test/f8-session.test.tsx`
+- `apps/web/test/f8-share-links.test.tsx`
+- `docs/cms-handbook.md`
+- `docs/go-live-plan.template.json`
+- `docs/go-live.md`
+- `docs/phase-review.md`
+- `docs/release-artifact.template.json`
+
+Alterados (29): `README.md`; `package.json`; `plan.md`; `relate.md`; `apps/api/package.json`; `apps/api/scripts/release-check.ts`; `apps/api/src/cms/media.service.ts`; `apps/api/src/domain/articles.service.ts`; `apps/api/src/domain/institution.service.ts`; `apps/api/src/domain/shared.ts`; `apps/api/src/release/candidate-http.ts`; `apps/api/test/release-evidence.integration.test.ts`; `apps/web/package.json`; `apps/web/src/components/admin/session.tsx`; `apps/web/src/components/editorial/share-links.tsx`; `apps/web/src/components/institutional/shared.tsx`; `apps/web/src/lib/public-routing.ts`; `apps/web/test/public-routing.test.mjs`; `docs/api.md`; `docs/deployment.md`; `docs/migration.md`; `docs/release-checklist.json`; `docs/security.md`; os cinco `packages/{config,eslint-config,tsconfig,types,ui}/package.json`; `scripts/test-f8.mjs`.
+
+Removidos: nenhum. Nenhuma alteração em AGENTS, migrations/schema, lockfile, env real ou workflows. Evidências/builds e tipos Next são ignorados; o typecheck web direto após o QA regenera os imports de tipos do build normal. Bancos/volumes de desenvolvimento e serviços de outros projetos preservados.
+
+#### Validação
+
+| Check                                          | Resultado                                                                                                                                                                                                |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm install --frozen-lockfile`               | Aprovado antes/depois do bump; nenhuma dependência/lockfile alterado.                                                                                                                                    |
+| `pnpm lint` / `pnpm typecheck`                 | Aprovados; TypeScript estrito inclui tools/tests. Typecheck web direto também aprovado após os runners.                                                                                                  |
+| `pnpm build`                                   | API/pacotes e web otimizada aprovados; web com `APP_ENV=development`, artefato local não promovível.                                                                                                     |
+| `pnpm test`                                    | 110 aprovados: 12 config, 63 web Node, 9 RTL, 4 fundação HTTP, 15 F10 e 7 Jest; zero falhas/skips.                                                                                                       |
+| `pnpm test:integration`                        | 100 aprovados, zero skips, PostgreSQL 17 real; quatro migrations, seeds, auth/roles, workers, importação e mocks de produção. Primeira rodada com 96 testes passou antes da regressão backend adicional. |
+| `pnpm test:design-system`                      | 44 combinações de contraste aprovadas.                                                                                                                                                                   |
+| `pnpm test:recovery`                           | Seis checks aprovados: snapshot AES-GCM, restore PostgreSQL real em banco novo, arquivos públicos/privados, chave/adulteração/traversal/overwrite.                                                       |
+| `pnpm audit --prod --audit-level=high`         | Nenhuma vulnerabilidade conhecida reportada.                                                                                                                                                             |
+| `pnpm test:f8 --skip-lighthouse`               | 88 checks, 248 layouts, 115 análises axe, zero falhas/violações automáticas; Edge e Chrome reais locais. Cleanup integral.                                                                               |
+| `pnpm test:cms`                                | 25 checks/81 layouts aprovados; login/editor/upload/preview/publicar/retirar/conflito/roles, URLs e reinício reais locais. Cleanup integral.                                                             |
+| `pnpm test:relationship`                       | 19 checks/70 layouts aprovados; contato/anexo, confirmação/descadastro/reset, busca/consentimento e ADMIN/CSV reais locais. Integrações simuladas explicitamente. Cleanup integral.                      |
+| Gate F9 offline controlled                     | `ready=false`/exit 1 esperado: fixture, materiais/aprovações/evidências, placeholders e HTTP/runtime ausentes.                                                                                           |
+| `pnpm go-live:check --offline`                 | `ready=false`, `status=blocked`, `actionAuthorized=false` e `nextStep=candidateApproved`; ausência de artefato/ambiente/evidências bloqueia corretamente.                                                |
+| Prettier / `format:check` / `git diff --check` | Aprovados no fechamento; staging explícito dos 41 arquivos revisados.                                                                                                                                    |
+
+**Browser e evidências:** `.local/f8-layout-smoke.json` final, iniciado em `2026-10-05T16:46:52.646Z` e concluído em `2026-10-05T16:51:33.891Z`; 248 layouts, 115 análises axe e 71 grupos incompletos conservados. Edge 154.0.4258.53 cobre 225 layouts nas cinco larguras (375/768/1024/1440/1920); Chrome 154.0.8037.93 cobre 23 a 1440 px. Principal inspecionou 11 capturas atuais de Home/escritório/artigo/políticas/login/dashboard, cobrindo as cinco larguras e viewport real. Não equivale a inspeção humana de todos os 248 layouts nem certificação WCAG. Relatórios CMS/relacionamento/recuperação em `.local/f6-qa-smoke.json`, `.local/f7-qa-smoke.json` e `.local/f8-recovery.json`; screenshots em seus diretórios próprios. Todos os runners encerraram apenas recursos que criaram, com cleanup aprovado.
+
+**Limites:** Lighthouse não foi reexecutado nesta revisão; as 54 medições RP-009 são históricas e não são atribuídas à versão 0.10.0. Firefox/WebKit compatíveis, Safari/macOS, Android/iOS físicos e leitor de tela continuam não executados. Axe incompleto requer revisão humana. ClamAV real RP-009 não foi repetido; protocolo/fail-closed e indisponibilidade passam nos testes atuais, sem comprovar scanner/definições/serviço externos atualizados. Sentry não está implementado; monitor/destino operacional externo não configurado. Warning preexistente de concorrência do driver pg permanece documentado, sem alegar compatibilidade pg 9.
+
+A primeira execução F8 desta revisão registrou 88 checks/248 layouts e uma falha do novo teste: o helper `request` esperava HTTP 200 por padrão e recusou o 404 correto da política retirada antes da asserção. Corrigido para esperar HTTP 404; relatório anterior preservado em `.local/f10-layout-before-fixture-fix.json`, sem alterar o produto para satisfazer o teste. A segunda rodada completa passou integralmente. Os primeiros typecheck/build também encontraram tipagens no gate/teste enquanto os arquivos eram estabilizados; corrigidas e checks repetidos. Não ocultar rodada ou declarar falha como aprovação.
+
+**Retomada:** obter inventário/materiais/aprovações, ambiente/domínio/hosting isolados e evidências F8/F9. Concluir candidata `1.0.0`, backup/rollback e ações externas específicas somente com os gates de `plan.md`. Produção pública, integrações reais, Search Console e observação operacional não comprovadas; última fase com aceite integral permanece F7. F10 local entregue/revisada e commit local previsto acima, sem push/PR/deploy/DNS.
 
 ### RP-010 — 05/10/2026 — F9 — Migração e gates da release locais
 

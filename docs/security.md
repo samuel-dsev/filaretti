@@ -1,5 +1,7 @@
 # Segurança e tratamento de dados
 
+Revisão F10 local (`0.10.0`): leituras públicas de produção excluem `isMock` também em artigos, autores, taxonomias, institucional, relações e mídia direta. Administração/development/staging mantêm os fixtures. F9/F10 usam gates de candidata controlada/pública e registros operacionais por identidade/digest; não concedem autorização por flags. Correções e limites em [phase-review.md](phase-review.md), procedimento em [go-live.md](go-live.md).
+
 Atualização F8 (`0.8.0`): CSP com nonce por documento, headers de proteção, HSTS condicionado a HTTPS configurado, CORS fechado, IP assinado pelo BFF e scanner privado foram implementados e exercitados localmente. `/health/live` e `/health/ready` distinguem processo/banco; `/api/v1/admin/operations` oferece sinais sanitizados exclusivos de ADMIN. [Backend F8](f8-backend.md), [frontend F8](f8-frontend.md) e [operação](operations.md) documentam contratos, recuperação e limites. As referências anteriores a controles “pendentes na F8” abaixo registram o baseline; os gates externos continuam pendentes no RP-009.
 
 Staging e production exigem URLs públicas HTTPS, cookies Secure e ingress confirmado com identidade HMAC. O bootstrap falha sem esses controles; HTTP interno privado não determina a segurança da origem pública. A configuração e os testes locais não substituem a verificação do TLS/ingress no provedor real.

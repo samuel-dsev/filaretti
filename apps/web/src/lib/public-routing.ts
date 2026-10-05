@@ -4,6 +4,8 @@ export type PublicRouteResource = { endpoint: string; isDetail: boolean };
 export function publicRouteResource(pathname: string): PublicRouteResource | null {
   if (pathname === '/') return { endpoint: '/pages/home', isDetail: true };
   if (pathname === '/o-escritorio') return { endpoint: '/pages/o-escritorio', isDetail: true };
+  if (pathname === '/privacidade') return { endpoint: '/pages/privacidade', isDetail: true };
+  if (pathname === '/cookies') return { endpoint: '/pages/cookies', isDetail: true };
   if (pathname === '/areas-de-atuacao') {
     return { endpoint: '/practice-areas?limit=1', isDetail: false };
   }

@@ -182,3 +182,57 @@ test('candidate inspector exercises real local HTTP, canonical, sitemap, robots 
     );
   }
 });
+
+test('controlled candidate stays non-indexable until cutover and detects crawler overrides', async () => {
+  const origin = 'https://candidate.synthetic-release.org';
+  let scenario = 'controlled';
+  const server = createServer((request, response) => {
+    if (request.url === '/sitemap.xml') {
+      response.setHeader('content-type', 'application/xml');
+      response.end(
+        `<urlset>${scenario === 'sitemap' ? `<url><loc>${origin}/</loc></url>` : ''}</urlset>`,
+      );
+    } else if (request.url === '/robots.txt') {
+      response.end(
+        scenario === 'crawler'
+          ? 'User-agent: *\nAllow: /\nUser-agent: blocked\nDisallow: /\n'
+          : scenario === 'override'
+            ? 'User-agent: *\nDisallow: /\nAllow: /conteudos\n'
+            : 'User-agent: *\nDisallow: /\n',
+      );
+    } else {
+      response.setHeader('content-type', 'text/html');
+      response.end(
+        `<html><head><title>Candidata</title><link rel="canonical" href="${origin}/">${scenario === 'page' ? '' : '<meta name="robots" content="noindex,nofollow">'}</head><body><h1>Candidata</h1></body></html>`,
+      );
+    }
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const address = server.address();
+  assert.ok(address && typeof address !== 'string');
+  const localRequest: typeof fetch = (url, options) =>
+    fetch(new URL(new URL(String(url)).pathname, `http://127.0.0.1:${address.port}`), options);
+  try {
+    const check = () =>
+      inspectCandidateHttp(origin, ['/'], ['/'], localRequest, ['/'], [], 'controlled');
+    assert.deepEqual(await check(), { ready: true, phase: 'controlled', pages: 1, issues: [] });
+    for (const [value, code] of [
+      ['page', 'CONTROLLED_PAGE_INDEXABLE'],
+      ['sitemap', 'SITEMAP_MISMATCH'],
+      ['crawler', 'CONTROLLED_ROBOTS_UNPROTECTED'],
+      ['override', 'CONTROLLED_ROBOTS_UNPROTECTED'],
+    ]) {
+      scenario = value!;
+      const report = await check();
+      assert.equal(report.ready, false);
+      assert.ok(report.issues.some((issue) => issue.code === code));
+    }
+    scenario = 'controlled';
+    assert.equal((await inspectCandidateHttp(origin, ['/'], ['/'], localRequest)).ready, false);
+  } finally {
+    server.closeAllConnections();
+    await new Promise<void>((resolve, reject) =>
+      server.close((error) => (error ? reject(error) : resolve())),
+    );
+  }
+});

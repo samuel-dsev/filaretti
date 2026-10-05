@@ -41,8 +41,13 @@ export function AdminSessionProvider({ children }: { children: ReactNode }) {
         })
         .catch((failure: unknown) => {
           setUser(null);
-          if (!(failure instanceof AdminApiError) || failure.status !== 401)
-            setError(failure instanceof Error ? failure.message : 'Serviço indisponível.');
+          setError(
+            failure instanceof AdminApiError && failure.status === 401
+              ? ''
+              : failure instanceof Error
+                ? failure.message
+                : 'Serviço indisponível.',
+          );
         })
         .finally(() => {
           setLoading(false);

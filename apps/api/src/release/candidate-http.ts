@@ -4,6 +4,7 @@ import type { MigrationUrl } from './migration-contract';
 
 export interface CandidateHttpReport {
   ready: boolean;
+  phase: 'controlled' | 'public';
   pages: number;
   issues: { code: string; page: number | null }[];
 }
@@ -39,6 +40,32 @@ function xmlText(value: string): string {
     .replaceAll('&lt;', '<')
     .replaceAll('&gt;', '>');
 }
+function blocksAllCrawlers(text: string): boolean {
+  const groups: { agents: string[]; disallow: string[]; allow: string[] }[] = [];
+  let group: (typeof groups)[number] | undefined;
+  let rulesStarted = false;
+  for (const line of text.split(/\r?\n/u)) {
+    const match = /^\s*(user-agent|disallow|allow)\s*:\s*(.*?)\s*$/iu.exec(line.split('#')[0]!);
+    if (!match) continue;
+    const key = match[1]!.toLowerCase();
+    const value = match[2]!;
+    if (key === 'user-agent') {
+      if (!group || rulesStarted) {
+        group = { agents: [], disallow: [], allow: [] };
+        groups.push(group);
+        rulesStarted = false;
+      }
+      group.agents.push(value.toLowerCase());
+    } else if (group) {
+      rulesStarted = true;
+      if (value) group[key === 'allow' ? 'allow' : 'disallow'].push(value);
+    }
+  }
+  return (
+    groups.some((value) => value.agents.includes('*')) &&
+    groups.every((value) => value.disallow.includes('/') && value.allow.length === 0)
+  );
+}
 export async function inspectCandidateHttp(
   origin: string,
   publicPaths: string[],
@@ -46,6 +73,7 @@ export async function inspectCandidateHttp(
   request: typeof fetch = fetch,
   sitemapPaths = publicPaths,
   mappings: MigrationUrl[] = [],
+  phase: 'controlled' | 'public' = 'public',
 ): Promise<CandidateHttpReport> {
   const base = new URL(origin);
   if (
@@ -59,13 +87,16 @@ export async function inspectCandidateHttp(
     sitemapPaths.length > 10000 ||
     !publicPaths.every(redirectPath) ||
     !candidatePaths.every(redirectPath) ||
-    !sitemapPaths.every((path) => redirectPath(path) && publicPaths.includes(path))
+    !sitemapPaths.every((path) => redirectPath(path) && publicPaths.includes(path)) ||
+    !['controlled', 'public'].includes(phase)
   )
     throw new Error('INVALID_CANDIDATE_ORIGIN');
   const issues: CandidateHttpReport['issues'] = [];
   const add = (code: string, page: number | null) => issues.push({ code, page });
   const expected = new Set(publicPaths.map((path) => new URL(path, origin).href));
-  const expectedSitemap = new Set(sitemapPaths.map((path) => new URL(path, origin).href));
+  const expectedSitemap = new Set(
+    (phase === 'public' ? sitemapPaths : []).map((path) => new URL(path, origin).href),
+  );
   if (
     mappings.length > 2000 ||
     !mappings.every(
@@ -101,12 +132,14 @@ export async function inspectCandidateHttp(
   }
   try {
     const { text } = await read('/robots.txt');
-    if (
-      !/^Sitemap:\s*/imu.test(text) ||
-      !text.includes(new URL('/sitemap.xml', origin).href) ||
-      /^Disallow:\s*\/\s*$/imu.test(text)
-    )
-      add('ROBOTS_INDEXING_BLOCKED', null);
+    if (phase === 'public') {
+      if (
+        !/^Sitemap:\s*/imu.test(text) ||
+        !text.includes(new URL('/sitemap.xml', origin).href) ||
+        /^Disallow:\s*\/\s*$/imu.test(text)
+      )
+        add('ROBOTS_INDEXING_BLOCKED', null);
+    } else if (!blocksAllCrawlers(text)) add('CONTROLLED_ROBOTS_UNPROTECTED', null);
   } catch {
     add('ROBOTS_UNVERIFIED', null);
   }
@@ -141,15 +174,14 @@ export async function inspectCandidateHttp(
         xmlText(canonicals[0]?.get('href') ?? '') !== new URL(path, origin).href
       )
         add('CANONICAL_MISMATCH', index);
-      if (
+      const noindex =
         tags.some(
           (tag) =>
             tag.get('name')?.toLowerCase() === 'robots' &&
             /noindex|none/iu.test(tag.get('content') ?? ''),
-        ) ||
-        /noindex|none/iu.test(response.headers.get('x-robots-tag') ?? '')
-      )
-        add('PAGE_NOINDEX', index);
+        ) || /noindex|none/iu.test(response.headers.get('x-robots-tag') ?? '');
+      if (phase === 'public' && noindex) add('PAGE_NOINDEX', index);
+      if (phase === 'controlled' && !noindex) add('CONTROLLED_PAGE_INDEXABLE', index);
       if (!/<title>[^<]+<\/title>/iu.test(text) || !/<h1(?:\s|>)/iu.test(text))
         add('PAGE_METADATA_MISSING', index);
     } catch {
@@ -182,5 +214,5 @@ export async function inspectCandidateHttp(
       add('MAPPING_HTTP_UNVERIFIED', index);
     }
   }
-  return { ready: issues.length === 0 && pages > 0, pages, issues };
+  return { ready: issues.length === 0 && pages > 0, phase, pages, issues };
 }

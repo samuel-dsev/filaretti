@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "targetVersion": "1.0.0",
+  "artifact": null,
+  "finalOrigin": null,
+  "batchSha256": null,
+  "owner": null,
+  "rollbackOwner": null,
+  "cutoverWindow": null,
+  "rollbackPlan": null,
+  "steps": [],
+  "rollbackEvent": null
+}

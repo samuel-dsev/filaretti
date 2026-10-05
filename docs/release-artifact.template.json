@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "commit": null,
+  "version": "1.0.0",
+  "sha256": null,
+  "createdAt": null,
+  "appEnvironment": "production",
+  "mockContent": false,
+  "mockIntegrations": false,
+  "deployable": false,
+  "finalOrigin": null
+}

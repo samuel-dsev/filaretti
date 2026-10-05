@@ -1,6 +1,12 @@
 # Filaretti — desenvolvimento local
 
-Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.9.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F7 acrescenta contato com anexos privados, newsletter com confirmação/descadastro, recuperação de senha, busca em português, FAQ, SEO e preferências de cookies. A F8 implementa hardening, QA integrado e recuperação local; homologação externa permanece parcial. A F9 prepara importação transacional, inventário de URLs e gates contra mocks e alterações após aprovação; materiais e aceite externos permanecem pendentes. E-mails e antispam são explicitamente simulados no desenvolvimento local. Situação e validações efetivamente executadas: [relate.md](relate.md).
+Monorepo do portal institucional/editorial planejado em [plan.md](plan.md). Versão única **0.10.0**, definida pelo `package.json` raiz e alinhada nos oito manifests privados. Site institucional, portal editorial e CMS usam a API real, preservando o Design System aprovado da F3. A F7 acrescenta contato com anexos privados, newsletter com confirmação/descadastro, recuperação de senha, busca em português, FAQ, SEO e preferências de cookies. A F8 implementa hardening, QA integrado e recuperação local; homologação externa permanece parcial. A F9 prepara importação transacional, inventário de URLs e gates contra mocks e alterações após aprovação; materiais e aceite externos permanecem pendentes. A F10 local acrescenta o gate operacional sequencial, verifica artefato/reports e prepara manuais de publicação e entrega. **F8–F10 permanecem parciais; V1 pública `1.0.0` ainda não comprovada.** E-mails e antispam são explicitamente simulados no desenvolvimento local. Situação e validações efetivamente executadas: [relate.md](relate.md).
+
+## F10 e revisão completa
+
+[docs/go-live.md](docs/go-live.md) descreve preparação, smokes, corte e rollback; [docs/cms-handbook.md](docs/cms-handbook.md) prepara a entrega à equipe. `pnpm go-live:check` verifica apenas arquivos locais e começa bloqueado pelo [plano pendente](docs/go-live-plan.template.json). Artefatos de QA development não são promovíveis. `release:check --phase controlled` exige noindex/sitemap vazio antes do corte; `--phase public` verifica indexação depois. Os comandos não executam deploy/DNS nem concedem autorização.
+
+[docs/phase-review.md](docs/phase-review.md) contém o resultado F0–F10, seis correções confirmadas e os limites dos checks. Leituras públicas de produção agora excluem mocks residuais, inclusive relações e mídia; admin/development/staging preservam os fixtures.
 
 ## Migração e preparação da release
 
@@ -100,7 +106,7 @@ O smoke `test:cms` usa PostgreSQL/HTTP/Edge reais em banco temporário, storage 
 
 Todos os pacotes são privados. Não há publicação npm; bump funcional da etapa acontece na raiz e nos workspaces, acompanhado de plano/relatório e lockfile. Husky/lint-staged formatam arquivos staged; CI e checks completos continuam obrigatórios.
 
-Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F8 e commit local. F9, push, PR, homologação externa e produção dependem de autorização própria.
+Ler `AGENTS.md`, `plan.md` inteiro e situação/último relatório de `relate.md` antes de retomar. A autorização desta entrega cobre F10 local, revisão completa e commit local. Os gates de ambiente/materiais e de ações externas estão no checkpoint; push, PR, carga real, deploy e DNS exigem autorização aplicável e alvo definido.
 
 ## Referências
 
@@ -108,4 +114,4 @@ Compatibilidade verificada nas documentações oficiais de [Next.js](https://nex
 
 ## F8 — validação local e homologação parcial
 
-Versão corrente: `0.8.0`. Consulte o checkpoint em [plan.md](plan.md), as evidências e inventário no [RP-009](relate.md) e os procedimentos de [operação/recuperação](docs/operations.md) e [QA integrado](docs/f8-qa.md). A fase inclui hardening de tráfego, scanner privado, health/filas, testes de componentes e ensaio real de restauração local. Providers e ambiente externo permanecem sujeitos aos gates registrados; F9 ainda não autorizada.
+Marco F8: `0.8.0`, histórico RP-009. Consulte o checkpoint corrente em [plan.md](plan.md) e os procedimentos de [operação/recuperação](docs/operations.md) e [QA integrado](docs/f8-qa.md). A fase inclui hardening de tráfego, scanner privado, health/filas, testes de componentes e ensaio real de restauração local. Providers e ambiente externo permanecem sujeitos aos gates registrados; o RP-011 registra a revisão atual `0.10.0`.
