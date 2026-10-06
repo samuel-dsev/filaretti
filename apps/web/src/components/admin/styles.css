@@ -74,7 +74,7 @@
 
 .admin-navigation a[aria-current='page'] {
   color: var(--f-color-surface);
-  border-color: #577c9f;
+  border-color: #b08b4b;
   background: var(--f-color-primary);
   font-weight: 600;
 }
@@ -121,7 +121,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem clamp(1.5rem, 4vw, 3.5rem);
-  border-bottom: 1px solid #d4dce3;
+  border-bottom: 1px solid rgb(176 139 75 / 30%);
   background: var(--f-color-surface);
 }
 
@@ -297,7 +297,7 @@
 }
 .cms-login-form {
   background: var(--f-color-surface);
-  border: 1px solid #d4dce3;
+  border: 1px solid rgb(176 139 75 / 30%);
   border-radius: 0.375rem;
   padding: clamp(1.25rem, 4vw, 3rem);
 }
@@ -334,7 +334,7 @@
   min-width: 0;
   margin: 0 0 1.5rem;
   padding: clamp(1.25rem, 3vw, 2rem);
-  border: 1px solid #d4dce3;
+  border: 1px solid rgb(176 139 75 / 30%);
   border-radius: 0.375rem;
   background: var(--f-color-surface);
 }
@@ -402,7 +402,7 @@
   overflow-x: auto;
   margin-bottom: 1.5rem;
   background: var(--f-color-surface);
-  border: 1px solid #d4dce3;
+  border: 1px solid rgb(176 139 75 / 30%);
   border-radius: 0.375rem;
 }
 .cms-table {
@@ -415,10 +415,10 @@
   padding: 1.125rem 1.25rem;
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid #d4dce3;
+  border-bottom: 1px solid rgb(176 139 75 / 30%);
 }
 .cms-table thead {
-  background: #edf2f7;
+  background: #eee2ce;
   color: var(--f-color-navy);
 }
 .cms-table tbody tr:last-child th,
@@ -462,8 +462,8 @@
   margin: 1rem 0;
   padding: 1rem;
   border-left: 3px solid var(--f-color-danger);
-  background: #fcedec;
-  color: #8e2822 !important;
+  background: #eee2ce;
+  color: #060708 !important;
   font-size: 0.875rem;
   overflow-wrap: anywhere;
 }
@@ -498,7 +498,7 @@
   margin: 0 0 1rem;
   padding: 1rem;
   min-width: 0;
-  border: 1px solid #d4dce3;
+  border: 1px solid rgb(176 139 75 / 30%);
   border-radius: 0.25rem;
 }
 .cms-relations legend,
@@ -517,9 +517,9 @@
 }
 .cms-editor {
   overflow: hidden;
-  border: 1px solid #9baab6;
+  border: 1px solid #6c7172;
   border-radius: 0.25rem;
-  background: #fff;
+  background: #faf7f1;
 }
 .cms-editor:focus-within {
   outline: 2px solid var(--f-color-action);
@@ -530,8 +530,8 @@
   flex-wrap: wrap;
   gap: 0.125rem;
   padding: 0.5rem;
-  border-bottom: 1px solid #d4dce3;
-  background: #f7f8fa;
+  border-bottom: 1px solid rgb(176 139 75 / 30%);
+  background: #faf7f1;
 }
 .cms-editor-toolbar .f-button {
   min-height: 36px;
@@ -540,7 +540,7 @@
 }
 .cms-editor-toolbar .f-button[aria-pressed='true'] {
   background: var(--f-color-navy);
-  color: #fff;
+  color: #faf7f1;
 }
 .cms-prose-editor {
   min-height: 15rem;
@@ -578,7 +578,7 @@
   border-left: 3px solid var(--f-color-action);
 }
 .cms-prose-editor pre {
-  background: #edf2f7;
+  background: #eee2ce;
   padding: 1rem;
   white-space: pre-wrap;
 }
@@ -588,7 +588,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem;
-  border-bottom: 1px solid #d4dce3;
+  border-bottom: 1px solid rgb(176 139 75 / 30%);
 }
 .cms-link-edit .f-field-control {
   flex: 1;
@@ -598,7 +598,7 @@
   margin: 1rem 0;
   min-width: 0;
   padding: 1rem;
-  border: 1px solid #d4dce3;
+  border: 1px solid rgb(176 139 75 / 30%);
   border-radius: 0.25rem;
 }
 .cms-media-picker details {
@@ -650,13 +650,13 @@
 .cms-section {
   padding: 1.25rem;
   margin-bottom: 1.5rem;
-  border: 1px solid #d4dce3;
+  border: 1px solid rgb(176 139 75 / 30%);
   border-radius: 0.25rem;
-  background: #f7f8fa;
+  background: #faf7f1;
 }
 .cms-danger {
   margin-top: 2rem;
-  border-top: 1px solid #d4dce3;
+  border-top: 1px solid rgb(176 139 75 / 30%);
   padding-top: 1.5rem;
 }
 .cms-social-link {
@@ -680,7 +680,7 @@
 .cms-media-thumbnail {
   height: 12rem;
   overflow: hidden;
-  background: #edf2f7;
+  background: #eee2ce;
 }
 .cms-media-thumbnail img {
   width: 100%;
@@ -692,7 +692,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #edf2f7;
+  background: #eee2ce;
   color: var(--f-color-navy);
   font-family: var(--f-font-display);
   font-size: 3rem;
@@ -704,7 +704,7 @@
 .cms-preview-banner {
   padding: 1.5rem 0;
   background: var(--f-color-navy);
-  color: #fff;
+  color: #faf7f1;
 }
 .cms-preview-banner p {
   margin: 0.5rem 0;
@@ -712,7 +712,7 @@
   font-size: 0.8125rem;
 }
 .cms-preview-banner a {
-  color: #fff;
+  color: #faf7f1;
 }
 @media (max-width: 1199px) {
   .cms-metrics {

@@ -16,7 +16,7 @@
 .site-header {
   position: relative;
   z-index: 30;
-  border-bottom: 1px solid #d4dce3;
+  border-bottom: 1px solid rgb(176 139 75 / 30%);
   background: var(--f-color-surface);
 }
 
@@ -35,6 +35,24 @@
   gap: 0.875rem;
   color: var(--f-color-navy);
   text-decoration: none;
+}
+
+.site-brand-logo {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 210px;
+  height: 84px;
+  overflow: hidden;
+}
+
+.site-brand-logo img {
+  position: absolute;
+  top: -50px;
+  left: 17px;
+  width: 176px;
+  height: 176px;
+  max-width: none;
 }
 
 .site-brand-monogram {
@@ -165,10 +183,10 @@
   right: 0;
   left: 0;
   z-index: 40;
-  border-top: 1px solid #d4dce3;
-  border-bottom: 1px solid #d4dce3;
+  border-top: 1px solid rgb(176 139 75 / 30%);
+  border-bottom: 1px solid rgb(176 139 75 / 30%);
   background: var(--f-color-surface);
-  box-shadow: 0 20px 24px rgb(16 42 67 / 8%);
+  box-shadow: 0 20px 24px rgb(6 7 8 / 8%);
 }
 
 .site-mega-inner {
@@ -218,7 +236,7 @@
   gap: 1rem;
   padding: 0.75rem 0;
   color: var(--f-color-navy);
-  border-bottom: 1px solid #d4dce3;
+  border-bottom: 1px solid rgb(176 139 75 / 30%);
   text-decoration: none;
 }
 
@@ -260,7 +278,7 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #d4dce3;
+  border-bottom: 1px solid rgb(176 139 75 / 30%);
   color: var(--f-color-navy);
   text-decoration: none;
 }
@@ -348,7 +366,7 @@
   left: 14%;
   width: 76%;
   aspect-ratio: 1;
-  border: 1px solid #6b8aa4;
+  border: 1px solid #b08b4b;
   border-radius: 50%;
 }
 
@@ -363,13 +381,13 @@
 .site-artwork-plane-back {
   top: 26%;
   left: 14%;
-  background: linear-gradient(110deg, #8aa4bb, #506c88);
+  background: linear-gradient(110deg, #b08b4b, #6c7172);
 }
 
 .site-artwork-plane-front {
   top: 10%;
   right: -2%;
-  background: linear-gradient(110deg, #dceaf7, #92adc5);
+  background: linear-gradient(110deg, #eee2ce, #b08b4b);
 }
 
 .site-artwork-line {
@@ -378,15 +396,15 @@
   left: 8%;
   width: 38%;
   height: 46%;
-  border-top: 1px solid #dceaf7;
-  border-left: 1px solid #dceaf7;
+  border-top: 1px solid #eee2ce;
+  border-left: 1px solid #eee2ce;
 }
 
 .site-artwork-serif {
   position: absolute;
   bottom: -18%;
   left: 23%;
-  color: #102a43;
+  color: #060708;
   font-family: var(--f-font-display);
   font-size: clamp(12rem, 27vw, 28rem);
   font-weight: 500;
@@ -460,7 +478,7 @@
 .site-editorial-art span {
   position: absolute;
   content: '';
-  border: 1px solid #7898b7;
+  border: 1px solid #b08b4b;
 }
 
 .site-editorial-art::before {
@@ -652,7 +670,7 @@
 
 .site-footer-nav h2 {
   margin: 0 0 1rem;
-  color: var(--f-color-surface);
+  color: var(--f-color-gold);
   font-family: var(--f-font-body);
   font-size: 0.75rem;
   font-weight: 600;
@@ -693,7 +711,7 @@
   gap: 1rem;
   margin-top: 2.5rem;
   padding-top: 1rem;
-  border-top: 1px solid #506b82;
+  border-top: 1px solid #b08b4b;
 }
 
 .site-footer-bottom p {
@@ -748,6 +766,18 @@
 
   .site-brand {
     gap: 0.625rem;
+  }
+
+  .site-brand-logo {
+    width: 154px;
+    height: 68px;
+  }
+
+  .site-brand-logo img {
+    top: -39px;
+    left: 8px;
+    width: 138px;
+    height: 138px;
   }
 
   .site-brand-monogram {

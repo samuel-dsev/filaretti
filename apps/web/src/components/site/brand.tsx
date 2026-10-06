@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import type { SiteBrand } from './types';
 
 export function Brand({ brand, inverse = false }: { brand: SiteBrand; inverse?: boolean }) {
@@ -8,14 +9,8 @@ export function Brand({ brand, inverse = false }: { brand: SiteBrand; inverse?: 
       className={`site-brand${inverse ? ' site-brand-inverse' : ''}`}
       href={brand.href}
     >
-      {brand.monogram ? (
-        <span className="site-brand-monogram" aria-hidden="true">
-          {brand.monogram}
-        </span>
-      ) : null}
-      <span className="site-brand-wordmark">
-        <span className="site-brand-name">{brand.name}</span>
-        {brand.caption ? <span className="site-brand-caption">{brand.caption}</span> : null}
+      <span className="site-brand-logo">
+        <Image src="/brand/logomarca.jpg" alt={brand.name} width={1254} height={1254} unoptimized />
       </span>
     </Link>
   );

@@ -10,7 +10,7 @@ import '@/components/editorial/styles.css';
 export const dynamic = 'force-dynamic';
 export const fetchCache = 'force-no-store';
 export const metadata: Metadata = {
-  title: 'Preview editorial | Filaretti',
+  title: 'Preview editorial | Ettori & Filaretti Advogados',
   robots: { index: false, follow: false, noarchive: true },
 };
 

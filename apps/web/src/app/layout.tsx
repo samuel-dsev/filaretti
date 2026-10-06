@@ -14,7 +14,7 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: 'Filaretti — site institucional',
+  title: 'Ettori & Filaretti Advogados — site institucional',
   description:
     'Informações institucionais, áreas de atuação, profissionais e conteúdos publicados.',
   robots: { index: false, follow: false },

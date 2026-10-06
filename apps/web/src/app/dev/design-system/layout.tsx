@@ -9,7 +9,7 @@ import './demo.css';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
-  title: 'Filaretti — demonstração do Design System',
+  title: 'Ettori & Filaretti Advogados — demonstração do Design System',
   robots: { index: false, follow: false },
 };
 

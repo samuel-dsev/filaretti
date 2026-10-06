@@ -35,26 +35,26 @@
   flex-shrink: 0;
   width: 1.2rem;
   height: 1.2rem;
-  accent-color: #1d4e89;
+  accent-color: #141b1f;
   margin-top: 0.25rem;
 }
 .relationship-form a,
 .relationship-card a {
-  color: #1d4e89;
+  color: #141b1f;
   text-decoration: underline;
   text-underline-offset: 0.18em;
 }
 .relationship-note {
-  color: #404852;
+  color: #141b1f;
   font-size: 0.875rem;
   line-height: 1.7;
 }
 .relationship-error {
-  color: #8c2225;
+  color: #060708;
   line-height: 1.7;
 }
 .relationship-success {
-  color: #24513e;
+  color: #141b1f;
   line-height: 1.7;
 }
 .relationship-success:empty {
@@ -62,8 +62,8 @@
 }
 .relationship-card {
   padding: clamp(1.25rem, 4vw, 3rem);
-  border: 1px solid #c5d2df;
-  background: #f7f8fa;
+  border: 1px solid rgb(176 139 75 / 30%);
+  background: #faf7f1;
   border-radius: 0.4rem;
   max-width: 48rem;
   margin-inline: auto;
@@ -77,7 +77,7 @@
   margin-block: 1rem;
 }
 .relationship-channel {
-  border-top: 1px solid #c5d2df;
+  border-top: 1px solid rgb(176 139 75 / 30%);
   margin-top: 2rem;
   padding-top: 2rem;
 }

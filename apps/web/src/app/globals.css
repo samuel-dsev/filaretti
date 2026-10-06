@@ -43,8 +43,8 @@ html {
   left: 0.5rem;
   z-index: 100;
   padding: 0.75rem 1rem;
-  color: #102a43;
-  background: #fff;
+  color: #060708;
+  background: #faf7f1;
   transform: translateY(-200%);
 }
 .skip-link:focus {
@@ -57,7 +57,7 @@ html {
 }
 .foundation h1,
 .foundation h2 {
-  color: #102a43;
+  color: #060708;
   font-family: var(--f-font-display);
   font-weight: 600;
   line-height: 1.1;
@@ -71,7 +71,7 @@ html {
   font-size: 2rem;
 }
 .environment-label {
-  color: #404852;
+  color: #141b1f;
   font-size: 0.875rem;
   font-weight: 600;
 }
@@ -81,7 +81,7 @@ html {
 }
 .foundation-note {
   margin-top: 1.5rem;
-  color: #404852;
+  color: #141b1f;
   font-size: 0.875rem;
 }
 .return-link {
@@ -91,8 +91,8 @@ html {
   padding: 0.625rem 1rem;
   border: 0;
   border-radius: 0.25rem;
-  color: #fff;
-  background: #1d4e89;
+  color: #faf7f1;
+  background: #141b1f;
   font: inherit;
   font-weight: 600;
   text-decoration: none;

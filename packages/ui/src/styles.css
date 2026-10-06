@@ -1,19 +1,21 @@
 :root {
-  --f-color-navy: #102a43;
-  --f-color-primary: #1d4e89;
-  --f-color-action: #2563a6;
-  --f-color-pale: #dceaf7;
-  --f-color-offwhite: #f7f8fa;
-  --f-color-surface: #ffffff;
-  --f-color-muted: #404852;
-  --f-color-ink: #161a1d;
-  --f-color-border: #778594;
-  --f-color-success: #1b6141;
-  --f-color-success-soft: #e8f4ec;
-  --f-color-warning: #785000;
-  --f-color-warning-soft: #fff4d6;
-  --f-color-danger: #a12430;
-  --f-color-danger-soft: #fdecef;
+  --f-color-navy: #060708;
+  --f-color-primary: #141b1f;
+  --f-color-action: #141b1f;
+  --f-color-pale: #eee2ce;
+  --f-color-offwhite: #faf7f1;
+  --f-color-surface: #faf7f1;
+  --f-color-muted: #141b1f;
+  --f-color-ink: #141b1f;
+  --f-color-border: #6c7172;
+  --f-color-gold: #b08b4b;
+  --f-color-gray: #6c7172;
+  --f-color-success: #141b1f;
+  --f-color-success-soft: #eee2ce;
+  --f-color-warning: #141b1f;
+  --f-color-warning-soft: #eee2ce;
+  --f-color-danger: #060708;
+  --f-color-danger-soft: #eee2ce;
   --f-color-focus: var(--f-color-primary);
   --f-color-focus-inverse: var(--f-color-pale);
   --f-font-body: var(--font-body, Arial, sans-serif);
@@ -47,8 +49,8 @@
   --f-radius-md: 0.5rem;
   --f-radius-lg: 0.75rem;
   --f-radius-pill: 999px;
-  --f-shadow-card: 0 0.5rem 2rem rgb(16 42 67 / 7%);
-  --f-shadow-overlay: 0 1.5rem 5rem rgb(16 42 67 / 25%);
+  --f-shadow-card: 0 0.5rem 2rem rgb(6 7 8 / 7%);
+  --f-shadow-overlay: 0 1.5rem 5rem rgb(6 7 8 / 25%);
   --f-motion-fast: 150ms;
   --f-motion-base: 220ms;
 }
@@ -397,7 +399,7 @@
 }
 
 .f-dialog::backdrop {
-  background: rgb(16 42 67 / 65%);
+  background: rgb(6 7 8 / 65%);
 }
 
 .f-dialog--modal {

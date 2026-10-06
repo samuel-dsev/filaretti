@@ -1,4 +1,4 @@
-export const DEVELOPMENT_SITE_NAME = 'Filaretti Advocacia';
+export const DEVELOPMENT_SITE_NAME = 'Ettori & Filaretti Advogados';
 
 export const DEVELOPMENT_PROFESSIONALS = [
   {
@@ -667,9 +667,9 @@ export const DEVELOPMENT_FAQS = [
 export const DEVELOPMENT_PAGES = {
   home: {
     title: 'Direito próximo das suas decisões',
-    seoTitle: 'Filaretti Advocacia | Direito próximo das suas decisões',
+    seoTitle: 'Ettori & Filaretti Advogados | Direito próximo das suas decisões',
     seoDescription:
-      'Conheça a Filaretti Advocacia, suas áreas de atuação, profissionais e conteúdos sobre negócios, patrimônio, relações de trabalho e tecnologia.',
+      'Conheça a Ettori & Filaretti Advogados, suas áreas de atuação, profissionais e conteúdos sobre negócios, patrimônio, relações de trabalho e tecnologia.',
     sections: [
       {
         key: 'intro',
@@ -690,14 +690,14 @@ export const DEVELOPMENT_PAGES = {
   },
   'o-escritorio': {
     title: 'O escritório',
-    seoTitle: 'O escritório | Filaretti Advocacia',
+    seoTitle: 'O escritório | Ettori & Filaretti Advogados',
     seoDescription:
-      'Conheça a abordagem da Filaretti Advocacia: escuta, trabalho integrado e comunicação clara para acompanhar decisões de empresas e pessoas.',
+      'Conheça a abordagem da Ettori & Filaretti Advogados: escuta, trabalho integrado e comunicação clara para acompanhar decisões de empresas e pessoas.',
     sections: [
       {
         key: 'intro',
         heading: 'Conhecimento que se constrói em conjunto',
-        text: 'A Filaretti Advocacia reúne profissionais que trabalham de forma integrada em questões empresariais, trabalhistas, imobiliárias, familiares e digitais. Partimos da compreensão de cada contexto para conectar as informações relevantes e discutir caminhos com quem precisa tomar uma decisão. Essa forma de atuar valoriza a escuta, a organização e a participação das áreas envolvidas.',
+        text: 'A Ettori & Filaretti Advogados reúne profissionais que trabalham de forma integrada em questões empresariais, trabalhistas, imobiliárias, familiares e digitais. Partimos da compreensão de cada contexto para conectar as informações relevantes e discutir caminhos com quem precisa tomar uma decisão. Essa forma de atuar valoriza a escuta, a organização e a participação das áreas envolvidas.',
       },
       {
         key: 'method',
@@ -713,7 +713,7 @@ export const DEVELOPMENT_PAGES = {
   },
   privacidade: {
     title: 'Privacidade',
-    seoTitle: 'Privacidade | Filaretti Advocacia',
+    seoTitle: 'Privacidade | Ettori & Filaretti Advogados',
     seoDescription:
       'Entenda como as informações enviadas pelo contato e pela newsletter são utilizadas e como consultar suas preferências de privacidade no site.',
     sections: [
@@ -741,7 +741,7 @@ export const DEVELOPMENT_PAGES = {
   },
   cookies: {
     title: 'Cookies',
-    seoTitle: 'Cookies e preferências | Filaretti Advocacia',
+    seoTitle: 'Cookies e preferências | Ettori & Filaretti Advogados',
     seoDescription:
       'Conheça os recursos necessários à navegação e escolha se deseja permitir recursos opcionais de análise quando estiverem configurados.',
     sections: [

@@ -5,7 +5,7 @@ import { AdminLayout } from '../../../../components/admin';
 export default function AdminDemoPage() {
   return (
     <AdminLayout
-      brand="Filaretti"
+      brand="Ettori & Filaretti Advogados"
       title="Visão geral"
       description="Layout de demonstração. Os dados e a identidade desta tela são fictícios."
       userLabel="Pessoa fictícia · Editor"

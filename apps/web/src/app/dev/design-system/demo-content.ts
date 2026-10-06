@@ -2,7 +2,7 @@ import type { SiteFooterProps, SiteHeaderProps } from '../../../components/site'
 
 export const demoHeader: SiteHeaderProps = {
   brand: {
-    name: 'Filaretti',
+    name: 'Ettori & Filaretti Advogados',
     monogram: 'F',
     caption: 'Advocacia · demonstração',
     href: '/dev/design-system',
@@ -58,5 +58,5 @@ export const demoFooter: SiteFooterProps = {
     },
   ],
   note: 'Demonstração local com textos, pessoas e áreas fictícios. Materiais sujeitos à aprovação.',
-  copyright: 'Filaretti · ambiente de demonstração',
+  copyright: 'Ettori & Filaretti Advogados · ambiente de demonstração',
 };

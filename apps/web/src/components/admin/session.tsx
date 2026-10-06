@@ -123,7 +123,7 @@ export function AdminWorkspace({ children }: { children: ReactNode }) {
   const title = navigation.find((item) => item.current)?.label ?? 'Administração';
   return (
     <AdminLayout
-      brand="Filaretti"
+      brand="Ettori & Filaretti Advogados"
       title={title}
       description={
         section

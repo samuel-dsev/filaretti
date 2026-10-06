@@ -61,7 +61,7 @@ export function PasswordRecovery({ reset = false }: { reset?: boolean }) {
   return (
     <main id="conteudo" tabIndex={-1} className="cms-login">
       <div className="cms-login-brand">
-        <p className="site-eyebrow">Filaretti Advocacia</p>
+        <p className="site-eyebrow">Ettori & Filaretti Advogados</p>
         <h1>{reset ? 'Nova senha' : 'Recuperar acesso'}</h1>
         <p>
           {reset

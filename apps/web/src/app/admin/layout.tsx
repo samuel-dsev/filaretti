@@ -5,7 +5,7 @@ import '@/components/admin/styles.css';
 
 export const dynamic = 'force-dynamic';
 export const metadata: Metadata = {
-  title: 'Administração | Filaretti',
+  title: 'Administração | Ettori & Filaretti Advogados',
   robots: { index: false, follow: false },
 };
 export default function Layout({ children }: { children: ReactNode }) {

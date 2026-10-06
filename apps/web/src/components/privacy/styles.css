@@ -5,11 +5,11 @@
   display: flex;
   gap: 1.5rem;
   align-items: center;
-  background: var(--f-color-white, #fff);
-  color: #102a43;
+  background: var(--f-color-white, #faf7f1);
+  color: #060708;
   padding: 1.5rem;
-  box-shadow: 0 8px 35px #102a4333;
-  border: 1px solid #c5d2df;
+  box-shadow: 0 8px 35px #06070833;
+  border: 1px solid rgb(176 139 75 / 30%);
   max-width: 86rem;
   margin: auto;
   border-radius: 0.5rem;
@@ -25,7 +25,7 @@
   line-height: 1.6;
 }
 .privacy-banner a {
-  color: #1d4e89;
+  color: #141b1f;
   text-decoration: underline;
 }
 .privacy-actions {
@@ -51,7 +51,7 @@
   width: 1.2rem;
   height: 1.2rem;
   margin-top: 0.2rem;
-  accent-color: #1d4e89;
+  accent-color: #141b1f;
 }
 .privacy-option strong,
 .privacy-option small {

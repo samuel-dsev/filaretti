@@ -29,7 +29,7 @@ export default function LoginPage() {
   return (
     <main id="conteudo" tabIndex={-1} className="cms-login">
       <div className="cms-login-brand">
-        <p className="site-eyebrow">Filaretti Advocacia</p>
+        <p className="site-eyebrow">Ettori & Filaretti Advogados</p>
         <h1>Administração</h1>
         <p>Conteúdo, pessoas e publicações em um só lugar.</p>
         <Link href="/" prefetch={false}>
