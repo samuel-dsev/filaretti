@@ -39,7 +39,8 @@ export async function proxy(request: NextRequest) {
   for (const [name, value] of Object.entries(browserSecurityHeaders(https)))
     response.headers.set(name, value);
   response.headers.set('Content-Security-Policy', csp);
-  if (pathname !== '/_next/image') response.headers.set('Cache-Control', 'no-store');
+  // Preserve the rendered HTML: Cloudflare email obfuscation breaks React hydration.
+  if (pathname !== '/_next/image') response.headers.set('Cache-Control', 'no-store, no-transform');
   return response;
 }
 

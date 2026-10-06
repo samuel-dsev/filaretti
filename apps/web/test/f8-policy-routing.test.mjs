@@ -75,7 +75,7 @@ test('withdrawn privacy and cookie policies return HTTP 404 before streaming, wi
       headers: new Headers(),
     });
     assert.equal(response.status, 404);
-    assert.equal(response.headers.get('Cache-Control'), 'no-store');
+    assert.equal(response.headers.get('Cache-Control'), 'no-store, no-transform');
     assert.equal(response.headers.get('X-Robots-Tag'), 'noindex, nofollow');
     assert.match(await response.text(), /<main id="conteudo"/u);
     assert.ok(requests.some(({ url }) => url.endsWith(`/api/v1/pages/${slug}`)));
@@ -92,7 +92,7 @@ test('policy API failures return HTTP 503 and published policies continue to the
         headers: new Headers(),
       });
       assert.equal(response.status, status === 500 ? 503 : 200);
-      assert.equal(response.headers.get('Cache-Control'), 'no-store');
+      assert.equal(response.headers.get('Cache-Control'), 'no-store, no-transform');
       if (status === 500) assert.equal(response.headers.get('Retry-After'), '30');
     }
   }

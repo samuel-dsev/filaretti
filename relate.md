@@ -2,18 +2,34 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                              |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| Última atualização | 05/10/2026 — RP-013                                                                 |
-| Etapa              | **Testes manuais locais iniciados; F8/F9/F10 parciais nos aceites externos**        |
-| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada               |
-| Git                | `dev`; base documental `d1cb2b7`; correção local em preparação                      |
-| Autorização        | Textos inventados sem Fictícia, header e breadcrumb de contato; imagens preservadas |
-| Checkpoint         | Revisão textual/header/contato verificados; continuar testes manuais com o usuário  |
+| Campo              | Estado                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------ |
+| Última atualização | 06/10/2026 — RP-014                                                                  |
+| Etapa              | **Apresentação temporária Cloudflare; F8/F9/F10 parciais nos aceites externos**      |
+| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada                |
+| Git                | `dev`; base real `8c04781`; correção de compatibilidade Cloudflare no RP-014         |
+| Autorização        | Iniciar aplicação com Cloudflare em endereço público para apresentação               |
+| Checkpoint         | Link temporário verificado com banco/mídia isolados; envio de formulários desativado |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo; este fechamento usa a data 05/10/2026 do cliente, com timestamps UTC originais nas evidências.
 
 ## Histórico
+
+### RP-014 — 06/10/2026 — Apresentação pública temporária pelo Cloudflare
+
+**Escopo autorizado:** usuário pediu iniciar a aplicação utilizando Cloudflare para um endereço público, no contexto de apresentação gratuita da estrutura existente. Não corresponde ao corte operacional da V1. Versão mantida em `0.10.1`, branch `dev`, base real `8c04781` verificada limpa; o snapshot anterior RP-013 não descrevia esse último commit de identidade visual. A apresentação utiliza o código e os dados atuais, incluindo a identidade Ettori & Filaretti.
+
+**Execução:** PostgreSQL existente estava saudável; web/API estavam parados. Cloudflared `2026.8.2` já instalado. Criada cópia PostgreSQL `filaretti_demo_dabd787c1a034c81bcfa3de1d8ce8911` a partir do banco local e cópia do storage em `.local/cloudflare-presentation/storage`. Banco e mídias originais preservados. Credenciais das contas da cópia foram aleatorizadas; credenciais ADMIN da apresentação ficam exclusivamente no arquivo ignorado `.local/cloudflare-presentation/admin-local.txt`, sem valores neste relatório. Segredos de sessão/preview/revalidação são próprios da cópia e não foram exibidos/versionados. Env originais preservados; overrides são apenas dos processos. Relacionamento, workers, Resend, Turnstile, R2, analytics e indexação ficam desabilitados; formulários continuam visíveis, mas não enviam. Execução `APP_ENV=development` com build Next otimizado e `NODE_ENV=production`; dados inventados não se tornam materiais aprovados.
+
+**Endereço observado:** `https://encountered-marc-bids-ware.trycloudflare.com`. Quick Tunnel HTTP/2 para web em `127.0.0.1:3000`, API privada em `127.0.0.1:3001`, PostgreSQL permanece em `127.0.0.1:5434`. Next encaminha API/mídia; CMS usa BFF e origem HTTPS exata, cookies Secure e HMAC de IP via `cf-connecting-ip` sobrescrito pelo Cloudflare. Processos persistentes ocultos com logs locais, sem depender do terminal desta resposta. PIDs e segredos ficam no estado local ignorado; estado aqui é o snapshot desta execução, não monitoramento permanente.
+
+**Correção necessária:** o Quick Tunnel aplicava obfuscação de e-mail no HTML, injetando script bloqueado pela CSP e causando React #418 na Home. `apps/web/src/proxy.ts` passa a emitir `Cache-Control: no-store, no-transform` para as respostas sob o proxy, preservando o HTML renderizado. CSP/origem/autorização permanecem verificadas. Os dois asserts de cabeçalho em `apps/web/test/f8-policy-routing.test.mjs` foram atualizados para a nova política. A documentação de deployment explica o motivo. Nenhuma mudança visual ou de conteúdo adicional.
+
+**Validação final:** build Next isolado em `apps/web/.local/f8-qa-build-dabd787c-1a03-4c81-bcfa-3de1d8ce8911` aprovado, incluindo TypeScript. Lint e typecheck web aprovados; 63 testes Node e 9 RTL aprovados. Smoke externo em Edge headless: **31 checks aprovados, zero falhas**; health local com PostgreSQL up, 20 rotas HTTPS incluindo detalhes, robots bloqueado/sitemap vazio/noindex, conteúdo administrativo protegido, bloqueio do envio de contato, origem estrangeira recusada, senha padrão recusada, login da cópia com cookies Secure, dashboard público autenticado, imagens/CSS, desktop 1440 e mobile 375 sem overflow e sem exceções JavaScript. Header no-transform e ausência de injeção/obfuscação Cloudflare conferidos no HTML público. Durante a investigação, repetição de tentativas acionou o limite persistido de login; os contadores de QA foram limpos somente no banco da apresentação antes da rodada final, sem desligar o limitador. Primeira rodada de testes de política falhou por expectativa antiga do cabeçalho; corrigida e repetida com sucesso. Não foram repetidos CI remoto, suítes backend completas, Lighthouse, browsers físicos nem integrações reais.
+
+**Arquivos versionados alterados:** `apps/web/src/proxy.ts`, `apps/web/test/f8-policy-routing.test.mjs`, `docs/deployment.md`, `plan.md`, `relate.md`. Locais ignorados criados: `.local/cloudflare-presentation/manage.mjs`, `verify.mjs`, `diagnose.mjs`, estado/credenciais/logs/storage/screenshots e `smoke.json`; tsconfig/build Next isolados em `apps/web/.local/`. Execução sequencial por se tratar de startup/configuração e correção pontual, sem tarefas de desenvolvimento paralelas úteis. Commit local previsto: `fix(web): preserva HTML na apresentacao pelo Cloudflare`.
+
+**Operação/limites:** computador, Docker e processos devem permanecer ligados. O link termina com o cloudflared e muda em outro Quick Tunnel. Encerrar os processos desta apresentação na raiz do checkout com `rtk proxy node .local/cloudflare-presentation/manage.mjs stop`; o PostgreSQL e os dados originais não são encerrados/removidos por esse comando. Banco/mídia da cópia são preservados para recuperação. Alterações no CMS dessa URL afetam a cópia. E-mail, newsletter, anexos de contato, recuperação por envio e publicação agendada não são certificados nesta apresentação. Sem DNS, push, PR, domínio comprado, provedor pago ou publicação operacional `1.0.0`; F8/F9/F10 continuam parciais. Próximo passo: apresentação pelo usuário; novas integrações e operação permanente exigem escopo específico.
 
 ### RP-013 — 05/10/2026 — Revisão textual, header e breadcrumb de contato
 

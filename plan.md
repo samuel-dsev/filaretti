@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                                                         |
-| ---------------------- | ------------------------------------------------------------------------------------------------ |
-| Última atualização     | 05/10/2026 — revisão textual, header e contato verificados localmente                            |
-| Último relatório       | `RP-013`, em `relate.md`                                                                         |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                                |
-| Última entrega técnica | **Revisão textual e correções de header/contato verificadas — RP-013**                           |
-| Versão de referência   | `0.10.1`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado              |
-| Etapa corrente         | **Testes manuais locais; F10 local verificada e F8/F9/F10 parciais nos aceites externos**        |
-| Próximo passo          | Continuar testes manuais e corrigir os novos relatos nesta base                                  |
-| Autorização            | Prosa inventada sem Fictícia, seleção do header, remoção da seta e breadcrumb; preservar imagens |
-| Git                    | `dev`, remoto `origin`; base documental `d1cb2b7`; commit corretivo previsto no RP-013           |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                   |
+| Campo                  | Situação                                                                                      |
+| ---------------------- | --------------------------------------------------------------------------------------------- |
+| Última atualização     | 06/10/2026 — apresentação pública temporária via Cloudflare verificada                        |
+| Último relatório       | `RP-014`, em `relate.md`                                                                      |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                             |
+| Última entrega técnica | **Apresentação temporária com cópia isolada de banco/mídia e HTTPS — RP-014**                 |
+| Versão de referência   | `0.10.1`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado           |
+| Etapa corrente         | **Apresentação temporária autorizada; F8/F9/F10 permanecem parciais nos aceites externos**    |
+| Próximo passo          | Apresentar pelo link temporário; integrações reais e hospedagem permanente exigem novo escopo |
+| Autorização            | Iniciar a aplicação com Cloudflare em endereço público para apresentação                      |
+| Git                    | `dev`, remoto `origin`; base real `8c04781`; commit de compatibilidade previsto no RP-014     |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**06/10/2026 — RP-014 — apresentação pública temporária pelo Cloudflare:** autorização para iniciar a aplicação em endereço público gratuito, mantendo a base atual. Cópia isolada do PostgreSQL e storage, credenciais/segredos próprios, build Next otimizado separado, API/banco privados e Quick Tunnel HTTPS em `https://encountered-marc-bids-ware.trycloudflare.com`. CMS autenticado funciona nessa origem; formulários e workers sem envio. Corrigido `Cache-Control: no-store, no-transform` para impedir obfuscação de e-mail pelo Cloudflare e divergência React #418. Build/lint/typecheck web, 72 testes web e 31 checks HTTP/Edge externos aprovados, incluindo desktop/mobile, imagens, noindex, autenticação e ausência de exceções JavaScript. Versão mantida `0.10.1`, branch `dev`, base real `8c04781`; sem push/PR/DNS do usuário/produção. URL depende dos processos e computador ativos; banco e mídias originais preservados. Estado/processos/credenciais/comando de parada e limitações no RP-014; F8/F9/F10 continuam parciais nos gates externos.
 
 **05/10/2026 — RP-013 — revisão textual e primeiras correções manuais verificadas:** header selecionado conforme a página, seta de Áreas removida, breadcrumb de contato alinhado e prosa renovada com informações inventadas inspiradas no tom de `https://silveiro.com.br/`. Nenhuma imagem alterada/adicionada. Autorização atual substitui a exigência anterior de escrever “Fictícia” nas identidades visíveis; `isMock`, isolamento, slugs, estado de publicação e gates externos preservados. Versão corretiva `0.10.1`, base `d1cb2b7`, branch `dev`. Catálogo original/seed e refresh aplicado aos 75 fixtures com snapshot, transação e conferência de campos não textuais/mídias. Lint, tipagem, build, 72 testes web, 100 integrações PostgreSQL e 44 contrastes aprovados. Edge: 32 rotas sem “Fictícia” nos textos/títulos, 30 layouts nas cinco larguras, header/teclado/mobile e alinhamento de contato. Histórico/evidências/limites no RP-013; `http://localhost:3000` permanece ativo para os próximos relatos do usuário.
 
