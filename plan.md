@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                                                      |
 | ---------------------- | --------------------------------------------------------------------------------------------- |
-| Última atualização     | 06/10/2026 — apresentação pública temporária via Cloudflare verificada                        |
-| Último relatório       | `RP-014`, em `relate.md`                                                                      |
+| Última atualização     | 12/10/2026 — novo endereço Cloudflare da apresentação verificado                              |
+| Último relatório       | `RP-015`, em `relate.md`                                                                      |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                             |
-| Última entrega técnica | **Apresentação temporária com cópia isolada de banco/mídia e HTTPS — RP-014**                 |
+| Última entrega técnica | **Retomada da apresentação com novo HTTPS e dados preservados — RP-015**                      |
 | Versão de referência   | `0.10.1`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado           |
 | Etapa corrente         | **Apresentação temporária autorizada; F8/F9/F10 permanecem parciais nos aceites externos**    |
 | Próximo passo          | Apresentar pelo link temporário; integrações reais e hospedagem permanente exigem novo escopo |
-| Autorização            | Iniciar a aplicação com Cloudflare em endereço público para apresentação                      |
-| Git                    | `dev`, remoto `origin`; base real `8c04781`; commit de compatibilidade previsto no RP-014     |
+| Autorização            | Iniciar a aplicação com Cloudflare para um novo endereço público                              |
+| Git                    | `dev`, remoto `origin`; base real `0e09884`; registro documental previsto no RP-015           |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**12/10/2026 — RP-015 — novo endereço público da apresentação:** serviços anteriores estavam parados e PostgreSQL saudável. Preservados banco, storage, credenciais e segredos da cópia RP-014, sem seed/migration/reset. Gerado novo Quick Tunnel `https://functions-mtv-athens-pin.trycloudflare.com`, recompilado o Next otimizado para essa origem e iniciadas API/web com os mesmos limites da apresentação. Build/TypeScript aprovados; PostgreSQL real, acesso HTTPS, CMS/cookies/origem, imagens, desktop/mobile e ausência de exceções JavaScript conferidos em 31 checks Edge/HTTP aprovados. Primeira sonda ocorreu antes de a API concluir a inicialização; rodada repetida somente após health 200. Código versionado e versão `0.10.1` preservados; somente plano/relatório atualizados. Base `0e09884`, branch `dev`, sem push/PR/produção. Serviços permanecem ativos, formulários/workers sem envio. F8/F9/F10 continuam parciais nos gates externos.
 
 **06/10/2026 — RP-014 — apresentação pública temporária pelo Cloudflare:** autorização para iniciar a aplicação em endereço público gratuito, mantendo a base atual. Cópia isolada do PostgreSQL e storage, credenciais/segredos próprios, build Next otimizado separado, API/banco privados e Quick Tunnel HTTPS em `https://encountered-marc-bids-ware.trycloudflare.com`. CMS autenticado funciona nessa origem; formulários e workers sem envio. Corrigido `Cache-Control: no-store, no-transform` para impedir obfuscação de e-mail pelo Cloudflare e divergência React #418. Build/lint/typecheck web, 72 testes web e 31 checks HTTP/Edge externos aprovados, incluindo desktop/mobile, imagens, noindex, autenticação e ausência de exceções JavaScript. Versão mantida `0.10.1`, branch `dev`, base real `8c04781`; sem push/PR/DNS do usuário/produção. URL depende dos processos e computador ativos; banco e mídias originais preservados. Estado/processos/credenciais/comando de parada e limitações no RP-014; F8/F9/F10 continuam parciais nos gates externos.
 

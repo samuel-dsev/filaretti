@@ -2,18 +2,32 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                               |
-| ------------------ | ------------------------------------------------------------------------------------ |
-| Última atualização | 06/10/2026 — RP-014                                                                  |
-| Etapa              | **Apresentação temporária Cloudflare; F8/F9/F10 parciais nos aceites externos**      |
-| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada                |
-| Git                | `dev`; base real `8c04781`; correção de compatibilidade Cloudflare no RP-014         |
-| Autorização        | Iniciar aplicação com Cloudflare em endereço público para apresentação               |
-| Checkpoint         | Link temporário verificado com banco/mídia isolados; envio de formulários desativado |
+| Campo              | Estado                                                                                |
+| ------------------ | ------------------------------------------------------------------------------------- |
+| Última atualização | 12/10/2026 — RP-015                                                                   |
+| Etapa              | **Apresentação temporária Cloudflare; F8/F9/F10 parciais nos aceites externos**       |
+| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada                 |
+| Git                | `dev`; base real `0e09884`; novo registro documental da apresentação no RP-015        |
+| Autorização        | Iniciar aplicação com Cloudflare para um novo endereço público                        |
+| Checkpoint         | Novo link HTTPS verificado; banco/mídia anteriores preservados; formulários sem envio |
 
-Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas informadas ao usuário seguem America/Sao_Paulo; este fechamento usa a data 05/10/2026 do cliente, com timestamps UTC originais nas evidências.
+Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-015 — 12/10/2026 — Novo endereço Cloudflare para a apresentação
+
+**Escopo autorizado:** iniciar novamente a aplicação utilizando Cloudflare para um novo endereço público. Checkout/Git verificados: `dev`, base `0e09884` (correção do RP-014), árvore inicialmente limpa, um commit local à frente de `origin/dev`. Versão `0.10.1` mantida; nenhum avanço no aceite operacional de F8/F9/F10.
+
+**Execução:** PostgreSQL existente saudável; os três processos registrados na apresentação anterior estavam encerrados, e as portas 3000/3001 livres. O gerenciador ignorado `.local/cloudflare-presentation/manage.mjs` ganhou `renew-tunnel`, que exige os processos anteriores parados, abre um Quick Tunnel HTTP/2 com log próprio, preserva banco/storage/credenciais/segredos, registra a URL anterior no estado local e invalida a marca do build até recompilar para a nova origem. Nenhuma leitura de segredo foi exibida. Foi reutilizado o banco `filaretti_demo_dabd787c1a034c81bcfa3de1d8ce8911` e o storage da apresentação, sem recriar dados, alterar senhas, seed, migration ou reset.
+
+**Endereço observado:** `https://functions-mtv-athens-pin.trycloudflare.com`, diferente do endereço RP-014. Build Next otimizado isolado recompilado para essa origem HTTPS, preservando o build local principal; API/web retomadas em `127.0.0.1:3001`/`127.0.0.1:3000`. Cloudflare, API e web deixados ativos em processos ocultos persistentes com logs locais. Processos observados: cloudflared 9608, API 22788, web 2980. Banco continua privado em `127.0.0.1:5434`. Cookies Secure, origem exata e assinatura HMAC do IP pelo BFF preservados; no-transform continua evitando obfuscação de e-mail/React #418. Workers, formulários, integrações reais, analytics e indexação continuam desativados, conforme o RP-014.
+
+**Validação:** build Next/TypeScript aprovados. Primeira rodada de smoke começou antes da API concluir sua inicialização e falhou por indisponibilidade; não foi apresentada como sucesso. Sonda sanitizada `.local/cloudflare-presentation/probe.mjs` confirmou banco da apresentação existente e health/Home local/Home HTTPS com status 200. Repetição completa depois da disponibilidade: **31 checks Edge headless/HTTP aprovados, zero falhas**. Conferidos 20 rotas HTTPS incluindo detalhes, noindex/robots/sitemap vazio, proteção administrativa, origem estrangeira e senha padrão recusadas, login CMS com credenciais existentes/cookies Secure, dashboard autenticado, formulários sem envio, imagens/CSS, desktop 1440/mobile 375 sem overflow e ausência de exceções JavaScript. Não reexecutados lint/suítes unitárias/backend/Lighthouse/CI remoto: não houve mudança no código versionado da aplicação. Banco/mídias/credenciais originais de desenvolvimento preservados.
+
+**Arquivos:** alterados/versionados somente `plan.md` e `relate.md`. Alterados locais ignorados: gerenciador, estado (origem/PIDs/histórico de URLs), logs próprios, build/tsconfig isolados e evidências `smoke.json`/screenshots; criada sonda local `probe.mjs`. Prettier e diff-check executados antes do registro documental local. Commit previsto: `docs: registra novo endereco Cloudflare da apresentacao`. Sem push, PR, alterações de DNS do usuário, contratação ou publicação operacional `1.0.0`. Execução sequencial por ser retomada operacional simples.
+
+**Uso/limites:** o novo link depende do computador, Docker, web/API e cloudflared ligados. [Painel](https://functions-mtv-athens-pin.trycloudflare.com/admin/login); credenciais permanecem no arquivo ignorado `.local/cloudflare-presentation/admin-local.txt`, sem valores no relatório. Mudanças nesse CMS afetam a cópia da apresentação. Para encerrar, na raiz: `rtk proxy node .local/cloudflare-presentation/manage.mjs stop`; não remove dados nem encerra o PostgreSQL. F8/F9/F10 continuam parciais; integrações, hospedagem permanente e demais fases exigem novo escopo.
 
 ### RP-014 — 06/10/2026 — Apresentação pública temporária pelo Cloudflare
 
