@@ -673,7 +673,7 @@ export const DEVELOPMENT_PAGES = {
     sections: [
       {
         key: 'intro',
-        heading: 'Direito próximo das suas decisões',
+        heading: '',
         text: 'Conectamos conhecimento jurídico e compreensão do contexto para acompanhar empresas e pessoas em suas escolhas. Nosso trabalho começa pela escuta e se desenvolve com análise cuidadosa, diálogo entre áreas e comunicação clara ao longo de cada demanda.',
       },
       {

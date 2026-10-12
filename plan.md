@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                                                      |
 | ---------------------- | --------------------------------------------------------------------------------------------- |
-| Última atualização     | 12/10/2026 — novo endereço Cloudflare da apresentação verificado                              |
-| Último relatório       | `RP-015`, em `relate.md`                                                                      |
+| Última atualização     | 12/10/2026 — título repetido da Home removido e verificado no endereço público                |
+| Último relatório       | `RP-016`, em `relate.md`                                                                      |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                             |
-| Última entrega técnica | **Retomada da apresentação com novo HTTPS e dados preservados — RP-015**                      |
+| Última entrega técnica | **Remoção do título repetido na introdução da Home — RP-016**                                 |
 | Versão de referência   | `0.10.1`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado           |
 | Etapa corrente         | **Apresentação temporária autorizada; F8/F9/F10 permanecem parciais nos aceites externos**    |
 | Próximo passo          | Apresentar pelo link temporário; integrações reais e hospedagem permanente exigem novo escopo |
-| Autorização            | Iniciar a aplicação com Cloudflare para um novo endereço público                              |
-| Git                    | `dev`, remoto `origin`; base real `0e09884`; registro documental previsto no RP-015           |
+| Autorização            | Remover a repetição de Direito próximo das suas decisões abaixo do destaque principal         |
+| Git                    | `dev`, remoto `origin`; base real `7845ab3`; correção de conteúdo prevista no RP-016          |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**12/10/2026 — RP-016 — título repetido da Home removido:** pedido baseado em screenshot do bloco introdutório. Mantida a frase no destaque principal; somente o heading da seção `intro` foi esvaziado no fixture e nas páginas mock `home` dos bancos locais de desenvolvimento/apresentação. Textos, títulos internos, SEO, imagens e demais páginas preservados. Snapshot anterior ignorado, transação/trava e uma linha alterada por banco; versões de registro incrementadas para 3. Template existente já trata seção sem heading; dados públicos dinâmicos refletem a edição sem rebuild/restart. Lint do fixture e typecheck API/Prisma aprovados; HTTP 200 e Edge em 1440/375 confirmaram um único heading com a frase (H1), ausência do H2 duplicado, conteúdo preservado, sem overflow/erros JS. Versão de aplicação `0.10.1` mantida por edição de conteúdo administrável; base `7845ab3`, branch `dev`, sem push. Link da apresentação RP-015 permanece ativo; F8/F9/F10 parciais nos aceites externos.
 
 **12/10/2026 — RP-015 — novo endereço público da apresentação:** serviços anteriores estavam parados e PostgreSQL saudável. Preservados banco, storage, credenciais e segredos da cópia RP-014, sem seed/migration/reset. Gerado novo Quick Tunnel `https://functions-mtv-athens-pin.trycloudflare.com`, recompilado o Next otimizado para essa origem e iniciadas API/web com os mesmos limites da apresentação. Build/TypeScript aprovados; PostgreSQL real, acesso HTTPS, CMS/cookies/origem, imagens, desktop/mobile e ausência de exceções JavaScript conferidos em 31 checks Edge/HTTP aprovados. Primeira sonda ocorreu antes de a API concluir a inicialização; rodada repetida somente após health 200. Código versionado e versão `0.10.1` preservados; somente plano/relatório atualizados. Base `0e09884`, branch `dev`, sem push/PR/produção. Serviços permanecem ativos, formulários/workers sem envio. F8/F9/F10 continuam parciais nos gates externos.
 

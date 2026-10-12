@@ -2,18 +2,30 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                                |
-| ------------------ | ------------------------------------------------------------------------------------- |
-| Última atualização | 12/10/2026 — RP-015                                                                   |
-| Etapa              | **Apresentação temporária Cloudflare; F8/F9/F10 parciais nos aceites externos**       |
-| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada                 |
-| Git                | `dev`; base real `0e09884`; novo registro documental da apresentação no RP-015        |
-| Autorização        | Iniciar aplicação com Cloudflare para um novo endereço público                        |
-| Checkpoint         | Novo link HTTPS verificado; banco/mídia anteriores preservados; formulários sem envio |
+| Campo              | Estado                                                                                     |
+| ------------------ | ------------------------------------------------------------------------------------------ |
+| Última atualização | 12/10/2026 — RP-016                                                                        |
+| Etapa              | **Apresentação temporária Cloudflare; F8/F9/F10 parciais nos aceites externos**            |
+| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada                      |
+| Git                | `dev`; base real `7845ab3`; remoção do título duplicado da Home no RP-016                  |
+| Autorização        | Remover título repetido Direito próximo das suas decisões na introdução da Home            |
+| Checkpoint         | Home atualizada no link público; frase apenas no destaque; formulários continuam sem envio |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-016 — 12/10/2026 — Remoção do título repetido na Home
+
+**Escopo autorizado:** remover a repetição “Direito próximo das suas decisões” indicada no screenshot, abaixo do destaque principal. Mantido o H1 do destaque e os parágrafos/subtítulos da introdução. Branch `dev`, base `7845ab3`, árvore inicialmente limpa; versão `0.10.1` preservada por se tratar de edição de conteúdo administrável, sem mudança de funcionalidade/contrato.
+
+**Mudança:** `DEVELOPMENT_PAGES.home.sections[0].heading` passa a string vazia em `apps/api/prisma/development-content.ts`, para não recriar a repetição em novos seeds/refreshs. O contrato existente aceita heading vazio e `PageSections` já renderiza o conteúdo no layout de seção sem título, sem H2/aria-labelledby inválidos; nenhum componente ou CSS precisou mudar. Não foi executado o refresh geral/seed. Script local ignorado `.local/cloudflare-presentation/remove-home-heading.mjs` aplicou somente esse campo em uma página mock `home` de cada banco (desenvolvimento e cópia da apresentação), com validação de ambiente/banco local/título esperado, snapshot antes da edição, transação e trava da linha. Versões de registro incrementadas para 3 e updated_at atualizado; título principal, metadata, corpo, demais seções e páginas preservados.
+
+**Validação:** lint do fixture e typecheck completo API/testes/Prisma aprovados. Smoke Edge headless no endereço público em larguras 1440 e 375: Home HTTP 200, frase em exatamente um heading (H1), nenhum H2 duplicado, parágrafo inicial e os dois subtítulos internos presentes, sem overflow horizontal nem exceções JavaScript. Capturas de ambos os layouts inspecionadas. A consulta dinâmica/no-store já refletiu a alteração no mesmo endereço `https://functions-mtv-athens-pin.trycloudflare.com`, sem rebuild/restart/túnel novo. Não reexecutadas suítes completas, migrations, Lighthouse, CI remoto ou provedores externos para esta edição textual pontual.
+
+**Arquivos:** alterados/versionados `apps/api/prisma/development-content.ts`, `plan.md`, `relate.md`. Criados locais ignorados: script da edição, `home-heading-before-development-*.json`, `home-heading-before-presentation-*.json`, `home-heading-smoke.mjs`, `home-heading-smoke.json` e screenshots `home-intro-1440.png`/`home-intro-375.png`. Prettier/diff-check no fechamento. Commit local previsto: `fix(content): remove titulo repetido da introducao da home`. Nenhuma imagem, credencial, integração ou esquema alterado; sem push/PR/DNS/deploy permanente. Trabalho sequencial, alteração textual única sem tarefas paralelas úteis.
+
+**Retomada:** apresentação permanece ativa no link RP-015. Formulários e workers continuam sem envio; F8/F9/F10 permanecem parciais nos aceites externos. Próximo passo: receber os próximos ajustes do usuário.
 
 ### RP-015 — 12/10/2026 — Novo endereço Cloudflare para a apresentação
 
