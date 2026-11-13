@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                                                      |
-| ---------------------- | --------------------------------------------------------------------------------------------- |
-| Última atualização     | 12/10/2026 — título repetido da Home removido e verificado no endereço público                |
-| Último relatório       | `RP-016`, em `relate.md`                                                                      |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                             |
-| Última entrega técnica | **Remoção do título repetido na introdução da Home — RP-016**                                 |
-| Versão de referência   | `0.10.1`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado           |
-| Etapa corrente         | **Apresentação temporária autorizada; F8/F9/F10 permanecem parciais nos aceites externos**    |
-| Próximo passo          | Apresentar pelo link temporário; integrações reais e hospedagem permanente exigem novo escopo |
-| Autorização            | Remover a repetição de Direito próximo das suas decisões abaixo do destaque principal         |
-| Git                    | `dev`, remoto `origin`; base real `7845ab3`; correção de conteúdo prevista no RP-016          |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                                |
+| Campo                  | Situação                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------- |
+| Última atualização     | 13/11/2026 — código restaurado para `e0377ab` e regra de túneis registrada          |
+| Último relatório       | `RP-025`, em `relate.md`                                                            |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                   |
+| Última entrega técnica | **Remoção do título repetido na introdução da Home — RP-016**                       |
+| Versão de referência   | `0.10.1`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado |
+| Etapa corrente         | **Revisão local em `0.10.1`. F8/F9/F10 permanecem parciais**                        |
+| Próximo passo          | Revisar a versão restaurada com o conteúdo atual do banco local                     |
+| Autorização            | Restaurar o código de `e0377ab` e registrar a regra de operação local dos túneis    |
+| Git                    | `dev` restaurada para `e0377ab`; regra e checkpoint em commit documental            |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                      |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-025 — restauração do código da versão `0.10.1`.** O estado anterior está na branch local `backup/filaretti-pre-e0377ab-2026-11-13`. As operações de túnel temporário para apresentação passam a ser registradas apenas em `.local/cloudflare-presentation/`. O banco e os arquivos de ambiente locais foram preservados.
 
 **12/10/2026 — RP-016 — título repetido da Home removido:** pedido baseado em screenshot do bloco introdutório. Mantida a frase no destaque principal; somente o heading da seção `intro` foi esvaziado no fixture e nas páginas mock `home` dos bancos locais de desenvolvimento/apresentação. Textos, títulos internos, SEO, imagens e demais páginas preservados. Snapshot anterior ignorado, transação/trava e uma linha alterada por banco; versões de registro incrementadas para 3. Template existente já trata seção sem heading; dados públicos dinâmicos refletem a edição sem rebuild/restart. Lint do fixture e typecheck API/Prisma aprovados; HTTP 200 e Edge em 1440/375 confirmaram um único heading com a frase (H1), ausência do H2 duplicado, conteúdo preservado, sem overflow/erros JS. Versão de aplicação `0.10.1` mantida por edição de conteúdo administrável; base `7845ab3`, branch `dev`, sem push. Link da apresentação RP-015 permanece ativo; F8/F9/F10 parciais nos aceites externos.
 

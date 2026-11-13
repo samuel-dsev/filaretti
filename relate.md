@@ -2,18 +2,26 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                                     |
-| ------------------ | ------------------------------------------------------------------------------------------ |
-| Última atualização | 12/10/2026 — RP-016                                                                        |
-| Etapa              | **Apresentação temporária Cloudflare; F8/F9/F10 parciais nos aceites externos**            |
-| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada                      |
-| Git                | `dev`; base real `7845ab3`; remoção do título duplicado da Home no RP-016                  |
-| Autorização        | Remover título repetido Direito próximo das suas decisões na introdução da Home            |
-| Checkpoint         | Home atualizada no link público; frase apenas no destaque; formulários continuam sem envio |
+| Campo              | Estado                                                                           |
+| ------------------ | -------------------------------------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-025                                                              |
+| Etapa              | **Revisão local em `0.10.1`. F8/F9/F10 parciais**                                |
+| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada            |
+| Git                | `dev`; código de `e0377ab`; estado anterior preservado em branch local de backup |
+| Autorização        | Restaurar o código e registrar a regra de operação local dos túneis              |
+| Checkpoint         | Código `0.10.1` com banco da revisão local preservado                            |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-025 — 13/11/2026 — Restauração local e regra para túneis
+
+O usuário solicitou a restauração do app para `e0377ab` e a adoção da regra de manter as operações dos túneis Cloudflare de apresentação fora do Git. A branch `dev` estava limpa em `1a74e14`. O estado anterior, inclusive os relatórios RP-017 a RP-024, foi preservado em `backup/filaretti-pre-e0377ab-2026-11-13`. A branch `dev` voltou à base `e0377ab`. Este registro altera apenas `AGENTS.md`, `plan.md` e `relate.md`.
+
+A restauração cobre o código e os arquivos versionados do app. Os bancos locais, contatos cadastrados, credenciais e configuração de ambiente foram preservados. O registro da área de Recuperação de Créditos permanece no banco e é exibido pelo template da versão restaurada. Estado e evidências de futuras operações de túnel ficam na pasta local ignorada. A operação atual foi feita no checkout local.
+
+Validação em localhost. O código do app coincide com `e0377ab`. O build e a checagem de tipos passaram. API e PostgreSQL responderam ao health. Início, Recuperação de Créditos, Contato, Privacidade e login do CMS retornaram HTTP 200. O e-mail e o link do WhatsApp foram conferidos. O layout restaurado volta a mostrar o formulário e os links da newsletter. A configuração local continua bloqueando o recebimento por formulário, verificado por HTTP 404 no endpoint. O site foi deixado disponível em `http://localhost:3000/`.
 
 ### RP-016 — 12/10/2026 — Remoção do título repetido na Home
 

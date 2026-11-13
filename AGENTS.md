@@ -71,6 +71,7 @@ O plano mestre prevê subagentes especializados durante o desenvolvimento. Usá-
 - Uma grande etapa gera um commit de entrega; commits intermediários são permitidos quando representam mudanças completas e revisadas. Nunca misturar alterações alheias, commitar testes relevantes falhando ou usar mensagens como “update”/“ajustes” sem explicar.
 - Revisar diff e listar explicitamente os arquivos ao fazer staging. Não usar `git add .` indiscriminadamente, sobrescrever mudanças do usuário, amend/rebase destrutivo ou force push sem pedido explícito.
 - Push, abertura/merge de PR, criação de release remota e publicação são ações separadas que dependem de autorização. Não executar apenas porque o commit local foi concluído.
+- Criar, renovar ou encerrar um túnel temporário do Cloudflare para apresentação é uma operação local. Registre URL, estado, logs e evidências em `.local/cloudflare-presentation/`, ignorada pelo Git. Essas operações não geram commits nem alterações em arquivos versionados, inclusive `plan.md` e `relate.md`. Se houver uma mudança independente no app, registre apenas essa mudança no commit.
 
 Exemplo de commit de etapa:
 
