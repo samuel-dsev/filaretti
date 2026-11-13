@@ -127,14 +127,18 @@
   white-space: nowrap;
 }
 
-.site-nav-link:hover,
-.site-nav-toggle.f-button:hover:not(:disabled):not([aria-disabled='true']),
-.site-nav-toggle.f-button[aria-expanded='true'] {
-  color: var(--f-color-primary);
-  background: var(--f-color-offwhite);
+.site-desktop-nav {
+  --site-nav-hover: color-mix(in srgb, var(--f-color-pale) 30%, transparent);
 }
 
-.site-nav-toggle.f-button {
+.site-nav-link,
+.site-nav-dropdown {
+  transition: background-color var(--f-motion-fast) ease-out;
+}
+
+.site-nav-toggle.f-button,
+.site-nav-toggle.f-button:hover:not(:disabled):not([aria-disabled='true']) {
+  color: var(--f-color-navy);
   background: transparent;
 }
 
@@ -220,14 +224,20 @@
   border-radius: var(--f-radius-sm);
 }
 
-.site-nav-link[aria-current],
-.site-nav-toggle.f-button[aria-current] {
-  color: var(--f-color-navy);
-  background: var(--f-color-pale);
+.site-nav-dropdown:has(> .site-nav-toggle[aria-expanded='true']) {
+  background-color: var(--site-nav-hover);
 }
 
-.site-nav-dropdown:has(.site-nav-parent[aria-current]) {
-  background: var(--f-color-pale);
+@media (hover: hover) {
+  .site-nav-link:not(.site-nav-parent, [aria-current]):hover,
+  .site-nav-dropdown:hover {
+    background-color: var(--site-nav-hover);
+  }
+}
+
+.site-nav-link:not(.site-nav-parent)[aria-current],
+.site-nav-dropdown:has(> [aria-current]) {
+  background-color: var(--f-color-pale);
 }
 
 .site-nav-link.site-nav-parent {

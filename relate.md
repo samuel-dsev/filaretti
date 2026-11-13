@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-029                                 |
+| Última atualização | 13/11/2026 — RP-030                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.11.3`, oito manifests privados alinhados         |
-| Git                | `dev`, base `040da85`                               |
-| Autorização        | Abrir Sobre nós pelo link Quem somos                |
-| Checkpoint         | Revisar o link e o submenu em localhost             |
+| Versão             | `0.11.4`, oito manifests privados alinhados         |
+| Git                | `dev`, base `c73f0a3`                               |
+| Autorização        | Adicionar hover suave aos itens inativos do menu    |
+| Checkpoint         | Revisar o efeito no cabeçalho em localhost          |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-030 — 13/11/2026 — Hover suave no menu principal
+
+O CSS compartilhado em `apps/web/src/components/site/styles.css` aplica a cor de seleção com 70% de transparência ao passar o mouse sobre os itens inativos do menu principal. A transição de fundo usa o token de 150 ms do site e respeita a preferência por movimento reduzido. O destaque cobre o texto e a seta de Quem somos. O item ativo conserva o fundo sólido.
+
+O build otimizado e a verificação de tipos passaram. O Edge em localhost confirmou a cor e a transparência, a saída do hover, o destaque do item ativo, o acesso a Sobre nós, a abertura do submenu com Enter, o retorno de foco com Escape e a preferência por movimento reduzido. Prettier e `git diff --check` passaram.
+
+Os oito manifests privados e `docs/release-checklist.json` registram a versão `0.11.4`. Checkpoint em `plan.md` e `relate.md`. Commit local na branch `dev`, a partir de `c73f0a3`. Validação restrita ao Edge local.
 
 ### RP-029 — 13/11/2026 — Quem somos abre Sobre nós
 
