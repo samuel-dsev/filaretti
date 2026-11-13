@@ -1,5 +1,5 @@
 .relationship-office-email {
-  margin: 0 0 1.25rem;
+  margin: 1.25rem 0 0;
   overflow-wrap: anywhere;
 }
 
@@ -15,11 +15,9 @@
 .relationship-section {
   padding-block: clamp(2rem, 5vw, 5rem);
 }
-.relationship-columns {
-  display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  gap: clamp(2rem, 5vw, 5rem);
-  align-items: start;
+.relationship-inquiry {
+  max-width: 48rem;
+  margin-inline: auto;
 }
 .relationship-form {
   display: grid;
@@ -135,7 +133,6 @@
   width: min(48rem, calc(100vw - 2rem));
 }
 @media (max-width: 767px) {
-  .relationship-columns,
   .relationship-grid {
     grid-template-columns: minmax(0, 1fr);
   }
