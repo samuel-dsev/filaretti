@@ -207,7 +207,7 @@ model Article {
   content            Json
   type               ArticleType              @default(ARTICLE)
   status             PublicationStatus        @default(DRAFT)
-  authorId           String                   @map("author_id") @db.Uuid
+  authorId           String?                  @map("author_id") @db.Uuid
   createdById        String                   @map("created_by_id") @db.Uuid
   updatedById        String?                  @map("updated_by_id") @db.Uuid
   coverMediaId       String?                  @map("cover_media_id") @db.Uuid
@@ -223,7 +223,7 @@ model Article {
   createdAt          DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
   searchVector       Unsupported("tsvector")? @map("search_vector")
-  author             Professional             @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  author             Professional?            @relation(fields: [authorId], references: [id], onDelete: Restrict)
   createdBy          User                     @relation("ArticleCreator", fields: [createdById], references: [id], onDelete: Restrict)
   updatedBy          User?                    @relation("ArticleUpdater", fields: [updatedById], references: [id], onDelete: Restrict)
   coverMedia         Media?                   @relation("ArticleCover", fields: [coverMediaId], references: [id], onDelete: Restrict)

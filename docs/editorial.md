@@ -10,7 +10,7 @@ F5, versão `0.5.0`, 03/10/2026. As rotas editoriais usam PostgreSQL/API reais e
 
 `GET /api/v1/editorial/filters` entrega opções `areas`, `categories`, `authors`, `tags` e `years` derivadas somente do catálogo público e de vínculos ativos. Não deriva opções da primeira página nem inclui taxonomias usadas exclusivamente em rascunhos. `year` usa limites UTC da publicação, como na API existente; datas de leitura são exibidas em `America/Sao_Paulo`.
 
-`/conteudos/[slug]` apresenta categoria, título, resumo, autor, publicação/atualização, tempo de leitura, capa otimizada, conteúdo, sumário H2, compartilhamento, perfil do autor, áreas e relacionados. O backend decide disponibilidade: DRAFT/SCHEDULED/ARCHIVED, data de publicação futura e autor inativo ficam fora da leitura pública. Relacionados usam a primeira área vinculada, ou recentes na ausência de área, excluindo o próprio artigo. Header/footer, Home, áreas e profissionais levam às páginas de leitura existentes.
+`/conteudos/[slug]` apresenta categoria, título, resumo, autoria, publicação/atualização, tempo de leitura, capa quando cadastrada, conteúdo, sumário H2, compartilhamento e áreas vinculadas. Artigos podem ter autoria institucional da Redação Filaretti ou um perfil profissional. O backend exclui da leitura pública DRAFT/SCHEDULED/ARCHIVED, datas de publicação futuras e publicações vinculadas a autores inativos. No final de cada artigo, o carrossel mostra todos os demais artigos publicados, do mais recente ao mais antigo. Em guias e atualizações, relacionados usam a primeira área vinculada ou a seleção recente. A Home também usa um carrossel de artigos.
 
 ## Conteúdo e arquivos
 

@@ -91,3 +91,15 @@ export function getArticles({
 }: ArticleQuery = {}) {
   return articles(page, limit, area, professional, type, featured, category, tag, year, sort);
 }
+
+export const getPublishedArticles = cache(async () => {
+  const query = { type: 'ARTICLE', sort: 'newest', limit: 50 } as const;
+  const first = await getArticles(query);
+  const rest = await Promise.all(
+    Array.from({ length: Math.max(0, first.meta.pages - 1) }, (_, index) =>
+      getArticles({ ...query, page: index + 2 }),
+    ),
+  );
+  const articles = [first, ...rest].flatMap(({ data }) => data);
+  return [...new Map(articles.map((article) => [article.id, article])).values()];
+});

@@ -363,6 +363,8 @@ async function layouts() {
           assert.equal(response.status(), 200);
           await page.evaluate(() => document.fonts.ready);
           await page.evaluate(async () => {
+            for (const image of document.querySelectorAll('[aria-roledescription="carrossel"] img'))
+              image.loading = 'eager';
             for (let top = 0; top < document.documentElement.scrollHeight; top += innerHeight) {
               window.scrollTo({ top, behavior: 'instant' });
               await new Promise((resolve) => setTimeout(resolve, 80));
@@ -845,7 +847,7 @@ async function domainChecks() {
     },
   );
   await check(
-    'home shows recent articles while older guides and featured content remain accessible',
+    'home and article carousels include all published articles across pages and omit guides',
     async () => {
       const oldFeatured = `${marker} older featured`,
         oldGuide = `${marker} older guide`;
@@ -880,13 +882,27 @@ async function domainChecks() {
         (await json('/articles?type=GUIDE&limit=3')).data.some((item) => item.title === oldGuide),
       );
       const body = await html('/');
-      assert.ok(!body.includes(oldFeatured), 'Older featured content is absent from home');
+      assert.ok(body.includes(oldFeatured), 'Older article on the second page is present on home');
       assert.ok(!body.includes(oldGuide), 'Older guide is absent from home');
-      const homeArticles = (await json('/articles?type=ARTICLE&limit=3')).data;
-      assert.equal(homeArticles.length, 3);
+      const firstPage = await json('/articles?type=ARTICLE&limit=50');
+      assert.ok(firstPage.meta.pages > 1);
+      const secondPage = await json('/articles?type=ARTICLE&limit=50&page=2');
+      const homeArticles = [...firstPage.data, ...secondPage.data];
+      assert.equal(homeArticles.length, firstPage.meta.total);
       for (const article of homeArticles) {
         assert.equal(article.type, 'ARTICLE');
         assert.ok(body.includes(article.title));
+      }
+      const [latest, ...otherArticles] = homeArticles;
+      const articlePath = `/conteudos/${latest.slug}`;
+      const articleBody = await html(articlePath);
+      const relatedHtml = articleBody.match(
+        /<section[^>]+id="relacionados"[\s\S]*?<\/section>/iu,
+      )?.[0];
+      assert.ok(relatedHtml);
+      assert.ok(!relatedHtml.includes(`href="${articlePath}"`));
+      for (const article of otherArticles) {
+        assert.ok(relatedHtml.includes(`href="/conteudos/${article.slug}"`));
       }
       if (browser) {
         const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
@@ -897,19 +913,36 @@ async function domainChecks() {
             await section.getByRole('heading', { name: 'Artigos', exact: true }).count(),
             1,
           );
-          assert.equal(await section.getByRole('heading', { level: 3 }).count(), 3);
-          for (const article of homeArticles) {
-            assert.ok(await section.getByText(article.title, { exact: true }).isVisible());
-          }
+          assert.deepEqual(
+            await section.getByRole('heading', { level: 3 }).allTextContents(),
+            homeArticles.map((article) => article.title),
+          );
+          const next = section.getByRole('button', { name: 'Próximo artigo' });
+          await next.focus();
+          await page.keyboard.press('Enter');
+          const track = section.getByRole('list');
+          await page.waitForFunction(
+            (id) => document.getElementById(id)?.scrollLeft > 0,
+            await track.getAttribute('id'),
+          );
           await page.screenshot({
             path: resolve(evidence, 'home-many-articles-1440.png'),
             fullPage: true,
           });
+          await section.locator(`a[href="${articlePath}"]`).click();
+          await page.waitForURL(`**${articlePath}`, { waitUntil: 'networkidle' });
+          const nextArticles = page.getByRole('region', { name: 'Continue a leitura' });
+          await nextArticles.getByRole('heading', { level: 3 }).first().waitFor();
+          assert.equal(await nextArticles.locator(`a[href="${articlePath}"]`).count(), 0);
+          assert.deepEqual(
+            await nextArticles.getByRole('heading', { level: 3 }).allTextContents(),
+            otherArticles.map((article) => article.title),
+          );
         } finally {
           await page.close();
         }
       }
-      return { publishedArticles: 67, newerNonFeaturedArticles: 55 };
+      return { publishedArticles: homeArticles.length, newerNonFeaturedArticles: 55 };
     },
   );
   await check(

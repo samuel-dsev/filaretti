@@ -108,7 +108,8 @@ export class ArticleDto {
   @Validate(TipTapConstraint)
   content!: TipTapDocument;
   @ApiProperty({ enum: ArticleType }) @IsEnum(ArticleType) type!: ArticleType;
-  @ApiProperty() @IsUUID() authorId!: string;
+  @ApiPropertyOptional({ type: String, nullable: true }) @IsOptional() @IsUUID() authorId?:
+    string | null;
   @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsUUID() coverMediaId?: string | null;
   @ApiPropertyOptional({ nullable: true }) @IsOptional() @IsUUID() pdfMediaId?: string | null;
   @ApiPropertyOptional()

@@ -12,6 +12,7 @@ const { loadArticleComplements } = await import(
 );
 const article = {
   id: 'current-fictitious',
+  type: 'GUIDE',
   practiceAreas: [{ slug: 'area-ficticia' }],
   author: { slug: 'autor-ficticio' },
 };
@@ -52,6 +53,21 @@ test('complementary reads start concurrently and keep at most three other public
     author,
     relatedUnavailable: false,
   });
+});
+
+test('published articles keep all other articles in order, including those beyond the third', async () => {
+  const other = [{ id: 'first' }, { id: 'second' }, { id: 'third' }, { id: 'fourth' }];
+  const result = await loadArticleComplements(
+    { ...article, type: 'ARTICLE', author: null },
+    {
+      articles: async (area) => {
+        assert.equal(area, undefined);
+        return [...other.slice(0, 2), { id: article.id }, ...other.slice(2)];
+      },
+      professional: async () => assert.fail('Institutional articles have no professional to load'),
+    },
+  );
+  assert.deepEqual(result, { related: other, author: null, relatedUnavailable: false });
 });
 
 test('unavailable author data does not discard related publications or expose diagnostics', async () => {

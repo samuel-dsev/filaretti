@@ -8,18 +8,18 @@ Na revisão local `0.10.1`, por pedido do usuário, a prosa passou a usar nomes 
 
 ## Rotas e dados
 
-| Rota                       | Consultas públicas da API                                                                        |
-| -------------------------- | ------------------------------------------------------------------------------------------------ |
-| `/`                        | Página `home`, settings, áreas, profissionais ativos e três artigos recentes do tipo `ARTICLE`   |
-| `/o-escritorio`            | Página publicada `o-escritorio`, settings e profissionais ativos                                 |
-| `/areas-de-atuacao`        | Áreas ativas, paginação real com 12 registros                                                    |
-| `/areas-de-atuacao/[slug]` | Área ativa, serviços, profissionais vinculados e artigos publicados filtrados por área           |
-| `/profissionais`           | Profissionais ativos, paginação real com 12 registros                                            |
-| `/profissionais/[slug]`    | Perfil ativo, bio, formação, experiência, áreas e artigos publicados filtrados pelo profissional |
+| Rota                       | Consultas públicas da API                                                                            |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `/`                        | Página `home`, settings, áreas, profissionais ativos e todos os artigos publicados do tipo `ARTICLE` |
+| `/o-escritorio`            | Página publicada `o-escritorio`, settings e profissionais ativos                                     |
+| `/areas-de-atuacao`        | Áreas ativas, paginação real com 12 registros                                                        |
+| `/areas-de-atuacao/[slug]` | Área ativa, serviços, profissionais vinculados e artigos publicados filtrados por área               |
+| `/profissionais`           | Profissionais ativos, paginação real com 12 registros                                                |
+| `/profissionais/[slug]`    | Perfil ativo, bio, formação, experiência, áreas e artigos publicados filtrados pelo profissional     |
 
 Os Server Components consomem exclusivamente DTOs de `@filaretti/types` por `src/lib/public-api.ts`. Prisma, cookies de sessão e segredos não integram essa camada. O cliente servidor usa `API_INTERNAL_URL`, timeout de cinco segundos, `credentials: omit`, redirecionamentos recusados e `cache: no-store`; projeta somente campos públicos e diferencia 404, indisponibilidade e resposta inválida. Erros de transporte/corpos de erro não são apresentados ao visitante. O Nest continua responsável pela publicação, visibilidade e relações.
 
-`?pagina=N` nas listagens traduz-se em `page=N` na API. Valores inválidos retornam à primeira página. O limite máximo aceito é 100000. Página distante preserva o estado vazio e a navegação. O carrossel da Home consulta todas as páginas do catálogo público de profissionais ativos. A seção de artigos consulta três registros com filtro `type=ARTICLE`. Guias e atualizações permanecem disponíveis em `/conteudos`.
+`?pagina=N` nas listagens traduz-se em `page=N` na API. Valores inválidos retornam à primeira página. O limite máximo aceito é 100000. Página distante preserva o estado vazio e a navegação. Os carrosséis da Home consultam todas as páginas dos catálogos públicos de profissionais ativos e artigos do tipo `ARTICLE`. Guias e atualizações permanecem disponíveis em `/conteudos`.
 
 Título e descrição da abertura da Home, seções do escritório, bios, serviços, contatos, marca textual, relações e mídias vêm da API. A abertura reutiliza a imagem ilustrativa do escritório e o carrossel usa as fotos cadastradas nos perfis. O rodapé da Home inclui o formulário [Conte seu caso](relationship.md). Rótulos de navegação e das seções são definidos pela interface.
 
@@ -39,13 +39,13 @@ Os resumos editoriais publicados e relacionados agora levam à leitura integral 
 
 A política vigente é **nova leitura por requisição**, mantida explicitamente na F5 para que a retirada de publicação apareça na primeira consulta posterior à transação, sem cache persistente. A F6 persistirá as tarefas de invalidação após mutações. As dependências abaixo devem ser preservadas se um cache persistente for introduzido:
 
-| Recurso alterado                               | Superfícies dependentes                                                                                                  |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Settings                                       | Marca/menu/footer, Home e escritório, contatos e metadata institucional aplicável                                        |
-| Página `home` ou `o-escritorio`                | Respectiva rota, metadata e resumo do escritório na Home                                                                 |
-| Área, atividade, slug ou relações              | Menu, Home, índice/detalhe da área e perfis vinculados                                                                   |
-| Profissional, atividade, slug ou relações      | Home, escritório, índice/perfil e detalhes das áreas vinculadas                                                          |
-| Artigo, destaque, tipo, publicação ou relações | Recentes/destaques/guias da Home, relacionados por área e publicações por profissional; leitura/listagem editorial na F5 |
+| Recurso alterado                               | Superfícies dependentes                                                                                   |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Settings                                       | Marca/menu/footer, Home e escritório, contatos e metadata institucional aplicável                         |
+| Página `home` ou `o-escritorio`                | Respectiva rota, metadata e resumo do escritório na Home                                                  |
+| Área, atividade, slug ou relações              | Menu, Home, índice/detalhe da área e perfis vinculados                                                    |
+| Profissional, atividade, slug ou relações      | Home, escritório, índice/perfil e detalhes das áreas vinculadas                                           |
+| Artigo, destaque, tipo, publicação ou relações | Carrosséis da Home e de leitura, catálogo editorial, relacionados por área e publicações por profissional |
 
 Retirada, troca de slug e alteração de relações devem invalidar tanto os caminhos antigos quanto os novos e as listagens dependentes. Preview/admin permanecem fora do cache público. Nenhum endpoint de revalidação, worker ou tag com cache ativo é apresentado como entregue na F4/F5; política e comprovação de retirada na F5 estão em [editorial.md](editorial.md).
 

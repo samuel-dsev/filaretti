@@ -11,6 +11,7 @@ import {
 import { PublicContent } from '@/lib/public-content';
 import { contentText, getContentOutline } from '@/lib/public-content-core';
 import { isManagedPublicMedia, publicImage, publicPdf } from '@/lib/public-media';
+import { ArticleCarousel } from './article-carousel';
 import { articleTypeLabels, publicationDate } from './article-card';
 import { OutlineLinks } from './outline-links';
 import { ShareLinks } from './share-links';
@@ -35,6 +36,7 @@ export function EditorialDetailView({
   const pdf = article.type === 'GUIDE' ? publicPdf(article.pdf) : undefined;
   const outline = getContentOutline(article.content, 'leitura');
   const updated = new Date(article.updatedAt).getTime() > new Date(article.publishedAt).getTime();
+  const hasArticleBanner = article.type === 'ARTICLE';
 
   return (
     <>
@@ -47,8 +49,26 @@ export function EditorialDetailView({
           ]}
         />
       </div>
-      <article className="editorial-article" aria-labelledby="publicacao-titulo">
-        <header className="editorial-article-header">
+      <article
+        className={
+          hasArticleBanner ? 'editorial-article editorial-article-feature' : 'editorial-article'
+        }
+        aria-labelledby="publicacao-titulo"
+      >
+        <header
+          className="editorial-article-header"
+          data-f-surface={hasArticleBanner ? 'dark' : undefined}
+        >
+          {hasArticleBanner && cover ? (
+            <Image
+              className="editorial-banner-image"
+              src={cover.src}
+              unoptimized={isManagedPublicMedia(cover.src)}
+              alt={cover.alt}
+              fill
+              sizes="100vw"
+            />
+          ) : null}
           <div className="f-container">
             <div className="editorial-article-intro">
               <div className="editorial-category-line">
@@ -78,6 +98,8 @@ export function EditorialDetailView({
                       {article.author.name}
                     </span>
                   </a>
+                ) : hasArticleBanner ? (
+                  <span>Redação Filaretti</span>
                 ) : null}
                 <dl className="editorial-date-list">
                   <div>
@@ -104,7 +126,7 @@ export function EditorialDetailView({
                 </span>
               </div>
             </div>
-            {cover ? (
+            {!hasArticleBanner && cover ? (
               <figure className="editorial-cover">
                 <Image
                   src={cover.src}
@@ -202,6 +224,7 @@ export function EditorialComplementsView({
   related: PublicArticleSummary[];
   relatedUnavailable?: boolean;
 }) {
+  const articleCarousel = article.type === 'ARTICLE';
   return (
     <>
       {article.author ? (
@@ -216,25 +239,33 @@ export function EditorialComplementsView({
           <AreaRelationLinks areas={article.practiceAreas} />
         </InstitutionalSection>
       ) : null}
-      <InstitutionalSection
-        id="relacionados"
-        title="Continue a leitura"
-        eyebrow="Conteúdos relacionados"
-        action={{ label: 'Todos os conteúdos', href: '/conteudos' }}
-        soft
-      >
-        {relatedUnavailable ? (
-          <ErrorState
-            title="Conteúdos relacionados indisponíveis"
-            description="Não foi possível carregar esta lista. Você pode consultar todos os conteúdos publicados."
-          />
-        ) : (
-          <ArticlePreviewGrid
-            articles={related}
-            emptyTitle="Nenhum conteúdo relacionado publicado"
-          />
-        )}
-      </InstitutionalSection>
+      {!articleCarousel || relatedUnavailable || related.length ? (
+        <InstitutionalSection
+          id="relacionados"
+          title="Continue a leitura"
+          eyebrow={articleCarousel ? undefined : 'Conteúdos relacionados'}
+          action={
+            articleCarousel
+              ? { label: 'Todos os artigos', href: '/conteudos?tipo=ARTICLE' }
+              : { label: 'Todos os conteúdos', href: '/conteudos' }
+          }
+          soft
+        >
+          {relatedUnavailable ? (
+            <ErrorState
+              title="Conteúdos relacionados indisponíveis"
+              description="Não foi possível carregar esta lista. Você pode consultar todos os conteúdos publicados."
+            />
+          ) : articleCarousel ? (
+            <ArticleCarousel articles={related} label="Outros artigos publicados" />
+          ) : (
+            <ArticlePreviewGrid
+              articles={related}
+              emptyTitle="Nenhum conteúdo relacionado publicado"
+            />
+          )}
+        </InstitutionalSection>
+      ) : null}
     </>
   );
 }

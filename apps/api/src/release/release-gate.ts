@@ -1,6 +1,7 @@
 import { Prisma, type PrismaClient } from '@prisma/client';
 import { redirectPath } from '../cms/redirects';
 import { isPageSections, isTipTapDocument, plainText } from '../domain/content';
+import { publicArticleAuthorWhere } from '../domain/shared';
 import { containsReleaseMarker } from './markers';
 
 export interface ReleaseDatabaseIssue {
@@ -141,7 +142,7 @@ async function publicRouteExists(
           status: 'PUBLISHED',
           publishedAt: { lte: now },
           isMock: false,
-          author: { isActive: true, isMock: false },
+          ...publicArticleAuthorWhere(true),
         },
         select: { id: true },
       }),
@@ -281,7 +282,7 @@ export async function inspectReleaseDatabase(
           inspection.check(
             'PUBLIC_AUTHOR_INVALID',
             'article',
-            !row.author.isActive || row.author.isMock,
+            row.author !== null && (!row.author.isActive || row.author.isMock),
           );
           inspection.check(
             'PUBLIC_CONTENT_EMPTY',
@@ -556,7 +557,7 @@ async function collectReleasePaths(db: PrismaClient, sitemap: boolean): Promise<
                     ...args.where,
                     status: 'PUBLISHED',
                     publishedAt: { lte: now },
-                    author: { isActive: true, isMock: false },
+                    ...publicArticleAuthorWhere(true),
                   },
                 })
               : resource === 'professional'

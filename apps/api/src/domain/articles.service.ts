@@ -30,6 +30,8 @@ import {
   publicMediaInclude,
   paginated,
   paging,
+  publicArticleAuthorSql,
+  publicArticleAuthorWhere,
   requireSort,
   taxonomy,
   validateMedia,
@@ -71,7 +73,7 @@ function summary(record: ArticleRecord, excludeMocks = false): PublicArticleSumm
     updatedAt: record.updatedAt.toISOString(),
     readingTimeMinutes: record.readingTimeMinutes,
     author:
-      record.author.isActive && (!excludeMocks || !record.author.isMock)
+      record.author?.isActive && (!excludeMocks || !record.author.isMock)
         ? professionalSummary(record.author, excludeMocks)
         : null,
     cover: media(record.coverMedia, 'image', excludeMocks),
@@ -151,7 +153,7 @@ function order(query: ArticleQueryDto): Prisma.ArticleOrderByWithRelationInput[]
 const publicWhere = (now = new Date(), excludeMocks = false): Prisma.ArticleWhereInput => ({
   status: PublicationStatus.PUBLISHED,
   publishedAt: { lte: now },
-  author: { isActive: true, ...(excludeMocks ? { isMock: false } : {}) },
+  ...publicArticleAuthorWhere(excludeMocks),
   ...(excludeMocks ? { isMock: false } : {}),
 });
 
@@ -192,9 +194,9 @@ export class ArticlesService {
         }),
         this.db.$queryRaw<{ year: number }[]>`
           SELECT DISTINCT EXTRACT(YEAR FROM a.published_at AT TIME ZONE 'UTC')::integer AS year
-          FROM articles a JOIN professionals p ON p.id = a.author_id
-          WHERE a.status = 'PUBLISHED' AND a.published_at <= ${now} AND p.is_active = TRUE
-            AND (${!excludeMocks} OR (a.is_mock = FALSE AND p.is_mock = FALSE))
+          FROM articles a LEFT JOIN professionals p ON p.id = a.author_id
+          WHERE a.status = 'PUBLISHED' AND a.published_at <= ${now}
+            AND ${publicArticleAuthorSql(excludeMocks)} AND (${!excludeMocks} OR a.is_mock = FALSE)
           ORDER BY year DESC
         `,
       ],

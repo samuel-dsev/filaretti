@@ -1,6 +1,6 @@
 import { Prisma, type PrismaClient } from '@prisma/client';
 import { plainText } from '../domain/content';
-import { json, validateMedia } from '../domain/shared';
+import { json, publicArticleAuthorWhere, validateMedia } from '../domain/shared';
 import { validateRedirectGraph } from '../cms/redirects';
 import { containsReleaseMarker } from './markers';
 import {
@@ -284,7 +284,8 @@ export async function migrateBatch(
         )
           issues.push({ code: 'SLUG_RESERVED', record: index });
         const data = record.data;
-        if ('authorId' in data) await relation('professional', data.authorId, index);
+        if (record.kind === 'article' && record.data.authorId)
+          await relation('professional', record.data.authorId, index);
         if ('categoryIds' in data)
           for (const id of data.categoryIds ?? []) await relation('category', id, index);
         if ('tagIds' in data) for (const id of data.tagIds ?? []) await relation('tag', id, index);
@@ -360,7 +361,7 @@ export async function migrateBatch(
                 ...visible,
                 status: 'PUBLISHED',
                 publishedAt: { lte: now },
-                author: { isActive: true, ...visible },
+                ...publicArticleAuthorWhere(!batch.fixture),
               },
               select: { id: true },
             }),

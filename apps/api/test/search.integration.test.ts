@@ -116,6 +116,48 @@ test('Portuguese search and public sitemap enforce publication in real PostgreSQ
   }
   try {
     await t.test(
+      'published institutional articles are searchable and appear in sitemap',
+      async () => {
+        const institutionalTerm = `institucional${randomUUID().replaceAll('-', '')}`;
+        const institutional = await db.article.create({
+          data: {
+            ...articleInput,
+            authorId: null,
+            slug: `${prefix}-institutional`,
+            title: institutionalTerm,
+            content: doc('Texto fictício'),
+            status: 'PUBLISHED',
+            publishedAt: new Date(Date.now() - 10000),
+            isMock: false,
+          },
+        });
+        const production = new SearchService(db, {
+          ...environment,
+          APP_ENV: 'production',
+          MOCK_CONTENT: false,
+        });
+        const search = { q: institutionalTerm, kind: 'article', page: 1, limit: 50 } as const;
+        try {
+          const results = await production.search(search);
+          assert.deepEqual(
+            results.data.map((row) => row.slug),
+            [institutional.slug],
+          );
+          const sitemap = await production.sitemap({ page: 1, limit: 50 });
+          assert.ok(sitemap.data.some((row) => row.path === `/conteudos/${institutional.slug}`));
+          await db.article.update({ where: { id: institutional.id }, data: { isMock: true } });
+          assert.equal((await production.search(search)).meta.total, 0);
+          assert.ok(
+            !(await production.sitemap({ page: 1, limit: 50 })).data.some(
+              (row) => row.path === `/conteudos/${institutional.slug}`,
+            ),
+          );
+        } finally {
+          await db.article.delete({ where: { id: institutional.id } });
+        }
+      },
+    );
+    await t.test(
       'ranking prioritizes title, Portuguese inflections match and rows are projected',
       async () => {
         const results = await get<PaginatedResponse<PublicSearchResult>>(

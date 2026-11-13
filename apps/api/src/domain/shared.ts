@@ -5,6 +5,19 @@ import type { PaginationDto } from './dto';
 import { safeUrl } from './content';
 
 export const DOMAIN_ENVIRONMENT = Symbol('DOMAIN_ENVIRONMENT');
+export function publicArticleAuthorWhere(excludeMocks: boolean): Prisma.ArticleWhereInput {
+  return {
+    OR: [
+      { authorId: null },
+      { author: { isActive: true, ...(excludeMocks ? { isMock: false } : {}) } },
+    ],
+  };
+}
+
+/** Equivalent author condition for article SQL queries using aliases a and p. */
+export function publicArticleAuthorSql(excludeMocks: boolean): Prisma.Sql {
+  return Prisma.sql`(a.author_id IS NULL OR (p.is_active = true AND (${!excludeMocks} OR p.is_mock = false)))`;
+}
 export function paginated<T>(data: T[], total: number, query: PaginationDto): PaginatedResponse<T> {
   return {
     data,
@@ -128,7 +141,7 @@ export async function validateMedia(
 export async function validateRelations(
   tx: Prisma.TransactionClient,
   input: {
-    authorId?: string;
+    authorId?: string | null;
     categoryIds?: string[];
     tagIds?: string[];
     practiceAreaIds?: string[];

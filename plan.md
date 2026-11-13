@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                              |
-| ---------------------- | --------------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — Home e formulário no rodapé                              |
-| Último relatório       | `RP-031`, em `relate.md`                                              |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                     |
-| Última entrega técnica | **Home e formulário no rodapé — RP-031**                              |
-| Versão de referência   | `0.12.0`, oito manifests privados alinhados                           |
-| Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais**        |
-| Próximo passo          | Revisar Home, textos e formulário em localhost                        |
-| Autorização            | Reorganizar a Home, incorporar o formulário e limpar textos repetidos |
-| Git                    | `dev`, base `742c245`, revisão da Home no RP-031                      |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                        |
+| Campo                  | Situação                                                         |
+| ---------------------- | ---------------------------------------------------------------- |
+| Última atualização     | 13/11/2026 — Artigos imobiliários e carrossel editorial          |
+| Último relatório       | `RP-032`, em `relate.md`                                         |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                |
+| Última entrega técnica | **Artigos imobiliários e carrossel editorial — RP-032**          |
+| Versão de referência   | `0.13.0`, oito manifests privados alinhados                      |
+| Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais**   |
+| Próximo passo          | Revisar artigos e carrosséis em localhost                        |
+| Autorização            | Publicar quatro artigos para revisão local e criar os carrosséis |
+| Git                    | `dev`, base `707ac27`, revisão editorial no RP-032               |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                   |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-032 — Artigos imobiliários e carrossel editorial.** Quatro artigos originais publicados no CMS local com fontes oficiais e assinatura da Redação Filaretti. A Home mostra todos os artigos publicados em ordem de publicação e cada artigo oferece os demais ao fim da leitura.
 
 **13/11/2026 — RP-031 — Home e formulário no rodapé.** A Home reúne abertura, carrossel da equipe, artigos e áreas. O rodapé recebe e-mail, endereço e o formulário Conte seu caso. A descrição institucional e o aviso de privacidade foram atualizados na base local.
 

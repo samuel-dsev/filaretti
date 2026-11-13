@@ -130,7 +130,7 @@ export const adminArticleSchema = adminSchema(articleSchema, {
   status: { type: 'string', enum: ['DRAFT', 'SCHEDULED', 'PUBLISHED', 'ARCHIVED'] },
   createdById: string,
   updatedById: nullableString,
-  authorId: string,
+  authorId: nullableString,
   coverMediaId: nullableString,
   pdfMediaId: nullableString,
   categoryIds: array(string),

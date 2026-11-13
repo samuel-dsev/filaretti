@@ -57,6 +57,7 @@ export function ChoiceField({
   options,
   required,
   help,
+  emptyLabel = 'Selecione',
 }: {
   label: string;
   value: string;
@@ -64,13 +65,14 @@ export function ChoiceField({
   options: { id: string; name: string }[];
   required?: boolean;
   help?: string;
+  emptyLabel?: string;
 }) {
   const id = useId();
   return (
     <FormField id={id} label={label} required={required} help={help}>
       {(props) => (
         <Select {...props} value={value} onChange={(event) => onChange(event.target.value)}>
-          <option value="">Selecione</option>
+          <option value="">{emptyLabel}</option>
           {options.map((option) => (
             <option key={option.id} value={option.id}>
               {option.name}

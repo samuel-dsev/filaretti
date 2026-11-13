@@ -27,7 +27,7 @@ export interface AdminEntity {
   answer: TipTapDocument;
   type: ArticleType;
   status: PublicationStatus;
-  authorId: string;
+  authorId: string | null;
   coverMediaId: string | null;
   pdfMediaId: string | null;
   photoMediaId: string | null;
@@ -66,7 +66,7 @@ export function blankEntity(): AdminEntity {
     answer: emptyDocument(),
     type: 'ARTICLE',
     status: 'DRAFT',
-    authorId: '',
+    authorId: null,
     coverMediaId: null,
     pdfMediaId: null,
     photoMediaId: null,

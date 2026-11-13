@@ -4,16 +4,26 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-031                                 |
+| Última atualização | 13/11/2026 — RP-032                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.12.0`, oito manifests privados alinhados         |
-| Git                | `dev`, base `742c245`                               |
-| Autorização        | Reorganizar a Home e incorporar o formulário        |
-| Checkpoint         | Revisar a Home e o formulário em localhost          |
+| Versão             | `0.13.0`, oito manifests privados alinhados         |
+| Git                | `dev`, base `707ac27`                               |
+| Autorização        | Quatro artigos imobiliários e carrosséis            |
+| Checkpoint         | Revisar artigos e carrosséis em localhost           |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-032 — 13/11/2026 — Artigos imobiliários e carrossel editorial
+
+Foram publicados no CMS local quatro artigos originais sobre o Tema 1.443 do STJ, o Cadastro Imobiliário Brasileiro, cotas condominiais na compra de imóveis e o Tema 1.288 do STJ. Os textos têm resumo, seções, links para fontes oficiais e assinatura da Redação Filaretti. A carga transacional em `apps/api/prisma/publish-real-estate-articles.ts` se limita ao banco local de desenvolvimento, usa IDs estáveis e preserva edições do CMS. A primeira execução publicou quatro registros. A segunda reconheceu os quatro sem duplicá-los. A categoria Direito imobiliário organiza a leitura. Os textos estão em `apps/api/prisma/real-estate-articles.ts`.
+
+A migração `202611130002_optional_article_author` permite autoria institucional. O vínculo profissional continua disponível no painel e publicações vinculadas a autores inativos continuam fora do catálogo público. A API, a busca, o sitemap e as validações de release tratam o vínculo opcional. Os artigos inseridos localmente usam a marca de conteúdo de revisão para permanecerem fora da produção.
+
+O carrossel da Home inclui todos os artigos publicados em ordem decrescente de data e percorre a paginação da API. O carrossel ao fim de cada artigo exclui o artigo em leitura. Os cards usam a arte visual existente enquanto as capas não estão cadastradas. Os artigos ganharam abertura escura e sumário lateral no desktop. Guias e atualizações continuam disponíveis em Conteúdos.
+
+Arquivos alterados incluem o schema e a carga editorial em `apps/api/prisma`, domínio, busca e release em `apps/api/src`, painel, rotas e componentes editoriais em `apps/web/src`, testes de API, web e `scripts/test-institutional.mjs`. Manifests e checklist registram `0.13.0`. Builds, tipagem, lint, 73 testes web e 103 verificações no PostgreSQL isolado passaram. O Edge validou os quatro artigos em 390 e 1440 px. O smoke institucional passou em 46 verificações e 30 layouts, incluindo carrosséis com um catálogo de 59 artigos. Os recursos de teste foram removidos.
 
 ### RP-031 — 13/11/2026 — Home e formulário no rodapé
 

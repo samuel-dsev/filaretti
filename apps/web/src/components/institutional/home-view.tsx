@@ -1,7 +1,8 @@
 import Image from 'next/image';
+import { ArticleCarousel } from '@/components/editorial/article-carousel';
 import { contentText } from '@/lib/public-content-core';
 import { publicImage } from '@/lib/public-media';
-import { ArticlePreviewGrid, AreaGrid, InstitutionalSection } from './shared';
+import { AreaGrid, InstitutionalSection } from './shared';
 import { TeamCarousel } from './team-carousel';
 import type { HomeViewProps } from './types';
 
@@ -37,7 +38,7 @@ export function HomeView({ page, areas, professionals, articles }: HomeViewProps
         title="Artigos"
         action={{ label: 'Todos os artigos', href: '/conteudos?tipo=ARTICLE' }}
       >
-        <ArticlePreviewGrid articles={articles} emptyTitle="Nenhum artigo publicado" />
+        <ArticleCarousel articles={articles} label="Artigos publicados" />
       </InstitutionalSection>
       <InstitutionalSection
         id="areas"

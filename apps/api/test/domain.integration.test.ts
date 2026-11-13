@@ -69,7 +69,12 @@ const content = {
     },
   ],
 } satisfies TipTapDocument;
-type AdminArticle = PublicArticle & { version: number; createdById: string; status: string };
+type AdminArticle = PublicArticle & {
+  version: number;
+  createdById: string;
+  status: string;
+  authorId: string | null;
+};
 type AdminProfessional = PublicProfessional & { version: number };
 
 test('domain permissions, publication, relations and conflicts use real PostgreSQL and HTTP', async (t) => {
@@ -852,6 +857,51 @@ test('domain permissions, publication, relations and conflicts use real PostgreS
         assert.equal(audit, 1);
       },
     );
+    await t.test('editorial authorship supports omitted and cleared professionals', async () => {
+      const slug = `${prefix}-institutional`;
+      const { authorId, ...draft } = articlePayload;
+      const created = await editor.request('/admin/articles', 'POST', {
+        ...draft,
+        type: 'ARTICLE',
+        slug,
+      });
+      assert.equal(created.status, 201);
+      let saved = (await created.json()) as AdminArticle;
+      assert.equal(saved.authorId, null);
+      const assigned = await editor.request(`/admin/articles/${saved.id}`, 'PATCH', {
+        version: saved.version,
+        authorId,
+      });
+      assert.equal(assigned.status, 200);
+      saved = (await assigned.json()) as AdminArticle;
+      assert.equal(saved.authorId, authorId);
+      const cleared = await editor.request(`/admin/articles/${saved.id}`, 'PATCH', {
+        version: saved.version,
+        authorId: null,
+      });
+      assert.equal(cleared.status, 200);
+      saved = (await cleared.json()) as AdminArticle;
+      assert.equal(saved.authorId, null);
+      assert.equal((await visitor.request(`/articles/${slug}`)).status, 404);
+      const published = await editor.request(`/admin/articles/${saved.id}/publication`, 'POST', {
+        version: saved.version,
+        status: 'PUBLISHED',
+      });
+      assert.equal(published.status, 201);
+      const detail = await visitor.request(`/articles/${slug}`);
+      assert.equal(detail.status, 200);
+      const publicArticle = (await detail.json()) as PublicArticle;
+      assert.equal(publicArticle.author, null);
+      assert.ok(!Object.hasOwn(publicArticle, 'createdById'));
+      const catalog = (await (
+        await visitor.request('/articles?type=ARTICLE&limit=50')
+      ).json()) as PaginatedResponse<PublicArticleSummary>;
+      assert.ok(catalog.data.some((row) => row.id === saved.id));
+      const byProfessional = (await (
+        await visitor.request(`/articles?author=${professional.slug}&limit=50`)
+      ).json()) as PaginatedResponse<PublicArticleSummary>;
+      assert.ok(!byProfessional.data.some((row) => row.id === saved.id));
+    });
     await t.test(
       'parallel writers get one winner and unpublishing immediately removes public content',
       async () => {

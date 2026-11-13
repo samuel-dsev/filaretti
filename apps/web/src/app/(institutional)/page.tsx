@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
 import { HomeView } from '../../components/institutional';
 import {
-  getArticles,
   getPage,
   getPracticeAreas,
   getProfessionals,
+  getPublishedArticles,
   getSettings,
 } from '../../lib/public-api';
 import { contentText } from '../../lib/public-content-core';
@@ -27,18 +27,13 @@ export default async function HomePage() {
     getSettings(),
     getPracticeAreas({ limit: 50 }),
     getHomeProfessionals(),
-    getArticles({ type: 'ARTICLE', limit: 3 }),
+    getPublishedArticles(),
   ]);
   if (!page) notFound();
   return (
     <>
       <JsonLd data={legalServiceSchema(settings)} />
-      <HomeView
-        page={page}
-        areas={areas.data}
-        professionals={professionals}
-        articles={articles.data}
-      />
+      <HomeView page={page} areas={areas.data} professionals={professionals} articles={articles} />
     </>
   );
 }

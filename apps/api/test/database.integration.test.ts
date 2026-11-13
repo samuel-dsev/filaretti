@@ -94,6 +94,7 @@ test('real seed graph has the planned fixture counts and complete relationships'
     assert.equal(article.categories.length, 1);
     assert.equal(article.tags.length, 1);
     assert.equal(article.practiceAreas.length, 1);
+    assert.ok(article.author);
     assert.equal(article.author.practiceAreas.length, 2);
     assert.ok(article.isMock && article.author.isMock && article.createdBy.isMock);
   });
@@ -174,6 +175,7 @@ test('real foreign keys restrict referenced authors, creators and taxonomies; em
       where: { slug: 'conteudo-ficticio-01' },
       include: { categories: true },
     });
+    assert.ok(article.authorId);
     await assert.rejects(
       client.professional.delete({ where: { id: article.authorId } }),
       prismaCode('P2003'),

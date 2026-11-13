@@ -312,11 +312,11 @@ export function ResourceEditor({ kind, recordId }: { kind: ResourceKey; recordId
                   />
                   <ChoiceField
                     label="Autor profissional"
-                    value={entity.authorId}
-                    required
+                    value={entity.authorId ?? ''}
                     options={options.authors}
-                    help="Profissional exibido no site. A propriedade administrativa é definida pela sessão."
-                    onChange={(value) => change('authorId', value)}
+                    emptyLabel="Redação Filaretti"
+                    help="Selecione um profissional para assinar o conteúdo ou mantenha a autoria institucional."
+                    onChange={(value) => change('authorId', value || null)}
                   />
                 </div>
                 <RichEditor

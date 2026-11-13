@@ -3,7 +3,7 @@ import { Suspense } from 'react';
 import type { PublicArticle } from '@filaretti/types';
 import { Skeleton } from '@filaretti/ui';
 import { EditorialComplementsView, EditorialDetailView } from '@/components/editorial/detail-view';
-import { getArticle, getArticles, getProfessional } from '@/lib/public-api';
+import { getArticle, getArticles, getProfessional, getPublishedArticles } from '@/lib/public-api';
 import { loadArticleComplements } from '@/lib/article-complements';
 import { publicMetadata } from '@/lib/public-metadata';
 import { JsonLd, articleSchema, breadcrumbSchema } from '@/components/seo/structured-data';
@@ -68,7 +68,10 @@ async function ArticleComplements({ article }: { article: PublicArticle }) {
   // Optional below-the-fold reads do not hold the title and article body in the route fallback.
   // Both remain bounded/no-store and fail independently without hiding the publication.
   const complements = await loadArticleComplements(article, {
-    articles: async (area) => (await getArticles({ area, limit: 4 })).data,
+    articles:
+      article.type === 'ARTICLE'
+        ? getPublishedArticles
+        : async (area) => (await getArticles({ area, limit: 4 })).data,
     professional: getProfessional,
   });
   return (
