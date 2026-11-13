@@ -2,18 +2,24 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                |
-| ------------------ | ----------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-026                                   |
-| Etapa              | **Revisão institucional local. F8/F9/F10 parciais**   |
-| Versão             | `0.11.0`, oito manifests privados alinhados           |
-| Git                | `dev`, base `7885a46`                                 |
-| Autorização        | Atualizar navegação, endereço e canais de contato     |
-| Checkpoint         | Revisar Sobre nós, localização e Contato em localhost |
+| Campo              | Estado                                              |
+| ------------------ | --------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-027                                 |
+| Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
+| Versão             | `0.11.1`, oito manifests privados alinhados         |
+| Git                | `dev`, base `9537ed2`                               |
+| Autorização        | Ajustar o acesso a Áreas de atuação                 |
+| Checkpoint         | Conferir o acesso direto ao catálogo em localhost   |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-027 — 13/11/2026 — Acesso direto às áreas
+
+O link Áreas de atuação abre `/areas-de-atuacao` no cabeçalho, no menu móvel e no rodapé. O submenu Quem somos oferece Sobre nós e O escritório. O template Sobre nós perdeu a seção de áreas e a consulta correspondente. Foram ajustados o layout institucional, o template de Sobre nós e o CSS da antiga âncora. O incremento para `0.11.1` foi registrado nos oito manifests e no checklist.
+
+Build, tipagem e lint das páginas alteradas passaram. No Edge em localhost, os cliques no cabeçalho e no menu móvel abriram o catálogo. Também foram conferidos os dois itens do submenu, o destino do link no rodapé e a ausência da seção em Sobre nós.
 
 ### RP-026 — 13/11/2026 — Revisão institucional
 

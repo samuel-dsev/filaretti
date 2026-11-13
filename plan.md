@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                                |
 | ---------------------- | ----------------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — navegação institucional, localização e Contato             |
-| Último relatório       | `RP-026`, em `relate.md`                                                |
+| Última atualização     | 13/11/2026 — acesso direto ao catálogo de áreas                         |
+| Último relatório       | `RP-027`, em `relate.md`                                                |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                       |
-| Última entrega técnica | **Quem somos, Equipe, localização e Contato — RP-026**                  |
-| Versão de referência   | `0.11.0`, oito manifests privados alinhados                             |
+| Última entrega técnica | **Acesso direto ao catálogo de áreas — RP-027**                         |
+| Versão de referência   | `0.11.1`, oito manifests privados alinhados                             |
 | Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais**          |
 | Próximo passo          | Aprovar o texto de Sobre nós e revisar navegação, localização e Contato |
-| Autorização            | Ajustar as seções, os canais de contato e o endereço local da Filaretti |
-| Git                    | `dev`, base `7885a46`; revisão institucional prevista no RP-026         |
+| Autorização            | Atualizar o destino de Áreas de atuação e retirar a seção de Sobre nós  |
+| Git                    | `dev`, base `9537ed2`; correção de navegação no RP-027                  |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                          |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-027 — acesso direto às áreas.** O cabeçalho e o rodapé levam a `/areas-de-atuacao`. O submenu Quem somos contém Sobre nós e O escritório. Sobre nós apresenta o texto institucional e o link para a localização.
 
 **13/11/2026 — RP-026 — revisão institucional.** A versão `0.11.0` acrescenta Sobre nós, submenu Quem somos, localização do escritório, acesso direto à Equipe e Contato com solicitação via WhatsApp e newsletter. O endereço, o e-mail e o WhatsApp foram ajustados nas configurações locais. Revisar o rascunho de Sobre nós e a imagem ilustrativa.
 

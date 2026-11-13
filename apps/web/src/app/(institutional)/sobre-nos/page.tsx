@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { AreaGrid, InstitutionalSection, PageSections } from '@/components/institutional/shared';
+import { PageSections } from '@/components/institutional/shared';
 import { Breadcrumb, Hero } from '@/components/site';
-import { getPage, getPracticeAreas } from '@/lib/public-api';
+import { getPage } from '@/lib/public-api';
 import { publicMetadata } from '@/lib/public-metadata';
 
 const description =
@@ -17,7 +17,7 @@ export async function generateMetadata() {
 }
 
 export default async function AboutPage() {
-  const [page, areas] = await Promise.all([getPage('sobre-nos'), getPracticeAreas({ limit: 50 })]);
+  const page = await getPage('sobre-nos');
   return (
     <>
       <div className="f-container institution-breadcrumb">
@@ -25,14 +25,6 @@ export default async function AboutPage() {
       </div>
       <Hero title={page?.title ?? 'Sobre nós'} description={page?.seoDescription ?? description} />
       {page ? <PageSections page={page} /> : null}
-      <InstitutionalSection
-        id="areas-de-atuacao"
-        title="Áreas de atuação"
-        action={{ label: 'Todas as áreas', href: '/areas-de-atuacao' }}
-        soft
-      >
-        <AreaGrid areas={areas.data} />
-      </InstitutionalSection>
       <div className="f-container institution-office-link">
         <Link href="/o-escritorio">Conheça o escritório e veja a localização</Link>
       </div>

@@ -31,10 +31,9 @@ export default async function InstitutionalLayout({ children }: { children: Reac
             children: [
               { label: 'Sobre nós', href: '/sobre-nos' },
               { label: 'O escritório', href: '/o-escritorio' },
-              { label: 'Áreas de atuação', href: '/sobre-nos#areas-de-atuacao' },
             ],
           },
-          { id: 'areas', label: 'Áreas de atuação', href: '/sobre-nos#areas-de-atuacao' },
+          { id: 'areas', label: 'Áreas de atuação', href: '/areas-de-atuacao' },
           { id: 'professionals', label: 'Equipe', href: '/profissionais' },
           { id: 'contents', label: 'Conteúdos', href: '/conteudos' },
           { id: 'contact', label: 'Contato', href: '/contato' },
@@ -51,7 +50,7 @@ export default async function InstitutionalLayout({ children }: { children: Reac
             links: [
               { label: 'Sobre nós', href: '/sobre-nos' },
               { label: 'O escritório', href: '/o-escritorio' },
-              { label: 'Áreas de atuação', href: '/sobre-nos#areas-de-atuacao' },
+              { label: 'Áreas de atuação', href: '/areas-de-atuacao' },
               { label: 'Equipe', href: '/profissionais' },
             ],
           },
