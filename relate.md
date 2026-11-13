@@ -2,18 +2,26 @@
 
 ## Situação atual
 
-| Campo              | Estado                                               |
-| ------------------ | ---------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-035                                  |
-| Etapa              | **Revisão institucional local. F8/F9/F10 parciais**  |
-| Versão             | `0.13.3`, oito manifests privados alinhados          |
-| Git                | `dev`, base `844a72e`                                |
-| Autorização        | Aumentar a transparência do fundo das setas para 70% |
-| Checkpoint         | Revisar artigos e carrosséis em localhost            |
+| Campo              | Estado                                              |
+| ------------------ | --------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-036                                 |
+| Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
+| Versão             | `0.13.3`, oito manifests privados alinhados         |
+| Git                | `dev`, base `7b27dc9`                               |
+| Autorização        | Cadastrar três áreas de atuação com fontes oficiais |
+| Checkpoint         | Revisar as três áreas de atuação em localhost       |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-036 — 13/11/2026 — Novas áreas de atuação
+
+Foram cadastradas e ativadas no CMS local Imobiliário, Resolução Contratual e Consultoria Empresarial. Cada página segue o modelo de Recuperação de Créditos e Execução Cível com resumo, apresentação em três tópicos, lista de serviços e referências oficiais ao fim da apresentação. A Home e o catálogo exibem as quatro áreas. A versão da aplicação continua `0.13.3`.
+
+Os textos estão em `apps/api/prisma/practice-area-content.ts`. A carga `apps/api/prisma/publish-practice-areas.ts` valida o DTO, usa IDs estáveis e transação, registra a criação e só opera no banco de desenvolvimento local. A primeira execução cadastrou três áreas e a segunda conferiu os mesmos registros. As novas áreas estão marcadas para revisão local.
+
+TypeScript, ESLint e Prettier passaram. O Edge verificou em 1440 e 390 px os cards da Home, o catálogo e as três páginas com serviços e links de fontes. A resposta pública da área anterior manteve o mesmo hash antes e depois da carga. As páginas usam o layout institucional existente e aguardam revisão local antes da publicação externa.
 
 ### RP-035 — 13/11/2026 — Transparência das setas
 
