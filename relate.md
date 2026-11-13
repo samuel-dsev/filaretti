@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-027                                 |
+| Última atualização | 13/11/2026 — RP-028                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.11.1`, oito manifests privados alinhados         |
-| Git                | `dev`, base `9537ed2`                               |
-| Autorização        | Ajustar o acesso a Áreas de atuação                 |
-| Checkpoint         | Conferir o acesso direto ao catálogo em localhost   |
+| Versão             | `0.11.2`, oito manifests privados alinhados         |
+| Git                | `dev`, base `89641da`                               |
+| Autorização        | Corrigir e revisar o rodapé público                 |
+| Checkpoint         | Revisar o rodapé marfim em localhost                |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-028 — 13/11/2026 — Rodapé marfim
+
+O rodapé compartilhado das páginas públicas usa o fundo marfim `#FAF7F1` do site, com texto e foco de teclado em grafite `#141B1F`. Foi removida a variante escura do componente e a variante inversa da marca que só ele utilizava. O ajuste cobre os componentes `site-footer.tsx`, `brand.tsx` e o CSS do site. Os oito manifests e o checklist registram a versão `0.11.2`.
+
+Build, tipagem e lint dos componentes passaram. O Edge verificou 21 páginas com rodapé em cinco larguras, totalizando 105 layouts e 42 auditorias Axe do rodapé sem violações. A matriz inclui os detalhes de área, profissional, artigo, atualização e guia com dados de teste em um PostgreSQL temporário, removido após o teste. Também foram conferidos o foco e a abertura das preferências de cookies por teclado. As capturas em 375 e 1440 px ficam em `.local/revisao-institucional/`.
 
 ### RP-027 — 13/11/2026 — Acesso direto às áreas
 

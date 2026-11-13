@@ -12,11 +12,11 @@ export function SiteFooter({
   copyright,
 }: SiteFooterProps) {
   return (
-    <footer className="site-footer" data-f-surface="dark">
+    <footer className="site-footer">
       <div className="f-container">
         <div className="site-footer-grid">
           <div className="site-footer-intro">
-            <Brand brand={brand} inverse />
+            <Brand brand={brand} />
             <p>{description}</p>
             {address ? (
               <address className="site-footer-address">Endereços: {address}</address>

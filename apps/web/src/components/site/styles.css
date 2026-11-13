@@ -722,12 +722,9 @@
 
 .site-footer {
   padding-block: clamp(3rem, 6vw, 5rem) 1.5rem;
-  color: var(--f-color-pale);
-  background: var(--f-color-navy);
-}
-
-.site-brand-inverse {
-  color: var(--f-color-surface);
+  border-top: 1px solid var(--f-color-pale);
+  color: var(--f-color-ink);
+  background: var(--f-color-surface);
 }
 
 .site-footer-grid {
@@ -745,7 +742,7 @@
 
 .site-footer-nav h2 {
   margin: 0 0 1rem;
-  color: var(--f-color-gold);
+  color: inherit;
   font-family: var(--f-font-body);
   font-size: 0.75rem;
   font-weight: 600;
@@ -759,19 +756,18 @@
   min-height: 44px;
   align-items: center;
   gap: 0.5rem;
-  color: var(--f-color-pale);
   font-size: 0.8125rem;
   text-decoration: none;
+}
+
+.site-footer a {
+  color: inherit;
 }
 
 .site-footer-nav a:hover,
 .site-footer-bottom a:hover {
   text-decoration: underline;
   text-underline-offset: 0.2em;
-}
-
-.site-footer a:focus-visible {
-  outline-color: var(--f-color-pale);
 }
 
 .site-footer-note {

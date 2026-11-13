@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                                |
 | ---------------------- | ----------------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — acesso direto ao catálogo de áreas                         |
-| Último relatório       | `RP-027`, em `relate.md`                                                |
+| Última atualização     | 13/11/2026 — rodapé marfim no site público                              |
+| Último relatório       | `RP-028`, em `relate.md`                                                |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                       |
-| Última entrega técnica | **Acesso direto ao catálogo de áreas — RP-027**                         |
-| Versão de referência   | `0.11.1`, oito manifests privados alinhados                             |
+| Última entrega técnica | **Rodapé marfim no site público — RP-028**                              |
+| Versão de referência   | `0.11.2`, oito manifests privados alinhados                             |
 | Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais**          |
 | Próximo passo          | Aprovar o texto de Sobre nós e revisar navegação, localização e Contato |
-| Autorização            | Atualizar o destino de Áreas de atuação e retirar a seção de Sobre nós  |
-| Git                    | `dev`, base `9537ed2`; correção de navegação no RP-027                  |
+| Autorização            | Corrigir o fundo preto do rodapé e revisar a aplicação nas páginas      |
+| Git                    | `dev`, base `89641da`; correção visual no RP-028                        |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                          |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-028 — rodapé marfim.** O rodapé compartilhado adota o fundo padrão do site e grafite para textos, links e foco de teclado. O ajuste alcança todas as páginas que usam o layout público.
 
 **13/11/2026 — RP-027 — acesso direto às áreas.** O cabeçalho e o rodapé levam a `/areas-de-atuacao`. O submenu Quem somos contém Sobre nós e O escritório. Sobre nós apresenta o texto institucional e o link para a localização.
 
