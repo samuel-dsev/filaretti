@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-041                                 |
+| Última atualização | 13/11/2026 — RP-042                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.8`, oito manifests privados alinhados         |
-| Git                | `dev`, base `e334853`                               |
-| Autorização        | Remover a seção do carrossel da equipe da Home      |
-| Checkpoint         | Revisar a sequência das seções da Home em localhost |
+| Versão             | `0.13.9`, oito manifests privados alinhados         |
+| Git                | `dev`, base `c606fac`                               |
+| Autorização        | Simplificar a página Contato                        |
+| Checkpoint         | Revisar o formulário de Contato em localhost        |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-042 — 13/11/2026 — Página Contato
+
+A rota `/contato` exibe “Fale com o escritório sobre sua questão imobiliária.” como título semântico em negrito imediatamente acima do formulário, com a mesma escala tipográfica da descrição anterior. O bloco de abertura, o subtítulo “Solicitação de serviços” e a repetição do e-mail no corpo foram retirados. O endereço de e-mail permanece no rodapé.
+
+A mudança está na rota de Contato e nos estilos do formulário. Os manifests e o checklist registram a versão `0.13.9`.
+
+Build otimizado, TypeScript e ESLint passaram. No Edge, o formulário ficou centralizado em 1366 e 390 px, com a frase acima do primeiro campo em peso 700 e com o mesmo tamanho medido na versão anterior. O botão de WhatsApp e o e-mail do rodapé foram conferidos.
 
 ### RP-041 — 13/11/2026 — Remoção do carrossel da equipe da Home
 

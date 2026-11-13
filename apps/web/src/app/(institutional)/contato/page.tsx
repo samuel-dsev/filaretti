@@ -1,4 +1,4 @@
-import { Breadcrumb, Hero } from '@/components/site';
+import { Breadcrumb } from '@/components/site';
 import { PropertyInquiry } from '@/components/relationship/property-inquiry';
 import { getSettings } from '@/lib/public-api';
 import { publicMetadata } from '@/lib/public-metadata';
@@ -13,26 +13,19 @@ export const metadata = publicMetadata({
 export default async function ContactPage() {
   const settings = await getSettings();
   const whatsapp = safePublicUrl(settings.whatsappUrl);
-  const email = settings.publicEmail ? safePublicUrl(`mailto:${settings.publicEmail}`) : null;
   return (
     <>
       <div className="f-container institution-breadcrumb">
         <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Contato' }]} />
       </div>
-      <Hero title="Contato" description="Fale com o escritório sobre sua questão imobiliária." />
       <section className="relationship-section">
         <div className="f-container">
           <div className="relationship-inquiry">
+            <h1 className="site-hero-description relationship-inquiry-heading">
+              Fale com o escritório sobre sua questão imobiliária.
+            </h1>
             {whatsapp?.startsWith('https://wa.me/') ? (
-              <div>
-                <h2>Solicitação de serviços</h2>
-                <PropertyInquiry whatsapp={whatsapp} />
-              </div>
-            ) : null}
-            {email ? (
-              <p className="relationship-office-email">
-                <a href={email}>{settings.publicEmail}</a>
-              </p>
+              <PropertyInquiry whatsapp={whatsapp} />
             ) : null}
           </div>
         </div>
