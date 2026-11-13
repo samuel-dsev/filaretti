@@ -6,7 +6,7 @@ import { safePublicUrl } from '@/lib/public-content-core';
 
 export const metadata = publicMetadata({
   title: 'Contato',
-  description: 'Fale com a Filaretti e receba conteúdos sobre contratos e imóveis.',
+  description: 'Fale conosco sobre sua questão imobiliária e conte como podemos ajudar.',
   path: '/contato',
 });
 

@@ -4,8 +4,7 @@ import { Breadcrumb, Hero } from '@/components/site';
 import { getPage } from '@/lib/public-api';
 import { publicMetadata } from '@/lib/public-metadata';
 
-const description =
-  'A Filaretti valoriza a escuta, a clareza e a responsabilidade em cada atendimento.';
+const description = 'Valorizamos a escuta, a clareza e a responsabilidade em cada atendimento.';
 
 export async function generateMetadata() {
   const page = await getPage('sobre-nos');

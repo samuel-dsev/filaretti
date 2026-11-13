@@ -93,18 +93,18 @@
 }
 
 .home-team-profile::before {
-  background: linear-gradient(90deg, rgb(6 7 8 / 92%), rgb(6 7 8 / 74%) 38%, rgb(6 7 8 / 38%));
+  background: linear-gradient(90deg, #181b1c 35%, rgb(24 27 28 / 88%) 47%, transparent 78%);
 }
 
 .home-team-media {
   position: absolute;
   z-index: -2;
-  inset: 0;
+  inset: 0 0 0 38%;
 }
 
 .home-team-media img {
   object-fit: cover;
-  object-position: center 28%;
+  object-position: center 8%;
 }
 
 .home-team-copy {
@@ -176,6 +176,10 @@
   .home-team-controls {
     grid-row: 3;
     grid-column: 1;
+  }
+
+  .home-team-media {
+    inset: 0;
   }
 
   .home-team-profile::before {
@@ -523,6 +527,7 @@
   height: auto;
   aspect-ratio: 0.9;
   object-fit: cover;
+  object-position: center top;
 }
 
 .institution-profile-placeholder {

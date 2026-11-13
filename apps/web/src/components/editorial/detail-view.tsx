@@ -99,7 +99,7 @@ export function EditorialDetailView({
                     </span>
                   </a>
                 ) : hasArticleBanner ? (
-                  <span>Redação Filaretti</span>
+                  <span>Nossa redação</span>
                 ) : null}
                 <dl className="editorial-date-list">
                   <div>

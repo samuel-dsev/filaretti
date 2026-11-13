@@ -314,7 +314,7 @@ export function ResourceEditor({ kind, recordId }: { kind: ResourceKey; recordId
                     label="Autor profissional"
                     value={entity.authorId ?? ''}
                     options={options.authors}
-                    emptyLabel="Redação Filaretti"
+                    emptyLabel="Nossa redação"
                     help="Selecione um profissional para assinar o conteúdo ou mantenha a autoria institucional."
                     onChange={(value) => change('authorId', value || null)}
                   />

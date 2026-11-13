@@ -4,16 +4,28 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-038                                 |
+| Última atualização | 13/11/2026 — RP-039                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.5`, oito manifests privados alinhados         |
-| Git                | `dev`, base `dd18564`                               |
-| Autorização        | Atualizar a apresentação e a imagem do catálogo     |
-| Checkpoint         | Revisar a nova abertura do catálogo em localhost    |
+| Versão             | `0.13.6`, oito manifests privados alinhados         |
+| Git                | `dev`, base `39a3927`                               |
+| Autorização        | Cadastrar Mario Filaretti e revisar o texto público |
+| Checkpoint         | Revisar o perfil e os textos no site local          |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-039 — 13/11/2026 — Perfil de Mario Filaretti e revisão institucional
+
+O CMS de desenvolvimento recebeu um perfil ativo em `/profissionais/mario-filaretti`, com trajetória em primeira pessoa, formação, experiência e vínculo com Imobiliário. O perfil aparece na Home, em Equipe, na busca e na página de Imobiliário. As informações vieram do material enviado pelo usuário. A inscrição na OAB segue a confirmar. A autoria dos artigos existentes segue com a redação.
+
+O fundo do retrato foi gerado com a ferramenta de imagens em grafite, taupe e bronze. A composição usa a pessoa recortada do arquivo original. A cópia PNG está em `.local/revisao-institucional/mario-filaretti.png` e a mídia vinculada está no storage local do CMS. Perfil e mídia foram cadastrados pelos serviços de domínio, com auditoria e marcação para revisão local, e ficam fora do Git. A segunda execução verificou o cadastro existente e não alterou nenhum registro.
+
+A revisão substituiu menções abreviadas ao escritório na descrição da Home, na descrição de O escritório, no texto e nos metadados de Sobre nós, nos metadados de Contato e na assinatura dos artigos. O CMS local recebeu as atualizações das três páginas com verificação de versão. As fontes versionadas estão em `development-content.ts`, nas rotas de Sobre nós e Contato, em `detail-view.tsx` e no rótulo correspondente de `resource-editor.tsx`.
+
+`home-view.tsx`, `professional-views.tsx` e os estilos institucionais ajustam a apresentação da equipe, o enquadramento e as seções do perfil. Os manifests e o checklist registram a versão `0.13.6`.
+
+Build otimizado do Next, TypeScript do Next e do conjunto Prisma e ESLint dos arquivos TS/TSX alterados passaram. O Edge conferiu 23 rotas públicas e validou Home, Equipe, perfil e Imobiliário em 1440 e 390 px, com a imagem carregada, sem rolagem horizontal nem erros JavaScript. A imagem entregue pelo CMS preservou os pixels da composição PNG. Revisão em localhost, com publicação externa pendente.
 
 ### RP-038 — 13/11/2026 — Nova imagem do catálogo de áreas
 

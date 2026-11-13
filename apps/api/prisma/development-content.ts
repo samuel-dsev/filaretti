@@ -669,7 +669,7 @@ export const DEVELOPMENT_PAGES = {
     title: 'Ao seu lado nas decisões que importam',
     seoTitle: 'Ao seu lado nas decisões que importam | Ettori & Filaretti Advogados',
     seoDescription:
-      'A confiança começa com uma boa conversa. Na Filaretti, ouvimos sua história e ajudamos você a entender seus direitos e os próximos passos.',
+      'A confiança começa com uma boa conversa. Ouvimos sua história e ajudamos você a entender seus direitos e os próximos passos.',
     sections: [
       {
         key: 'intro',
@@ -691,7 +691,7 @@ export const DEVELOPMENT_PAGES = {
   'o-escritorio': {
     title: 'O escritório',
     seoTitle: 'O escritório | Ettori & Filaretti Advogados',
-    seoDescription: 'Conheça o escritório da Filaretti em Taubaté e veja como chegar.',
+    seoDescription: 'Conheça nosso escritório em Taubaté e veja como chegar.',
     sections: [
       {
         key: 'intro',

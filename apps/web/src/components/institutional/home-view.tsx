@@ -11,7 +11,9 @@ export function HomeView({ page, areas, professionals, articles }: HomeViewProps
     id: professional.id,
     name: professional.name,
     title: professional.title,
-    qualification: contentText(professional.bio, 200) || professional.education[0],
+    qualification:
+      contentText({ ...professional.bio, content: professional.bio.content.slice(0, 1) }, 200) ||
+      professional.education[0],
     href: `/profissionais/${encodeURIComponent(professional.slug)}`,
     image: publicImage(professional.photo, professional.name),
   }));

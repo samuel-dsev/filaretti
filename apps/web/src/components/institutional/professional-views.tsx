@@ -78,7 +78,7 @@ export function ProfessionalDetailView({ professional, articles }: ProfessionalD
           )
         }
       />
-      <InstitutionalSection id="biografia" title="Biografia" eyebrow="Perfil">
+      <InstitutionalSection id="biografia" title="Trajetória profissional">
         <div className="institution-readable">
           <PublicContent document={professional.bio} />
         </div>
@@ -111,12 +111,16 @@ export function ProfessionalDetailView({ professional, articles }: ProfessionalD
           </div>
         </div>
       </section>
-      <InstitutionalSection id="areas" title="Áreas de atuação" eyebrow="Atuação">
-        <AreaRelationLinks areas={professional.practiceAreas} />
-      </InstitutionalSection>
-      <InstitutionalSection id="publicacoes" title="Publicações" eyebrow="Conteúdos" soft>
-        <ArticlePreviewGrid articles={articles} emptyTitle="Nenhuma publicação vinculada" />
-      </InstitutionalSection>
+      {professional.practiceAreas.length ? (
+        <InstitutionalSection id="areas" title="Áreas de atuação">
+          <AreaRelationLinks areas={professional.practiceAreas} />
+        </InstitutionalSection>
+      ) : null}
+      {articles.length ? (
+        <InstitutionalSection id="publicacoes" title="Publicações" soft>
+          <ArticlePreviewGrid articles={articles} emptyTitle="Nenhuma publicação vinculada" />
+        </InstitutionalSection>
+      ) : null}
     </>
   );
 }
