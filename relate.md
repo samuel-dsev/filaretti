@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-033                                 |
+| Última atualização | 13/11/2026 — RP-034                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.1`, oito manifests privados alinhados         |
-| Git                | `dev`, base `5e06655`                               |
-| Autorização        | Ajustar as setas e ocultar a barra dos carrosséis   |
+| Versão             | `0.13.2`, oito manifests privados alinhados         |
+| Git                | `dev`, base `1f788c2`                               |
+| Autorização        | Usar botões redondos com fundo cinza-escuro         |
 | Checkpoint         | Revisar artigos e carrosséis em localhost           |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-034 — 13/11/2026 — Botões circulares dos carrosséis
+
+O CSS compartilhado em `apps/web/src/components/editorial/article-carousel.module.css` aplica formato circular e fundo cinza-escuro com 50% de transparência às setas. Os manifests e o checklist registram a versão `0.13.2`.
+
+Build otimizado, TypeScript e Prettier passaram. No Edge, os botões circulares de 44 px foram verificados na Home em 1366 e 390 px e no carrossel ao fim de uma publicação.
 
 ### RP-033 — 13/11/2026 — Setas laterais dos carrosséis
 

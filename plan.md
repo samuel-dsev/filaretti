@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                       |
 | ---------------------- | -------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — Setas laterais dos carrosséis de artigos          |
-| Último relatório       | `RP-033`, em `relate.md`                                       |
+| Última atualização     | 13/11/2026 — Botões circulares dos carrosséis de artigos       |
+| Último relatório       | `RP-034`, em `relate.md`                                       |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**              |
-| Última entrega técnica | **Setas laterais dos carrosséis de artigos — RP-033**          |
-| Versão de referência   | `0.13.1`, oito manifests privados alinhados                    |
+| Última entrega técnica | **Botões circulares dos carrosséis de artigos — RP-034**       |
+| Versão de referência   | `0.13.2`, oito manifests privados alinhados                    |
 | Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais** |
 | Próximo passo          | Revisar artigos e carrosséis em localhost                      |
-| Autorização            | Ajustar a navegação dos carrosséis de artigos                  |
-| Git                    | `dev`, base `5e06655`, ajustes do RP-033                       |
+| Autorização            | Usar botões circulares com fundo cinza-escuro translúcido      |
+| Git                    | `dev`, base `1f788c2`, ajuste visual no RP-034                 |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                 |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-034 — Botões circulares.** As setas dos carrosséis de artigos usam botões redondos com fundo cinza-escuro a 50% de transparência.
 
 **13/11/2026 — RP-033 — Setas laterais dos carrosséis.** A Home e a leitura de artigos usam setas laterais com fundo cinza translúcido. Cada seta aparece quando há artigos na direção correspondente.
 
