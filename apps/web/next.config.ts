@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
     localPatterns: [
       { pathname: '/media/public/**', search: '' },
       { pathname: '/brand/escritorio-ilustrativo.webp', search: '' },
+      { pathname: '/brand/areas-de-atuacao.webp', search: '' },
     ],
     remotePatterns: [],
     dangerouslyAllowSVG: false,

@@ -16,7 +16,8 @@ export function AreaIndexView({ areas, pagination }: AreaIndexViewProps) {
       <PhotoHero
         headingId="areas-heading"
         title="Áreas de atuação"
-        description="Uma decisão bem orientada começa pela compreensão do que está em jogo. A Filaretti analisa cada situação com atenção aos detalhes e apresenta os caminhos possíveis com clareza, da prevenção de conflitos à defesa dos seus direitos."
+        imageSrc="/brand/areas-de-atuacao.webp"
+        description="Uma decisão bem orientada começa pela compreensão do que está em jogo. Nós analisamos cada situação com atenção aos detalhes e explicamos os caminhos possíveis, da prevenção de conflitos à defesa dos seus direitos."
       />
       <div className="f-container institution-index-content">
         <h2 className="f-sr-only">Áreas publicadas</h2>

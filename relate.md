@@ -2,18 +2,26 @@
 
 ## Situação atual
 
-| Campo              | Estado                                               |
-| ------------------ | ---------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-037                                  |
-| Etapa              | **Revisão institucional local. F8/F9/F10 parciais**  |
-| Versão             | `0.13.4`, oito manifests privados alinhados          |
-| Git                | `dev`, base `105d98e`                                |
-| Autorização        | Atualizar a abertura do catálogo e a seleção da Home |
-| Checkpoint         | Revisar o catálogo e a seleção da Home em localhost  |
+| Campo              | Estado                                              |
+| ------------------ | --------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-038                                 |
+| Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
+| Versão             | `0.13.5`, oito manifests privados alinhados         |
+| Git                | `dev`, base `dd18564`                               |
+| Autorização        | Atualizar a apresentação e a imagem do catálogo     |
+| Checkpoint         | Revisar a nova abertura do catálogo em localhost    |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-038 — 13/11/2026 — Nova imagem do catálogo de áreas
+
+A apresentação do catálogo passa a falar em primeira pessoa do plural. A abertura usa uma imagem ilustrativa gerada para esta página, com fachada contemporânea e luz de fim de tarde. O arquivo WebP em `apps/web/public/brand/areas-de-atuacao.webp` tem 1672 × 941 px e cerca de 176 KiB.
+
+A rota usa a imagem por meio de `area-views.tsx`, `photo-hero.tsx` e da lista de imagens locais em `apps/web/next.config.ts`. Os manifests e o checklist registram a versão `0.13.5`.
+
+O build de produção, a verificação TypeScript e o ESLint dos arquivos alterados passaram. No Edge, o texto em primeira pessoa e o carregamento da nova imagem foram verificados nas larguras de 1440 e 390 px. A Home carregou a foto original.
 
 ### RP-037 — 13/11/2026 — Abertura do catálogo de áreas
 

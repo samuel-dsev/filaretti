@@ -4,15 +4,17 @@ export function PhotoHero({
   headingId,
   title,
   description,
+  imageSrc = '/brand/escritorio-ilustrativo.webp',
 }: {
   headingId: string;
   title: string;
   description?: string;
+  imageSrc?: string;
 }) {
   return (
     <section className="institution-photo-hero" aria-labelledby={headingId}>
       <Image
-        src="/brand/escritorio-ilustrativo.webp"
+        src={imageSrc}
         alt=""
         fill
         sizes="100vw"
