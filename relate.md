@@ -2,18 +2,26 @@
 
 ## Situação atual
 
-| Campo              | Estado                                              |
-| ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-036                                 |
-| Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.3`, oito manifests privados alinhados         |
-| Git                | `dev`, base `7b27dc9`                               |
-| Autorização        | Cadastrar três áreas de atuação com fontes oficiais |
-| Checkpoint         | Revisar as três áreas de atuação em localhost       |
+| Campo              | Estado                                               |
+| ------------------ | ---------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-037                                  |
+| Etapa              | **Revisão institucional local. F8/F9/F10 parciais**  |
+| Versão             | `0.13.4`, oito manifests privados alinhados          |
+| Git                | `dev`, base `105d98e`                                |
+| Autorização        | Atualizar a abertura do catálogo e a seleção da Home |
+| Checkpoint         | Revisar o catálogo e a seleção da Home em localhost  |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-037 — 13/11/2026 — Abertura do catálogo de áreas
+
+O catálogo de Áreas de atuação reutiliza a abertura com foto da Home. O título Áreas de atuação aparece sobre a foto com um texto de apresentação. Consultoria Empresarial fica fora da seleção de cards da Home e mantém o acesso pelo catálogo e pela página própria.
+
+O ajuste usa o componente `photo-hero.tsx` e os arquivos `area-views.tsx`, `home-view.tsx` e `styles.css` em `apps/web/src/components/institutional`. Os manifests e o checklist registram a versão `0.13.4`.
+
+Build, TypeScript, ESLint e Prettier passaram. O Edge em 1440 e 390 px verificou três áreas na Home, quatro no catálogo, a foto de ponta a ponta e a navegação até Consultoria Empresarial.
 
 ### RP-036 — 13/11/2026 — Novas áreas de atuação
 

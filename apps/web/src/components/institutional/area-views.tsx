@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { FaqList } from '@/components/search/faq-list';
 import { Breadcrumb, Hero } from '@/components/site';
 import { PublicContent } from '@/lib/public-content';
+import { PhotoHero } from './photo-hero';
 import { ArticlePreviewGrid, AreaGrid, InstitutionalSection, ProfessionalGrid } from './shared';
 import type { AreaDetailViewProps, AreaIndexViewProps } from './types';
 
@@ -12,7 +13,11 @@ export function AreaIndexView({ areas, pagination }: AreaIndexViewProps) {
       <div className="f-container institution-breadcrumb">
         <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Áreas de atuação' }]} />
       </div>
-      <Hero eyebrow="Atuação" title="Áreas de atuação" />
+      <PhotoHero
+        headingId="areas-heading"
+        title="Áreas de atuação"
+        description="Uma decisão bem orientada começa pela compreensão do que está em jogo. A Filaretti analisa cada situação com atenção aos detalhes e apresenta os caminhos possíveis com clareza, da prevenção de conflitos à defesa dos seus direitos."
+      />
       <div className="f-container institution-index-content">
         <h2 className="f-sr-only">Áreas publicadas</h2>
         <p className="institution-result-count">

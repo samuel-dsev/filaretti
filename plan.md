@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                              |
-| ---------------------- | --------------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — Três áreas de atuação no CMS local                       |
-| Último relatório       | `RP-036`, em `relate.md`                                              |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                     |
-| Última entrega técnica | **Três áreas de atuação no CMS local — RP-036**                       |
-| Versão de referência   | `0.13.3`, oito manifests privados alinhados                           |
-| Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais**        |
-| Próximo passo          | Revisar as três áreas de atuação em localhost                         |
-| Autorização            | Cadastrar Imobiliário, Resolução Contratual e Consultoria Empresarial |
-| Git                    | `dev`, base `7b27dc9`, carga local no RP-036                          |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                        |
+| Campo                  | Situação                                                       |
+| ---------------------- | -------------------------------------------------------------- |
+| Última atualização     | 13/11/2026 — Abertura do catálogo de áreas                     |
+| Último relatório       | `RP-037`, em `relate.md`                                       |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**              |
+| Última entrega técnica | **Abertura do catálogo de áreas — RP-037**                     |
+| Versão de referência   | `0.13.4`, oito manifests privados alinhados                    |
+| Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais** |
+| Próximo passo          | Revisar o catálogo e a seleção da Home em localhost            |
+| Autorização            | Atualizar a abertura do catálogo e a seleção de áreas na Home  |
+| Git                    | `dev`, base `105d98e`, revisão visual no RP-037                |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                 |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-037 — Abertura do catálogo de áreas.** O catálogo recebe a foto ilustrativa da Home, um título e uma apresentação. Consultoria Empresarial sai da seleção da Home e continua no catálogo e na página própria.
 
 **13/11/2026 — RP-036 — Áreas de atuação.** Imobiliário, Resolução Contratual e Consultoria Empresarial foram cadastradas no CMS local. As páginas usam a apresentação e a lista de serviços do modelo existente, com links para fontes oficiais.
 

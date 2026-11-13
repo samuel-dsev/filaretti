@@ -1,7 +1,7 @@
-import Image from 'next/image';
 import { ArticleCarousel } from '@/components/editorial/article-carousel';
 import { contentText } from '@/lib/public-content-core';
 import { publicImage } from '@/lib/public-media';
+import { PhotoHero } from './photo-hero';
 import { AreaGrid, InstitutionalSection } from './shared';
 import { TeamCarousel } from './team-carousel';
 import type { HomeViewProps } from './types';
@@ -18,20 +18,11 @@ export function HomeView({ page, areas, professionals, articles }: HomeViewProps
 
   return (
     <>
-      <section className="home-hero" aria-labelledby="home-heading">
-        <Image
-          src="/brand/escritorio-ilustrativo.webp"
-          alt=""
-          fill
-          sizes="100vw"
-          preload
-          className="home-hero-image"
-        />
-        <div className="f-container home-hero-copy">
-          <h1 id="home-heading">{page.title}</h1>
-          {page.seoDescription ? <p>{page.seoDescription}</p> : null}
-        </div>
-      </section>
+      <PhotoHero
+        headingId="home-heading"
+        title={page.title}
+        description={page.seoDescription ?? undefined}
+      />
       <TeamCarousel members={members} />
       <InstitutionalSection
         id="conteudos"
@@ -46,7 +37,9 @@ export function HomeView({ page, areas, professionals, articles }: HomeViewProps
         eyebrow="Atuação"
         action={{ label: 'Todas as áreas', href: '/areas-de-atuacao' }}
       >
-        <AreaGrid areas={areas.slice(0, 6)} />
+        <AreaGrid
+          areas={areas.filter((area) => area.slug !== 'consultoria-empresarial').slice(0, 6)}
+        />
       </InstitutionalSection>
     </>
   );
