@@ -622,6 +622,16 @@ async function domainChecks() {
       assert.equal(filters.tags.length, 12);
       assert.deepEqual(filters.years, [2026]);
       const body = await html('/conteudos');
+      assert.match(body, /<h1[^>]*>Publicações<\/h1>/u);
+      assert.doesNotMatch(body, /<h1[^>]*>Conteúdos<\/h1>/u);
+      const subtitle =
+        'Artigos, atualizações e guias. Explore as publicações por assunto, área de atuação ou autoria.';
+      const titlePosition = body.indexOf('id="resultados-heading"');
+      const subtitlePosition = body.indexOf(subtitle, titlePosition);
+      const filterPosition = body.indexOf('id="filtros-heading"');
+      assert.ok(
+        titlePosition >= 0 && subtitlePosition > titlePosition && filterPosition > subtitlePosition,
+      );
       for (const [key, name] of [
         ['areas', 'area'],
         ['categories', 'categoria'],

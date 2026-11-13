@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-042                                 |
+| Última atualização | 13/11/2026 — RP-043                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.9`, oito manifests privados alinhados         |
-| Git                | `dev`, base `c606fac`                               |
-| Autorização        | Simplificar a página Contato                        |
-| Checkpoint         | Revisar o formulário de Contato em localhost        |
+| Versão             | `0.13.10`, oito manifests privados alinhados        |
+| Git                | `dev`, base `bd07888`                               |
+| Autorização        | Reorganizar a página Conteúdos                      |
+| Checkpoint         | Revisar Publicações e os filtros em localhost       |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-043 — 13/11/2026 — Página Conteúdos
+
+`/conteudos` abre com Publicações, no mesmo tamanho da divisão anterior, e o subtítulo “Artigos, atualizações e guias. Explore as publicações por assunto, área de atuação ou autoria.” O formulário Explore os conteúdos vem após a listagem e a paginação. O bloco de abertura Conteúdos foi retirado.
+
+`index-view.tsx` e os estilos editoriais organizam as duas divisões. `article-card.tsx`, `article-card.module.css`, `content-cards.tsx` e os tipos e estilos do site permitem que os títulos dos artigos na listagem fiquem um nível abaixo de Publicações. O teste editorial verifica a sequência dos títulos e o subtítulo. Os manifests e o checklist registram a versão `0.13.10`.
+
+Build, TypeScript, ESLint, Prettier e 16 verificações editoriais HTTP passaram. A suíte isolada precisou dos formulários e do worker de relacionamento desativados no processo de teste para iniciar a API. O Edge confirmou o layout, a hierarquia tipográfica e o fluxo de aplicar e limpar filtros em 1440 e 390 px.
 
 ### RP-042 — 13/11/2026 — Página Contato
 

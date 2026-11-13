@@ -635,7 +635,7 @@
   gap: 0.5rem;
 }
 
-.site-editorial-card h3,
+.site-editorial-card-title,
 .site-practice-card h3,
 .site-professional-card h3 {
   margin: 0.875rem 0 0.75rem;

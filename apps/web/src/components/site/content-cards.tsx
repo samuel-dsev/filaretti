@@ -8,6 +8,7 @@ import { isManagedPublicMedia } from '@/lib/public-media';
 export function EditorialCard({
   category,
   title,
+  headingLevel = 3,
   description,
   href,
   dateLabel,
@@ -15,6 +16,7 @@ export function EditorialCard({
   image,
   label,
 }: EditorialCardProps) {
+  const Heading = headingLevel === 2 ? 'h2' : 'h3';
   return (
     <Card className="site-editorial-card">
       {image ? (
@@ -37,7 +39,7 @@ export function EditorialCard({
           <span className="site-eyebrow">{category}</span>
           {label ? <Badge>{label}</Badge> : null}
         </div>
-        <h3>
+        <Heading className="site-editorial-card-title">
           {href ? (
             <Link href={href} className="site-card-title-link">
               {title}
@@ -45,7 +47,7 @@ export function EditorialCard({
           ) : (
             title
           )}
-        </h3>
+        </Heading>
         <p>{description}</p>
         {dateLabel || readingTimeLabel ? (
           <div className="site-card-meta">

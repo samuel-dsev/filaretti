@@ -10,7 +10,7 @@
   height: 100%;
 }
 
-.cardLink:hover :global(h3) {
+.cardLink:hover :global(.site-editorial-card-title) {
   text-decoration: underline;
   text-underline-offset: 0.15em;
 }

@@ -61,6 +61,7 @@ export interface BreadcrumbProps {
 export interface EditorialCardProps {
   category: string;
   title: string;
+  headingLevel?: 2 | 3;
   description: string;
   href?: string;
   dateLabel?: string;

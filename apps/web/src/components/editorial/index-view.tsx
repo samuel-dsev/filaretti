@@ -5,7 +5,7 @@ import type {
   TaxonomySummary,
 } from '@filaretti/types';
 import { Button, EmptyState, FormField, LinkButton, Pagination, Select } from '@filaretti/ui';
-import { Breadcrumb, Hero } from '@/components/site';
+import { Breadcrumb } from '@/components/site';
 import { editorialHref, type EditorialQuery } from '@/lib/editorial-query';
 import { EditorialArticleCard } from './article-card';
 
@@ -55,13 +55,63 @@ export function EditorialIndexView({
       <div className="f-container institution-breadcrumb">
         <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Conteúdos' }]} />
       </div>
-      <Hero
-        eyebrow="Publicações"
-        title="Conteúdos"
-        description="Artigos, atualizações e guias. Explore as publicações por assunto, área de atuação ou autoria."
-      />
-      <section className="editorial-catalog">
+      <div className="editorial-catalog">
         <div className="f-container">
+          <section className="editorial-results" aria-labelledby="resultados-heading">
+            <div className="editorial-result-heading">
+              <div>
+                <h1 id="resultados-heading">Publicações</h1>
+                <p className="editorial-result-subtitle">
+                  Artigos, atualizações e guias. Explore as publicações por assunto, área de atuação
+                  ou autoria.
+                </p>
+              </div>
+              <p className="institution-result-count">
+                {pagination.total}{' '}
+                {pagination.total === 1 ? 'conteúdo encontrado' : 'conteúdos encontrados'}
+                {pagination.pages > 0 && pagination.page <= pagination.pages
+                  ? ` · Página ${pagination.page} de ${pagination.pages}`
+                  : ''}
+              </p>
+            </div>
+            {articles.length ? (
+              <div className="institution-grid">
+                {articles.map((article) => (
+                  <EditorialArticleCard key={article.id} article={article} headingLevel={2} />
+                ))}
+              </div>
+            ) : (
+              <EmptyState
+                headingLevel={2}
+                title={
+                  pagination.total > 0
+                    ? 'Esta página não possui resultados'
+                    : 'Nenhum conteúdo encontrado'
+                }
+                description={
+                  pagination.total > 0
+                    ? 'Volte à primeira página para consultar as publicações desta seleção.'
+                    : 'Experimente outra combinação de filtros ou consulte todas as publicações.'
+                }
+                action={
+                  <LinkButton
+                    href={pagination.total > 0 ? editorialHref(query, 1) : '/conteudos'}
+                    variant="secondary"
+                  >
+                    {pagination.total > 0 ? 'Primeira página' : 'Ver todos os conteúdos'}
+                  </LinkButton>
+                }
+              />
+            )}
+            {pagination.page <= Math.max(1, pagination.pages) ? (
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.pages}
+                getHref={(page) => editorialHref(query, page)}
+                className="institution-pagination"
+              />
+            ) : null}
+          </section>
           <form
             action="/conteudos"
             method="get"
@@ -137,56 +187,8 @@ export function EditorialIndexView({
               </a>
             </div>
           </form>
-          <div className="editorial-results" aria-labelledby="resultados-heading">
-            <div className="editorial-result-heading">
-              <h2 id="resultados-heading">Publicações</h2>
-              <p className="institution-result-count">
-                {pagination.total}{' '}
-                {pagination.total === 1 ? 'conteúdo encontrado' : 'conteúdos encontrados'}
-                {pagination.pages > 0 && pagination.page <= pagination.pages
-                  ? ` · Página ${pagination.page} de ${pagination.pages}`
-                  : ''}
-              </p>
-            </div>
-            {articles.length ? (
-              <div className="institution-grid">
-                {articles.map((article) => (
-                  <EditorialArticleCard key={article.id} article={article} />
-                ))}
-              </div>
-            ) : (
-              <EmptyState
-                title={
-                  pagination.total > 0
-                    ? 'Esta página não possui resultados'
-                    : 'Nenhum conteúdo encontrado'
-                }
-                description={
-                  pagination.total > 0
-                    ? 'Volte à primeira página para consultar as publicações desta seleção.'
-                    : 'Experimente outra combinação de filtros ou consulte todas as publicações.'
-                }
-                action={
-                  <LinkButton
-                    href={pagination.total > 0 ? editorialHref(query, 1) : '/conteudos'}
-                    variant="secondary"
-                  >
-                    {pagination.total > 0 ? 'Primeira página' : 'Ver todos os conteúdos'}
-                  </LinkButton>
-                }
-              />
-            )}
-            {pagination.page <= Math.max(1, pagination.pages) ? (
-              <Pagination
-                currentPage={pagination.page}
-                totalPages={pagination.pages}
-                getHref={(page) => editorialHref(query, page)}
-                className="institution-pagination"
-              />
-            ) : null}
-          </div>
         </div>
-      </section>
+      </div>
     </>
   );
 }
