@@ -553,12 +553,12 @@ async function domainChecks() {
           await overlay.waitFor({ state: 'hidden' });
           assert.ok(await search.evaluate((element) => element === document.activeElement));
           await page.setViewportSize({ width: 1440, height: 1000 });
-          const toggle = page.getByRole('button', { name: 'Áreas de atuação', exact: true });
+          const toggle = page.getByRole('button', { name: 'Quem somos', exact: true });
           await toggle.focus();
           await page.keyboard.press('ArrowDown');
           const first = page
-            .locator('.site-mega-menu')
-            .getByRole('link', { name: 'Todas as áreas', exact: true });
+            .locator('.site-dropdown-links')
+            .getByRole('link', { name: 'Sobre nós', exact: true });
           await first.waitFor({ state: 'visible' });
           assert.ok(await first.evaluate((element) => element === document.activeElement));
           await page.keyboard.press('Escape');

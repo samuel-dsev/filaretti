@@ -26,12 +26,6 @@ export function HomeView({
         eyebrow={settings.siteName}
         title={page.title}
         description={page.seoDescription ?? undefined}
-        actions={[
-          { label: 'Áreas de atuação', href: '/areas-de-atuacao' },
-          ...(office
-            ? [{ label: 'Conhecer o escritório', href: '/o-escritorio', secondary: true }]
-            : []),
-        ]}
         visual={<PlaceholderArtwork />}
       />
       <PageSections page={page} />

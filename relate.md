@@ -2,18 +2,28 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                                           |
-| ------------------ | -------------------------------------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-025                                                              |
-| Etapa              | **Revisão local em `0.10.1`. F8/F9/F10 parciais**                                |
-| Versão             | `0.10.1`, oito manifests privados alinhados; V1 `1.0.0` não publicada            |
-| Git                | `dev`; código de `e0377ab`; estado anterior preservado em branch local de backup |
-| Autorização        | Restaurar o código e registrar a regra de operação local dos túneis              |
-| Checkpoint         | Código `0.10.1` com banco da revisão local preservado                            |
+| Campo              | Estado                                                |
+| ------------------ | ----------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-026                                   |
+| Etapa              | **Revisão institucional local. F8/F9/F10 parciais**   |
+| Versão             | `0.11.0`, oito manifests privados alinhados           |
+| Git                | `dev`, base `7885a46`                                 |
+| Autorização        | Atualizar navegação, endereço e canais de contato     |
+| Checkpoint         | Revisar Sobre nós, localização e Contato em localhost |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-026 — 13/11/2026 — Revisão institucional
+
+Quem somos abre Sobre nós, O escritório e Áreas de atuação por mouse, teclado e menu móvel. O link de Áreas leva à seção em Sobre nós, com acesso ao catálogo existente. Equipe abre `/profissionais`. Foram retiradas as chamadas do destaque inicial e incluídos o endereço discreto no rodapé e o botão flutuante de WhatsApp. O escritório exibe o endereço e o Maps sob demanda, com link direto e imagem ilustrativa gerada para a revisão.
+
+O Contato reúne os nove campos da referência. Empresa é obrigatória para pessoa jurídica. Os campos preenchem uma mensagem que o visitante revisa e envia no WhatsApp. A newsletter tem consentimento próprio, com temas de imóveis e confirmação por e-mail. `NEWSLETTER_ENABLED` permite ativar esse fluxo independentemente do formulário antigo. Na instância local, a confirmação usa caixa simulada e o endpoint antigo de solicitação permanece bloqueado.
+
+A configuração e os canais foram atualizados no PostgreSQL de desenvolvimento pelo script ignorado `.local/revisao-institucional/preparar.mjs`. O rascunho de Sobre nós está no CMS com marca de demonstração. O texto de referência ainda não foi fornecido. O aviso de privacidade local recebeu uma seção sobre newsletter. A atualização preservou os perfis, áreas e publicações existentes. Alterações versionadas abrangem páginas, navegação, estilos, componentes de contato e mapa, asset WebP, política de frames, sitemap, importação, configuração e testes de navegação e relacionamento. Sem migration de schema.
+
+Lint, build, tipagem, 63 testes Node do frontend, 12 testes de configuração e 6 testes de componentes de relacionamento passaram. O Edge verificou 30 layouts da versão local em cinco larguras, menu por mouse e teclado, âncora, imagem, link de WhatsApp e inscrição pendente. O iframe do Maps respondeu com HTTP 200 após o carregamento sob demanda. A suíte de relacionamento em PostgreSQL isolado passou 19 verificações e 70 layouts, incluindo confirmação e descadastro simulados, com limpeza dos recursos de QA. O PostgreSQL de desenvolvimento segue com uma área e sem perfis ou artigos cadastrados. A aba Equipe usa o estado vazio do catálogo até o cadastro de perfis. Validação e publicação externas da newsletter seguem pendentes.
 
 ### RP-025 — 13/11/2026 — Restauração local e regra para túneis
 

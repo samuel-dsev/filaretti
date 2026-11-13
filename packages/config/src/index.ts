@@ -137,6 +137,7 @@ const apiSchema = z
     MOCK_CONTENT: flag(true),
     MOCK_INTEGRATIONS: flag(false),
     RELATIONSHIP_ENABLED: flag(true),
+    NEWSLETTER_ENABLED: flag(false).optional(),
     RELATIONSHIP_WORKER_ENABLED: flag(true),
     CONTACT_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(180),
     SUBSCRIBER_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(365),
@@ -260,17 +261,22 @@ const apiSchema = z
       for (const key of ['TURNSTILE_SECRET_KEY', 'TURNSTILE_EXPECTED_HOSTNAME'] as const)
         if (!env[key]?.trim()) ctx.addIssue({ code: 'custom', path: [key], message: 'Required' });
     }
-    if (env.RELATIONSHIP_ENABLED && !env.MOCK_INTEGRATIONS) {
+    const newsletterEnabled = env.NEWSLETTER_ENABLED ?? env.RELATIONSHIP_ENABLED;
+    if ((env.RELATIONSHIP_ENABLED || newsletterEnabled) && !env.MOCK_INTEGRATIONS) {
       for (const key of ['RESEND_ENABLED', 'TURNSTILE_ENABLED'] as const)
         if (!env[key])
           ctx.addIssue({ code: 'custom', path: [key], message: 'Required for relationship' });
-      if (!z.email().safeParse(env.CONTACT_NOTIFICATION_EMAIL).success)
+      if (env.RELATIONSHIP_ENABLED && !z.email().safeParse(env.CONTACT_NOTIFICATION_EMAIL).success)
         ctx.addIssue({
           code: 'custom',
           path: ['CONTACT_NOTIFICATION_EMAIL'],
           message: 'Required recipient',
         });
-      for (const key of ['PRIVACY_VERSION', 'NEWSLETTER_CONSENT_VERSION'] as const)
+      const versions = [
+        ...(env.RELATIONSHIP_ENABLED ? (['PRIVACY_VERSION'] as const) : []),
+        ...(newsletterEnabled ? (['NEWSLETTER_CONSENT_VERSION'] as const) : []),
+      ];
+      for (const key of versions)
         if (env[key].startsWith('development'))
           ctx.addIssue({ code: 'custom', path: [key], message: 'Approved version required' });
     }

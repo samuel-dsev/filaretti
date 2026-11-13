@@ -5,7 +5,7 @@ import { publicMetadata } from '@/lib/public-metadata';
 
 export const metadata = publicMetadata({
   title: 'Newsletter',
-  description: 'Solicite sua inscrição para receber conteúdos por e-mail.',
+  description: 'Receba por e-mail conteúdos sobre contratos e imóveis.',
   path: '/newsletter',
 });
 
@@ -15,8 +15,8 @@ export default function NewsletterPage() {
       <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Newsletter' }]} />
       <Hero
         eyebrow="Conteúdos"
-        title="Receber conteúdos por e-mail"
-        description="A inscrição só fica ativa depois da confirmação pelo link enviado ao seu e-mail. Você pode cancelar quando desejar."
+        title="Newsletter"
+        description="Receba conteúdos sobre compra, venda, locação e regularização de imóveis. Confirme a inscrição pelo link enviado ao seu e-mail."
       />
       <section className="relationship-section">
         <div className="f-container">

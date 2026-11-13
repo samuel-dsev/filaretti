@@ -1,32 +1,69 @@
-import { Breadcrumb, Hero, PlaceholderArtwork } from '@/components/site';
-import { ContactChannels, InstitutionalSection, PageSections, ProfessionalGrid } from './shared';
+import Image from 'next/image';
+import { LinkButton } from '@filaretti/ui';
+import { Breadcrumb, Hero } from '@/components/site';
+import { officeAddress } from '@/lib/office-address';
+import { InstitutionalSection, PageSections } from './shared';
+import { OfficeMap } from './office-map';
 import type { OfficeViewProps } from './types';
 
-export function OfficeView({ page, settings, professionals }: OfficeViewProps) {
+export function OfficeView({ page, settings }: OfficeViewProps) {
+  const address = officeAddress(settings.address);
+  const mapQuery = [
+    settings.address.street,
+    settings.address.city,
+    settings.address.state,
+    settings.address.postalCode,
+  ]
+    .filter(Boolean)
+    .join(', ');
+  const mapHref = `https://www.google.com/maps/search/?${new URLSearchParams({ api: '1', query: mapQuery })}`;
   return (
     <>
       <div className="f-container institution-breadcrumb">
-        <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'O escritório' }]} />
+        <Breadcrumb
+          items={[
+            { label: 'Início', href: '/' },
+            { label: 'Sobre nós', href: '/sobre-nos' },
+            { label: 'O escritório' },
+          ]}
+        />
       </div>
       <Hero
         eyebrow={settings.siteName}
         title={page.title}
         description={page.seoDescription ?? undefined}
-        visual={<PlaceholderArtwork />}
+        visual={
+          <figure className="institution-office-photo">
+            <Image
+              src="/brand/escritorio-ilustrativo.webp"
+              alt="Sala de reunião com mesa de madeira e luz natural"
+              width={1200}
+              height={800}
+              sizes="(max-width: 767px) 100vw, 46vw"
+            />
+            <figcaption>Imagem ilustrativa</figcaption>
+          </figure>
+        }
       />
       <PageSections page={page} />
-      <InstitutionalSection
-        id="equipe"
-        title="Profissionais"
-        eyebrow="Equipe"
-        action={{ label: 'Todos os profissionais', href: '/profissionais' }}
-        soft
-      >
-        <ProfessionalGrid professionals={professionals} />
-      </InstitutionalSection>
-      <InstitutionalSection id="contato" title="Contato" eyebrow="Canais de contato">
-        <ContactChannels settings={settings} />
-      </InstitutionalSection>
+      {address ? (
+        <InstitutionalSection id="localizacao" title="Localização" soft>
+          <div className="institution-office-location">
+            <div>
+              <address>{address}</address>
+              <LinkButton
+                href={mapHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="secondary"
+              >
+                Abrir no Google Maps
+              </LinkButton>
+            </div>
+            <OfficeMap query={mapQuery} />
+          </div>
+        </InstitutionalSection>
+      ) : null}
     </>
   );
 }

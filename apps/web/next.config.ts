@@ -30,7 +30,10 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@filaretti/ui'],
   images: {
     // Only public raster assets served by this application. Storage hosts join in F6.
-    localPatterns: [{ pathname: '/media/public/**', search: '' }],
+    localPatterns: [
+      { pathname: '/media/public/**', search: '' },
+      { pathname: '/brand/escritorio-ilustrativo.webp', search: '' },
+    ],
     remotePatterns: [],
     dangerouslyAllowSVG: false,
   },

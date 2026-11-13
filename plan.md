@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                                            |
-| ---------------------- | ----------------------------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — código restaurado para `e0377ab` e regra de túneis registrada          |
-| Último relatório       | `RP-025`, em `relate.md`                                                            |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                                   |
-| Última entrega técnica | **Remoção do título repetido na introdução da Home — RP-016**                       |
-| Versão de referência   | `0.10.1`, oito manifests privados alinhados; alvo operacional `1.0.0` não publicado |
-| Etapa corrente         | **Revisão local em `0.10.1`. F8/F9/F10 permanecem parciais**                        |
-| Próximo passo          | Revisar a versão restaurada com o conteúdo atual do banco local                     |
-| Autorização            | Restaurar o código de `e0377ab` e registrar a regra de operação local dos túneis    |
-| Git                    | `dev` restaurada para `e0377ab`; regra e checkpoint em commit documental            |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                                      |
+| Campo                  | Situação                                                                |
+| ---------------------- | ----------------------------------------------------------------------- |
+| Última atualização     | 13/11/2026 — navegação institucional, localização e Contato             |
+| Último relatório       | `RP-026`, em `relate.md`                                                |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                       |
+| Última entrega técnica | **Quem somos, Equipe, localização e Contato — RP-026**                  |
+| Versão de referência   | `0.11.0`, oito manifests privados alinhados                             |
+| Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais**          |
+| Próximo passo          | Aprovar o texto de Sobre nós e revisar navegação, localização e Contato |
+| Autorização            | Ajustar as seções, os canais de contato e o endereço local da Filaretti |
+| Git                    | `dev`, base `7885a46`; revisão institucional prevista no RP-026         |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                          |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-026 — revisão institucional.** A versão `0.11.0` acrescenta Sobre nós, submenu Quem somos, localização do escritório, acesso direto à Equipe e Contato com solicitação via WhatsApp e newsletter. O endereço, o e-mail e o WhatsApp foram ajustados nas configurações locais. Revisar o rascunho de Sobre nós e a imagem ilustrativa.
 
 **13/11/2026 — RP-025 — restauração do código da versão `0.10.1`.** O estado anterior está na branch local `backup/filaretti-pre-e0377ab-2026-11-13`. As operações de túnel temporário para apresentação passam a ser registradas apenas em `.local/cloudflare-presentation/`. O banco e os arquivos de ambiente locais foram preservados.
 

@@ -20,14 +20,17 @@ export class RelationshipPublicGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    if (!this.environment.RELATIONSHIP_ENABLED) throw new NotFoundException();
     const request = context.switchToHttp().getRequest<Request>();
+    const contact = request.path.endsWith('/contact');
+    const enabled = contact
+      ? this.environment.RELATIONSHIP_ENABLED
+      : (this.environment.NEWSLETTER_ENABLED ?? this.environment.RELATIONSHIP_ENABLED);
+    if (!enabled) throw new NotFoundException();
     if (
       request.headers.origin !== new URL(this.environment.WEB_PUBLIC_URL).origin ||
       request.headers['sec-fetch-site'] === 'cross-site'
     )
       throw new ForbiddenException({ code: 'ORIGIN_REJECTED' });
-    const contact = request.path.endsWith('/contact');
     await this.limiter.consume(
       contact ? 'contact-ip' : 'newsletter-ip',
       resolveClientIp(request, this.environment),

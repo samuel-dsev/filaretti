@@ -15,13 +15,14 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLElement | null>(null);
   const buttonRefs = useRef(new Map<string, HTMLButtonElement>());
   const id = useId();
   const activeItem = navigation.find((item) => item.id === activeMenu);
   const currentItem = navigation.find((item) => {
     const matchesPath = (href: string) =>
-      pathname === href || (href !== '/' && pathname.startsWith(`${href}/`));
+      !href.includes('#') &&
+      (pathname === href || (href !== '/' && pathname.startsWith(`${href}/`)));
     return (
       (item.href && matchesPath(item.href)) || item.children?.some((link) => matchesPath(link.href))
     );
@@ -71,7 +72,25 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
           <nav className="site-desktop-nav" aria-label="Navegação principal">
             <ul>
               {navigation.map((item) => (
-                <li key={item.id}>
+                <li
+                  key={item.id}
+                  className={item.dropdown ? 'site-nav-dropdown' : undefined}
+                  onPointerEnter={(event) => {
+                    if (item.dropdown && event.pointerType === 'mouse') setActiveMenu(item.id);
+                  }}
+                  onPointerLeave={(event) => {
+                    if (
+                      item.dropdown &&
+                      event.pointerType === 'mouse' &&
+                      !event.currentTarget.querySelector('ul')?.contains(document.activeElement)
+                    )
+                      setActiveMenu((menu) => (menu === item.id ? null : menu));
+                  }}
+                  onBlur={(event) => {
+                    if (item.dropdown && !event.currentTarget.contains(event.relatedTarget))
+                      setActiveMenu((menu) => (menu === item.id ? null : menu));
+                  }}
+                >
                   {item.children?.length ? (
                     <Button
                       variant="ghost"
@@ -83,7 +102,16 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                         if (element) buttonRefs.current.set(item.id, element);
                         else buttonRefs.current.delete(item.id);
                       }}
-                      onClick={() => setActiveMenu(activeMenu === item.id ? null : item.id)}
+                      onClick={(event) =>
+                        setActiveMenu(
+                          activeMenu === item.id &&
+                            (!item.dropdown ||
+                              event.detail === 0 ||
+                              !event.currentTarget.matches(':hover'))
+                            ? null
+                            : item.id,
+                        )
+                      }
                       onKeyDown={(event) => {
                         if (event.key === 'ArrowDown') {
                           event.preventDefault();
@@ -92,6 +120,9 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                       }}
                     >
                       {item.label}
+                      {item.dropdown ? (
+                        <span className="site-nav-chevron" aria-hidden="true" />
+                      ) : null}
                     </Button>
                   ) : item.href ? (
                     <Link
@@ -106,6 +137,28 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
                   ) : (
                     <span className="site-nav-label">{item.label}</span>
                   )}
+                  {item.dropdown && item.children && activeMenu === item.id ? (
+                    <ul
+                      className="site-dropdown-links"
+                      id={`${id}-${item.id}`}
+                      ref={(panel) => {
+                        panelRef.current = panel;
+                      }}
+                    >
+                      {item.children.map((link) => (
+                        <li key={link.href}>
+                          <Link
+                            href={link.href}
+                            prefetch={false}
+                            aria-current={pathname === link.href ? 'page' : undefined}
+                            onClick={() => setActiveMenu(null)}
+                          >
+                            {link.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -137,8 +190,14 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
             </Button>
           </div>
         </div>
-        {activeItem?.children?.length ? (
-          <div className="site-mega-menu" id={`${id}-${activeItem.id}`} ref={panelRef}>
+        {activeItem?.children?.length && !activeItem.dropdown ? (
+          <div
+            className="site-mega-menu"
+            id={`${id}-${activeItem.id}`}
+            ref={(panel) => {
+              panelRef.current = panel;
+            }}
+          >
             <div className="f-container site-mega-inner">
               <div className="site-mega-intro">
                 <p className="site-eyebrow">Explore</p>

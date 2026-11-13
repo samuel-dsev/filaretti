@@ -4,7 +4,7 @@ import type { PublicLayoutProps } from './types';
 import { ConsentProvider } from '../privacy/consent-provider';
 import { validateWebEnvironment } from '@filaretti/config';
 
-export function PublicLayout({ header, footer, children }: PublicLayoutProps) {
+export function PublicLayout({ header, footer, children, whatsapp }: PublicLayoutProps) {
   const environment = validateWebEnvironment(process.env);
   return (
     <ConsentProvider
@@ -18,6 +18,11 @@ export function PublicLayout({ header, footer, children }: PublicLayoutProps) {
           {children}
         </main>
         <SiteFooter {...footer} />
+        {whatsapp ? (
+          <a className="site-whatsapp" href={whatsapp} data-analytics-event="click_whatsapp">
+            Conversar pelo WhatsApp
+          </a>
+        ) : null}
       </div>
     </ConsentProvider>
   );

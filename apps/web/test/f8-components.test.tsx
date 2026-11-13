@@ -126,7 +126,7 @@ test('newsletter failure preserves input and retry reports pending confirmation,
   );
   fireEvent.submit(screen.getByRole('button', { name: 'Solicitar inscrição' }).closest('form')!);
   await waitFor(() =>
-    expect(screen.getByRole('status')).toHaveTextContent('instruções por e-mail para confirmar'),
+    expect(screen.getByRole('status')).toHaveTextContent('confirmação está disponível na caixa'),
   );
   expect(screen.getByRole('status')).not.toHaveTextContent('Inscrição confirmada');
   expect(request).toHaveBeenLastCalledWith(

@@ -558,52 +558,41 @@ async function relationshipChecks() {
   browserContext.on('request', (r) => {
     if (/google-analytics|googletagmanager/iu.test(r.url())) analytics.push(r.url());
   });
+  await database.query(
+    "UPDATE site_settings SET whatsapp_url = 'https://wa.me/5500000000000' WHERE id = 'site'",
+  );
   await page.goto(`${webOrigin}/contato`, { waitUntil: 'networkidle' });
   await page.getByRole('button', { name: 'Somente necessários', exact: true }).first().click();
   await check(
-    'contact UI persists private attachment and separates newsletter consent',
+    'contact UI prepares a WhatsApp message without recording a submission or subscription',
     async () => {
-      await page.getByLabel(fieldName('Nome'), { exact: true }).fill('Pessoa Fictícia F7');
-      await page.keyboard.press('Tab');
-      assert.equal(
-        await page
-          .getByLabel(fieldName('E-mail'), { exact: true })
-          .evaluate((element) => document.activeElement === element),
-        true,
+      const form = page
+        .locator('form')
+        .filter({ has: page.getByRole('button', { name: 'Continuar no WhatsApp' }) });
+      await form.locator('[name=firstName]').fill('Pessoa');
+      await form.locator('[name=lastName]').fill('Fictícia');
+      await form.locator('[name=email]').fill('qa-f7-contact@example.invalid');
+      await form.locator('[name=phone]').fill('00000000000');
+      await form.getByRole('radio', { name: 'Pessoa física' }).check();
+      await form.locator('[name=service]').selectOption('Locação e contratos');
+      await form.locator('[name=subject]').fill('Solicitação fictícia');
+      await form.locator('[name=message]').fill('Mensagem fictícia para a revisão.');
+      await page.route('https://wa.me/**', (route) =>
+        route.fulfill({ status: 200, body: 'WhatsApp interceptado' }),
       );
-      await page
-        .getByLabel(fieldName('E-mail'), { exact: true })
-        .fill('qa-f7-contact@example.invalid');
-      await page.getByLabel(fieldName('Assunto'), { exact: true }).fill('Solicitação fictícia F7');
-      await page
-        .getByLabel(fieldName('Mensagem'), { exact: true })
-        .fill('Mensagem fictícia de validação do contato completo.');
-      await page
-        .locator('input[name=attachments]')
-        .setInputFiles(resolve(fixturePath, 'cover.png'));
-      await page.locator('input[name=privacyAccepted]').check();
-      await page.getByRole('button', { name: 'Enviar solicitação', exact: true }).focus();
-      await page.keyboard.press('Enter');
-      await page.getByRole('status').filter({ hasText: 'Solicitação recebida' }).waitFor();
-      const row = (
-        await database.query("SELECT id FROM contacts WHERE email='qa-f7-contact@example.invalid'")
-      ).rows[0];
-      assert.ok(row);
-      const files = await database.query(
-        'SELECT storage_key,scan_status FROM contact_files WHERE contact_id=$1',
-        [row.id],
-      );
-      assert.equal(files.rows.length, 1);
-      assert.equal(files.rows[0].scan_status, 'LOCAL_VERIFIED');
-      await request(`${webOrigin}/media/public/${files.rows[0].storage_key}`, 404);
-      assert.equal(
-        (
-          await database.query(
-            "SELECT COUNT(*)::int n FROM newsletter_subscribers WHERE email='qa-f7-contact@example.invalid'",
-          )
-        ).rows[0].n,
-        0,
-      );
+      const [outgoing] = await Promise.all([
+        page.waitForRequest((request) => new URL(request.url()).hostname === 'wa.me'),
+        form.getByRole('button', { name: 'Continuar no WhatsApp' }).click(),
+      ]);
+      const message = new URL(outgoing.url()).searchParams.get('text');
+      assert.match(message ?? '', /Locação e contratos/u);
+      assert.match(message ?? '', /qa-f7-contact@example.invalid/u);
+      for (const table of ['contacts', 'newsletter_subscribers']) {
+        const result = await database.query(`SELECT id FROM ${table} WHERE email=$1`, [
+          'qa-f7-contact@example.invalid',
+        ]);
+        assert.equal(result.rowCount, 0);
+      }
     },
   );
   const email = 'qa-f7-newsletter@example.invalid';
@@ -614,7 +603,10 @@ async function relationshipChecks() {
       await page.getByLabel(fieldName('E-mail'), { exact: true }).fill(email);
       await page.locator('input[name=consent]').check();
       await page.getByRole('button', { name: 'Solicitar inscrição', exact: true }).click();
-      await page.getByRole('status').filter({ hasText: 'instruções por e-mail' }).waitFor();
+      await page
+        .getByRole('status')
+        .filter({ hasText: 'confirmação está disponível na caixa' })
+        .waitFor();
       assert.equal(
         (await database.query('SELECT status FROM newsletter_subscribers WHERE email=$1', [email]))
           .rows[0].status,
@@ -664,7 +656,10 @@ async function relationshipChecks() {
     await dialog.getByRole('searchbox').fill('direito');
     await dialog.getByRole('button', { name: 'Ver resultados', exact: true }).click();
     await page.waitForURL(/\/busca\?q=direito/u);
-    assert.ok((await page.locator('main').innerText()).includes('direito'));
+    await page.getByRole('heading', { name: 'Busca', exact: true }).waitFor();
+    const count = page.getByRole('status').filter({ hasText: /resultados? encontrados?/u });
+    await count.waitFor();
+    assert.match(await count.innerText(), /^[1-9]\d* resultados? encontrados?/u);
   });
   await check('local cookie preferences keep analytics disabled', async () => {
     await page.goto(`${webOrigin}/cookies`, { waitUntil: 'networkidle' });
@@ -720,6 +715,35 @@ async function relationshipChecks() {
     await page.waitForURL(`${webOrigin}/admin/login`);
   });
   await check('ADMIN manages contacts, private downloads and subscribers', async () => {
+    const payload = new FormData();
+    for (const [field, value] of Object.entries({
+      name: 'Pessoa Fictícia F7',
+      email: 'qa-f7-contact@example.invalid',
+      subject: 'Solicitação fictícia F7',
+      message: 'Mensagem fictícia de validação do contato completo.',
+      privacyAccepted: 'true',
+      turnstileToken: 'local-development-contact',
+      idempotencyKey: randomUUID(),
+    }))
+      payload.set(field, value);
+    payload.set(
+      'attachments',
+      new Blob([readFileSync(resolve(fixturePath, 'cover.png'))], { type: 'image/png' }),
+      'cover.png',
+    );
+    await request(`${webOrigin}/api/relationship/contact`, 202, {
+      method: 'POST',
+      headers: { Origin: webOrigin },
+      body: payload,
+    });
+    const {
+      rows: [file],
+    } = await database.query(
+      'SELECT storage_key, scan_status FROM contact_files JOIN contacts ON contacts.id = contact_files.contact_id WHERE contacts.email = $1',
+      ['qa-f7-contact@example.invalid'],
+    );
+    assert.equal(file.scan_status, 'LOCAL_VERIFIED');
+    await request(`${webOrigin}/media/public/${file.storage_key}`, 404);
     await page.getByLabel(fieldName('E-mail'), { exact: true }).fill('admin@filaretti.test');
     await page.getByLabel(fieldName('Senha'), { exact: true }).fill(developmentPassword);
     await page.getByRole('button', { name: 'Entrar', exact: true }).click();
@@ -753,7 +777,7 @@ async function relationshipChecks() {
       ).rows[0].status,
       'IN_PROGRESS',
     );
-    await page.keyboard.press('Escape');
+    await dialog.getByRole('button', { name: 'Fechar', exact: true }).click();
     await dialog.waitFor({ state: 'hidden' });
     await page.goto(`${webOrigin}/admin/assinantes`, { waitUntil: 'networkidle' });
     await page.getByText(email, { exact: true }).first().waitFor();

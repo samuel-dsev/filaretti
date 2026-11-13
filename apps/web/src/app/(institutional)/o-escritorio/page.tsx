@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { OfficeView } from '../../../components/institutional';
-import { getPage, getProfessionals, getSettings } from '../../../lib/public-api';
+import { getPage, getSettings } from '../../../lib/public-api';
 import { contentText } from '../../../lib/public-content-core';
 import { publicMetadata } from '../../../lib/public-metadata';
 import { JsonLd, breadcrumbSchema } from '@/components/seo/structured-data';
@@ -16,11 +16,7 @@ export async function generateMetadata() {
 }
 
 export default async function OfficePage() {
-  const [page, settings, professionals] = await Promise.all([
-    getPage('o-escritorio'),
-    getSettings(),
-    getProfessionals({ limit: 6 }),
-  ]);
+  const [page, settings] = await Promise.all([getPage('o-escritorio'), getSettings()]);
   if (!page) notFound();
   return (
     <>
@@ -30,7 +26,7 @@ export default async function OfficePage() {
           { name: page.title, path: '/o-escritorio' },
         ])}
       />
-      <OfficeView page={page} settings={settings} professionals={professionals.data} />
+      <OfficeView page={page} settings={settings} />
     </>
   );
 }

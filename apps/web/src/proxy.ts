@@ -24,6 +24,7 @@ export async function proxy(request: NextRequest) {
     https,
     developmentServer: process.env.NODE_ENV === 'development',
     turnstile: !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
+    maps: !privatePath,
     analytics:
       process.env.APP_ENV === 'production' && process.env.GA4_ENABLED === 'true' && !privatePath,
   });

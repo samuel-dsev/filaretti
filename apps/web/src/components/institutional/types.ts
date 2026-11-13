@@ -22,7 +22,6 @@ export interface HomeViewProps {
 export interface OfficeViewProps {
   page: PublicPage;
   settings: PublicSiteSettings;
-  professionals: PublicProfessional[];
 }
 
 export interface AreaIndexViewProps {

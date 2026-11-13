@@ -3,6 +3,7 @@ export interface BrowserSecurityOptions {
   developmentServer: boolean;
   https: boolean;
   turnstile: boolean;
+  maps?: boolean;
   analytics: boolean;
 }
 
@@ -40,7 +41,12 @@ export function contentSecurityPolicy(options: BrowserSecurityOptions): string {
     `img-src ${images.join(' ')}`,
     "font-src 'self'",
     `connect-src ${connections.join(' ')}`,
-    `frame-src ${options.turnstile ? 'https://challenges.cloudflare.com' : "'none'"}`,
+    `frame-src ${
+      [
+        ...(options.turnstile ? ['https://challenges.cloudflare.com'] : []),
+        ...(options.maps ? ['https://www.google.com/maps'] : []),
+      ].join(' ') || "'none'"
+    }`,
     "object-src 'none'",
     "base-uri 'none'",
     "form-action 'self'",

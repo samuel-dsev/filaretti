@@ -19,6 +19,7 @@ export interface SiteNavigationItem {
   href?: string;
   description?: string;
   children?: SiteNavigationLink[];
+  dropdown?: boolean;
 }
 
 export interface SiteHeaderProps {
@@ -32,6 +33,7 @@ export interface SiteFooterProps {
   description: string;
   groups: { title: string; links: SiteNavigationLink[] }[];
   note?: string;
+  address?: string;
   copyright: string;
 }
 
@@ -39,6 +41,7 @@ export interface PublicLayoutProps {
   header: SiteHeaderProps;
   footer: SiteFooterProps;
   children: ReactNode;
+  whatsapp?: string | null;
 }
 
 export interface HeroProps {

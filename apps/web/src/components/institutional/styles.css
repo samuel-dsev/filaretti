@@ -74,6 +74,61 @@
   padding-block: clamp(2.5rem, 5vw, 5rem);
 }
 
+#areas-de-atuacao {
+  scroll-margin-top: 7rem;
+}
+
+.institution-office-link {
+  padding-block: 2rem;
+}
+
+.institution-office-photo {
+  margin: 0;
+}
+
+.institution-office-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--f-radius-sm);
+}
+
+.institution-office-photo figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+}
+
+.institution-office-location {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  gap: 2rem;
+}
+
+.institution-office-location address {
+  margin-bottom: 1.25rem;
+  font-style: normal;
+}
+
+.institution-office-map {
+  display: grid;
+  min-height: 18rem;
+  place-items: center;
+  background: var(--f-color-pale);
+}
+
+.institution-office-map iframe {
+  width: 100%;
+  min-height: 18rem;
+  border: 0;
+}
+
+@media (max-width: 767px) {
+  .institution-office-location {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+}
+
 .institution-copy-section {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);

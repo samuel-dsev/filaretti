@@ -10,7 +10,7 @@ export async function generateMetadata({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   return publicMetadata({
-    title: 'Profissionais',
+    title: 'Equipe',
     description:
       'Conheça os perfis, trajetórias e áreas de atuação dos profissionais apresentados pelo escritório.',
     path: '/profissionais',
@@ -32,7 +32,7 @@ export default async function ProfessionalsPage({
       <JsonLd
         data={breadcrumbSchema([
           { name: 'Início', path: '/' },
-          { name: 'Profissionais', path: '/profissionais' },
+          { name: 'Equipe', path: '/profissionais' },
         ])}
       />
       <ProfessionalIndexView professionals={professionals.data} pagination={professionals.meta} />

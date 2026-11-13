@@ -56,7 +56,7 @@ export class SearchService {
     const catalog = Prisma.sql`WITH urls AS (
       SELECT CASE WHEN slug = 'home' THEN '/' ELSE '/' || slug END AS path, updated_at AS "updatedAt"
       FROM pages WHERE status = 'PUBLISHED' AND published_at <= CURRENT_TIMESTAMP
-        AND slug IN ('home', 'o-escritorio', 'contato', 'privacidade', 'cookies') AND (${!production} OR is_mock = false)
+        AND slug IN ('home', 'sobre-nos', 'o-escritorio', 'contato', 'privacidade', 'cookies') AND (${!production} OR is_mock = false)
       UNION ALL SELECT '/areas-de-atuacao/' || slug, updated_at FROM practice_areas WHERE is_active = true AND (${!production} OR is_mock = false)
       UNION ALL SELECT '/profissionais/' || slug, updated_at FROM professionals WHERE is_active = true AND (${!production} OR is_mock = false)
       UNION ALL SELECT '/conteudos/' || a.slug, a.updated_at FROM articles a JOIN professionals p ON p.id = a.author_id

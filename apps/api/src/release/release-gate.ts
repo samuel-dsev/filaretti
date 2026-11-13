@@ -35,6 +35,7 @@ const staticRoutes = new Set([
   '/busca',
   '/perguntas-frequentes',
 ]);
+const optionalPageRoutes = new Map([['sobre-nos', '/sobre-nos']]);
 
 type ScanPage = {
   where?: { id: { gt: string } };
@@ -521,7 +522,13 @@ async function collectReleasePaths(db: PrismaClient, sitemap: boolean): Promise<
       const paths = new Set(sitemap ? [] : [...staticRoutes].filter((path) => path !== '/busca'));
       const pages = await tx.page.findMany({
         where: {
-          slug: { in: [...pageRoutes.keys(), ...(sitemap ? ['contato'] : [])] },
+          slug: {
+            in: [
+              ...pageRoutes.keys(),
+              ...optionalPageRoutes.keys(),
+              ...(sitemap ? ['contato'] : []),
+            ],
+          },
           status: 'PUBLISHED',
           publishedAt: { lte: now },
           isMock: false,
@@ -530,7 +537,8 @@ async function collectReleasePaths(db: PrismaClient, sitemap: boolean): Promise<
         orderBy: { id: 'asc' },
         take: 200,
       });
-      for (const page of pages) paths.add(pageRoutes.get(page.slug) ?? '/contato');
+      for (const page of pages)
+        paths.add(pageRoutes.get(page.slug) ?? optionalPageRoutes.get(page.slug) ?? '/contato');
       for (const resource of ['professional', 'practiceArea', 'article'] as const) {
         let cursor: string | undefined;
         for (;;) {

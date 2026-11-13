@@ -225,7 +225,9 @@ export function parseMigrationBatch(input: unknown, now = new Date()): Migration
       fail('INVALID_PUBLICATION', index);
     if (
       kind === 'page' &&
-      !['home', 'o-escritorio', 'privacidade', 'cookies'].includes((data as PageDto).slug)
+      !['home', 'sobre-nos', 'o-escritorio', 'privacidade', 'cookies'].includes(
+        (data as PageDto).slug,
+      )
     )
       fail('PAGE_TEMPLATE_MISSING', index);
     if (kind === 'page' && status === 'PUBLISHED' && (data as PageDto).sections.length === 0)

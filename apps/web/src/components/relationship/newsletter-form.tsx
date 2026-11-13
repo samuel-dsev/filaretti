@@ -31,7 +31,9 @@ export function NewsletterForm({ config }: { config: RelationshipConfiguration }
         turnstileToken: token,
       });
       setMessage(
-        'Se aplicável, você receberá instruções por e-mail para confirmar a inscrição. Confira também a pasta de spam.',
+        config.mock
+          ? 'Inscrição de teste registrada. A confirmação está disponível na caixa de e-mails local.'
+          : 'Se aplicável, você receberá instruções por e-mail para confirmar a inscrição. Confira também a pasta de spam.',
       );
       trackAnalytics('newsletter_signup');
       form.reset();

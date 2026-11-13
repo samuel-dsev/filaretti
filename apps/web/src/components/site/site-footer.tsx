@@ -3,7 +3,14 @@ import { Brand } from './brand';
 import type { SiteFooterProps } from './types';
 import { CookiePreferencesButton } from '../privacy/consent-provider';
 
-export function SiteFooter({ brand, description, groups, note, copyright }: SiteFooterProps) {
+export function SiteFooter({
+  brand,
+  description,
+  groups,
+  note,
+  address,
+  copyright,
+}: SiteFooterProps) {
   return (
     <footer className="site-footer" data-f-surface="dark">
       <div className="f-container">
@@ -11,6 +18,9 @@ export function SiteFooter({ brand, description, groups, note, copyright }: Site
           <div className="site-footer-intro">
             <Brand brand={brand} inverse />
             <p>{description}</p>
+            {address ? (
+              <address className="site-footer-address">Endereços: {address}</address>
+            ) : null}
           </div>
           {groups.map((group) => (
             <nav key={group.title} aria-label={group.title} className="site-footer-nav">

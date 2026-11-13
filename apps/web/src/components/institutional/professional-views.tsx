@@ -15,9 +15,9 @@ export function ProfessionalIndexView({ professionals, pagination }: Professiona
   return (
     <>
       <div className="f-container institution-breadcrumb">
-        <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Profissionais' }]} />
+        <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Equipe' }]} />
       </div>
-      <Hero eyebrow="Equipe" title="Profissionais" />
+      <Hero title="Equipe" />
       <div className="f-container institution-index-content">
         <h2 className="f-sr-only">Perfis publicados</h2>
         <p className="institution-result-count">
@@ -50,7 +50,7 @@ export function ProfessionalDetailView({ professional, articles }: ProfessionalD
         <Breadcrumb
           items={[
             { label: 'Início', href: '/' },
-            { label: 'Profissionais', href: '/profissionais' },
+            { label: 'Equipe', href: '/profissionais' },
             { label: professional.name },
           ]}
         />

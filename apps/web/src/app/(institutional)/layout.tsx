@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import { headers } from 'next/headers';
 import { PublicLayout } from '../../components/site';
-import { getArticle, getPracticeAreas, getSettings } from '../../lib/public-api';
+import { getArticle, getSettings } from '../../lib/public-api';
+import { officeAddress } from '@/lib/office-address';
+import { safePublicUrl } from '@/lib/public-content-core';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,9 +11,8 @@ export default async function InstitutionalLayout({ children }: { children: Reac
   const articleSlug = (await headers()).get('x-filaretti-article-slug');
   // React cache deduplicates this no-store read with metadata/page for this render.
   // Start primary publication data alongside navigation instead of after the layout.
-  const [settings, areas] = await Promise.all([
+  const [settings] = await Promise.all([
     getSettings(),
-    getPracticeAreas({ limit: 50 }),
     articleSlug && articleSlug.length <= 120 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(articleSlug)
       ? getArticle(articleSlug)
       : Promise.resolve(null),
@@ -22,21 +23,19 @@ export default async function InstitutionalLayout({ children }: { children: Reac
       header={{
         brand,
         navigation: [
-          { id: 'office', label: 'O escritório', href: '/o-escritorio' },
           {
-            id: 'areas',
-            label: 'Áreas de atuação',
-            href: '/areas-de-atuacao',
+            id: 'about',
+            label: 'Quem somos',
+            href: '/sobre-nos',
+            dropdown: true,
             children: [
-              { label: 'Todas as áreas', href: '/areas-de-atuacao' },
-              ...areas.data.map((area) => ({
-                label: area.name,
-                href: `/areas-de-atuacao/${area.slug}`,
-                description: area.summary,
-              })),
+              { label: 'Sobre nós', href: '/sobre-nos' },
+              { label: 'O escritório', href: '/o-escritorio' },
+              { label: 'Áreas de atuação', href: '/sobre-nos#areas-de-atuacao' },
             ],
           },
-          { id: 'professionals', label: 'Profissionais', href: '/profissionais' },
+          { id: 'areas', label: 'Áreas de atuação', href: '/sobre-nos#areas-de-atuacao' },
+          { id: 'professionals', label: 'Equipe', href: '/profissionais' },
           { id: 'contents', label: 'Conteúdos', href: '/conteudos' },
           { id: 'contact', label: 'Contato', href: '/contato' },
         ],
@@ -45,13 +44,15 @@ export default async function InstitutionalLayout({ children }: { children: Reac
         brand,
         description:
           'Atuação integrada, escuta próxima e conhecimento jurídico para apoiar suas decisões.',
+        address: officeAddress(settings.address),
         groups: [
           {
             title: 'Institucional',
             links: [
+              { label: 'Sobre nós', href: '/sobre-nos' },
               { label: 'O escritório', href: '/o-escritorio' },
-              { label: 'Áreas de atuação', href: '/areas-de-atuacao' },
-              { label: 'Profissionais', href: '/profissionais' },
+              { label: 'Áreas de atuação', href: '/sobre-nos#areas-de-atuacao' },
+              { label: 'Equipe', href: '/profissionais' },
             ],
           },
           {
@@ -70,6 +71,7 @@ export default async function InstitutionalLayout({ children }: { children: Reac
           : {}),
         copyright: `© ${new Date().getFullYear()} ${settings.siteName}`,
       }}
+      whatsapp={safePublicUrl(settings.whatsappUrl)}
     >
       {children}
     </PublicLayout>
