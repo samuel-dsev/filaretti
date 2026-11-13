@@ -71,96 +71,106 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
           <Brand brand={brand} />
           <nav className="site-desktop-nav" aria-label="Navegação principal">
             <ul>
-              {navigation.map((item) => (
-                <li
-                  key={item.id}
-                  className={item.dropdown ? 'site-nav-dropdown' : undefined}
-                  onPointerEnter={(event) => {
-                    if (item.dropdown && event.pointerType === 'mouse') setActiveMenu(item.id);
-                  }}
-                  onPointerLeave={(event) => {
-                    if (
-                      item.dropdown &&
-                      event.pointerType === 'mouse' &&
-                      !event.currentTarget.querySelector('ul')?.contains(document.activeElement)
-                    )
-                      setActiveMenu((menu) => (menu === item.id ? null : menu));
-                  }}
-                  onBlur={(event) => {
-                    if (item.dropdown && !event.currentTarget.contains(event.relatedTarget))
-                      setActiveMenu((menu) => (menu === item.id ? null : menu));
-                  }}
-                >
-                  {item.children?.length ? (
-                    <Button
-                      variant="ghost"
-                      className="site-nav-toggle"
-                      aria-current={currentLocation(item)}
-                      aria-expanded={activeMenu === item.id}
-                      aria-controls={`${id}-${item.id}`}
-                      ref={(element) => {
-                        if (element) buttonRefs.current.set(item.id, element);
-                        else buttonRefs.current.delete(item.id);
-                      }}
-                      onClick={(event) =>
-                        setActiveMenu(
-                          activeMenu === item.id &&
-                            (!item.dropdown ||
-                              event.detail === 0 ||
-                              !event.currentTarget.matches(':hover'))
-                            ? null
-                            : item.id,
-                        )
-                      }
-                      onKeyDown={(event) => {
-                        if (event.key === 'ArrowDown') {
-                          event.preventDefault();
-                          openWithKeyboard(item);
+              {navigation.map((item) => {
+                const hasParentLink = Boolean(item.dropdown && item.href && item.children?.length);
+                return (
+                  <li
+                    key={item.id}
+                    className={item.dropdown ? 'site-nav-dropdown' : undefined}
+                    onPointerEnter={(event) => {
+                      if (item.dropdown && event.pointerType === 'mouse') setActiveMenu(item.id);
+                    }}
+                    onPointerLeave={(event) => {
+                      if (
+                        item.dropdown &&
+                        event.pointerType === 'mouse' &&
+                        !event.currentTarget.querySelector('ul')?.contains(document.activeElement)
+                      )
+                        setActiveMenu((menu) => (menu === item.id ? null : menu));
+                    }}
+                    onBlur={(event) => {
+                      if (item.dropdown && !event.currentTarget.contains(event.relatedTarget))
+                        setActiveMenu((menu) => (menu === item.id ? null : menu));
+                    }}
+                  >
+                    {hasParentLink && item.href ? (
+                      <Link
+                        prefetch={false}
+                        href={item.href}
+                        className="site-nav-link site-nav-parent"
+                        aria-current={currentLocation(item)}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        {item.label}
+                      </Link>
+                    ) : null}
+                    {item.children?.length ? (
+                      <Button
+                        variant="ghost"
+                        className={
+                          hasParentLink
+                            ? 'site-nav-toggle site-nav-toggle-chevron'
+                            : 'site-nav-toggle'
                         }
-                      }}
-                    >
-                      {item.label}
-                      {item.dropdown ? (
-                        <span className="site-nav-chevron" aria-hidden="true" />
-                      ) : null}
-                    </Button>
-                  ) : item.href ? (
-                    <Link
-                      prefetch={false}
-                      href={item.href}
-                      className="site-nav-link"
-                      aria-current={currentLocation(item)}
-                      onClick={() => setActiveMenu(null)}
-                    >
-                      {item.label}
-                    </Link>
-                  ) : (
-                    <span className="site-nav-label">{item.label}</span>
-                  )}
-                  {item.dropdown && item.children && activeMenu === item.id ? (
-                    <ul
-                      className="site-dropdown-links"
-                      id={`${id}-${item.id}`}
-                      ref={(panel) => {
-                        panelRef.current = panel;
-                      }}
-                    >
-                      {item.children.map((link) => (
-                        <li key={link.href}>
-                          <Link
-                            href={link.href}
-                            prefetch={false}
-                            aria-current={pathname === link.href ? 'page' : undefined}
-                            onClick={() => setActiveMenu(null)}
-                          >
-                            {link.label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : null}
-                </li>
-              ))}
+                        aria-label={hasParentLink ? `Submenu de ${item.label}` : undefined}
+                        aria-current={hasParentLink ? undefined : currentLocation(item)}
+                        aria-expanded={activeMenu === item.id}
+                        aria-controls={`${id}-${item.id}`}
+                        ref={(element) => {
+                          if (element) buttonRefs.current.set(item.id, element);
+                          else buttonRefs.current.delete(item.id);
+                        }}
+                        onClick={() => setActiveMenu((menu) => (menu === item.id ? null : item.id))}
+                        onKeyDown={(event) => {
+                          if (event.key === 'ArrowDown') {
+                            event.preventDefault();
+                            openWithKeyboard(item);
+                          }
+                        }}
+                      >
+                        {hasParentLink ? null : item.label}
+                        {item.dropdown ? (
+                          <span className="site-nav-chevron" aria-hidden="true" />
+                        ) : null}
+                      </Button>
+                    ) : item.href ? (
+                      <Link
+                        prefetch={false}
+                        href={item.href}
+                        className="site-nav-link"
+                        aria-current={currentLocation(item)}
+                        onClick={() => setActiveMenu(null)}
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <span className="site-nav-label">{item.label}</span>
+                    )}
+                    {item.dropdown && item.children && activeMenu === item.id ? (
+                      <ul
+                        className="site-dropdown-links"
+                        id={`${id}-${item.id}`}
+                        ref={(panel) => {
+                          panelRef.current = panel;
+                        }}
+                      >
+                        {item.children.map((link) => (
+                          <li key={link.href}>
+                            <Link
+                              href={link.href}
+                              prefetch={false}
+                              aria-current={pathname === link.href ? 'page' : undefined}
+                              onClick={() => setActiveMenu(null)}
+                            >
+                              {link.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </li>
+                );
+              })}
             </ul>
           </nav>
           <div className="site-header-actions">
@@ -238,23 +248,37 @@ export function SiteHeader({ brand, navigation, searchLabel = 'Buscar' }: SiteHe
               <li key={item.id}>
                 {item.children?.length ? (
                   <>
-                    <span className="site-mobile-group" aria-current={currentLocation(item)}>
-                      {item.label}
-                    </span>
+                    {item.dropdown && item.href ? (
+                      <Link
+                        prefetch={false}
+                        href={item.href}
+                        aria-current={currentLocation(item)}
+                        onClick={() => setMobileOpen(false)}
+                      >
+                        {item.label}
+                        <ArrowIcon />
+                      </Link>
+                    ) : (
+                      <span className="site-mobile-group" aria-current={currentLocation(item)}>
+                        {item.label}
+                      </span>
+                    )}
                     <ul>
-                      {item.children.map((link) => (
-                        <li key={`${link.label}-${link.href}`}>
-                          <Link
-                            prefetch={false}
-                            href={link.href}
-                            aria-current={pathname === link.href ? 'page' : undefined}
-                            onClick={() => setMobileOpen(false)}
-                          >
-                            {link.label}
-                            <ArrowIcon />
-                          </Link>
-                        </li>
-                      ))}
+                      {item.children
+                        .filter((link) => !item.dropdown || link.href !== item.href)
+                        .map((link) => (
+                          <li key={`${link.label}-${link.href}`}>
+                            <Link
+                              prefetch={false}
+                              href={link.href}
+                              aria-current={pathname === link.href ? 'page' : undefined}
+                              onClick={() => setMobileOpen(false)}
+                            >
+                              {link.label}
+                              <ArrowIcon />
+                            </Link>
+                          </li>
+                        ))}
                     </ul>
                   </>
                 ) : item.href ? (

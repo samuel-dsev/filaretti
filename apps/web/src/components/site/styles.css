@@ -140,6 +140,9 @@
 
 .site-nav-dropdown {
   position: relative;
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--f-radius-sm);
 }
 
 .site-nav-chevron {
@@ -221,6 +224,23 @@
 .site-nav-toggle.f-button[aria-current] {
   color: var(--f-color-navy);
   background: var(--f-color-pale);
+}
+
+.site-nav-dropdown:has(.site-nav-parent[aria-current]) {
+  background: var(--f-color-pale);
+}
+
+.site-nav-link.site-nav-parent {
+  padding-right: 0.125rem;
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.site-nav-toggle-chevron.f-button {
+  min-width: 24px;
+  padding-inline: 0.375rem;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
 }
 
 .site-header-actions svg,

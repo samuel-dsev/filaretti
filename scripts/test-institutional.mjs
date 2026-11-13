@@ -527,6 +527,12 @@ async function domainChecks() {
           await drawer.waitFor({ state: 'visible' });
           assert.equal(
             await drawer
+              .getByRole('link', { name: 'Quem somos', exact: true })
+              .getAttribute('href'),
+            '/sobre-nos',
+          );
+          assert.equal(
+            await drawer
               .getByRole('link', { name: 'O escritório', exact: true })
               .getAttribute('href'),
             '/o-escritorio',
@@ -553,7 +559,7 @@ async function domainChecks() {
           await overlay.waitFor({ state: 'hidden' });
           assert.ok(await search.evaluate((element) => element === document.activeElement));
           await page.setViewportSize({ width: 1440, height: 1000 });
-          const toggle = page.getByRole('button', { name: 'Quem somos', exact: true });
+          const toggle = page.getByRole('button', { name: 'Submenu de Quem somos', exact: true });
           await toggle.focus();
           await page.keyboard.press('ArrowDown');
           const first = page
@@ -564,6 +570,12 @@ async function domainChecks() {
           await page.keyboard.press('Escape');
           assert.ok(await toggle.evaluate((element) => element === document.activeElement));
           assert.equal(await toggle.getAttribute('aria-expanded'), 'false');
+          await page
+            .locator('header')
+            .getByRole('link', { name: 'Quem somos', exact: true })
+            .click();
+          await page.waitForURL(`${webOrigin}/sobre-nos`);
+          await page.getByRole('heading', { name: 'Sobre nós', level: 1 }).waitFor();
         } finally {
           await page.close();
         }

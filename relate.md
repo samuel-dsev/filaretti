@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-028                                 |
+| Última atualização | 13/11/2026 — RP-029                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.11.2`, oito manifests privados alinhados         |
-| Git                | `dev`, base `89641da`                               |
-| Autorização        | Corrigir e revisar o rodapé público                 |
-| Checkpoint         | Revisar o rodapé marfim em localhost                |
+| Versão             | `0.11.3`, oito manifests privados alinhados         |
+| Git                | `dev`, base `040da85`                               |
+| Autorização        | Abrir Sobre nós pelo link Quem somos                |
+| Checkpoint         | Revisar o link e o submenu em localhost             |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-029 — 13/11/2026 — Quem somos abre Sobre nós
+
+O texto Quem somos passou a ser um link para `/sobre-nos` no cabeçalho desktop e no menu móvel. A seta controla o submenu no desktop, que também abre ao passar o mouse. O ajuste cobre `site-header.tsx`, o CSS do cabeçalho e o cenário existente de navegação em `scripts/test-institutional.mjs`. Os oito manifests e o checklist registram a versão `0.11.3`.
+
+Build, tipagem e lint do cabeçalho passaram. O Edge confirmou o acesso a Sobre nós por clique no desktop e no menu móvel, o hover, a abertura por teclado, o retorno de foco com Escape e o link para O escritório.
 
 ### RP-028 — 13/11/2026 — Rodapé marfim
 
