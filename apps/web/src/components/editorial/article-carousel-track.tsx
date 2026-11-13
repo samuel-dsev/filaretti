@@ -1,26 +1,34 @@
 'use client';
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
-import { Button } from '@filaretti/ui';
 import styles from './article-carousel.module.css';
 
 export function ArticleCarouselTrack({ children, label }: { children: ReactNode; label: string }) {
   const id = useId();
   const track = useRef<HTMLUListElement>(null);
+  const previousButton = useRef<HTMLButtonElement>(null);
+  const nextButton = useRef<HTMLButtonElement>(null);
   const [edges, setEdges] = useState({ atStart: true, atEnd: true });
 
   useEffect(() => {
     const element = track.current;
     if (!element) return;
 
-    function update() {
-      if (!element) return;
-      const atStart = element.scrollLeft <= 1;
-      const atEnd = element.scrollWidth - element.clientWidth - element.scrollLeft <= 1;
+    const update = () => {
+      const offset = element.scrollLeft;
+      const atEnd = element.scrollWidth - element.clientWidth - offset <= 1;
+      const firstWidth = element.firstElementChild?.getBoundingClientRect().width ?? 0;
+      const atStart = offset <= 1 || (!atEnd && offset < firstWidth - 1);
+      if (
+        (atStart && document.activeElement === previousButton.current) ||
+        (atEnd && document.activeElement === nextButton.current)
+      ) {
+        element.focus({ preventScroll: true });
+      }
       setEdges((previous) =>
         previous.atStart === atStart && previous.atEnd === atEnd ? previous : { atStart, atEnd },
       );
-    }
+    };
 
     const observer = new ResizeObserver(update);
     observer.observe(element);
@@ -41,39 +49,50 @@ export function ArticleCarouselTrack({ children, label }: { children: ReactNode;
   }
 
   return (
-    <div role="group" aria-roledescription="carrossel" aria-label={label}>
-      <ul id={id} ref={track} className={styles.track}>
+    <div
+      className={styles.carousel}
+      role="group"
+      aria-roledescription="carrossel"
+      aria-label={label}
+    >
+      <ul
+        id={id}
+        ref={track}
+        className={styles.track}
+        tabIndex={-1}
+        onKeyDown={(event) => {
+          if (event.target !== event.currentTarget) return;
+          if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+            event.preventDefault();
+            move(event.key === 'ArrowLeft' ? -1 : 1);
+          }
+        }}
+      >
         {children}
       </ul>
-      {!edges.atStart || !edges.atEnd ? (
-        <div className={styles.controls}>
-          <Button
-            type="button"
-            variant="secondary"
-            className={styles.control}
-            aria-controls={id}
-            aria-label="Artigo anterior"
-            aria-disabled={edges.atStart}
-            onClick={() => {
-              if (!edges.atStart) move(-1);
-            }}
-          >
-            <span aria-hidden="true">←</span>
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            className={styles.control}
-            aria-controls={id}
-            aria-label="Próximo artigo"
-            aria-disabled={edges.atEnd}
-            onClick={() => {
-              if (!edges.atEnd) move(1);
-            }}
-          >
-            <span aria-hidden="true">→</span>
-          </Button>
-        </div>
+      {!edges.atStart ? (
+        <button
+          ref={previousButton}
+          type="button"
+          className={`${styles.control} ${styles.previous}`}
+          aria-controls={id}
+          aria-label="Artigo anterior"
+          onClick={() => move(-1)}
+        >
+          <span aria-hidden="true">←</span>
+        </button>
+      ) : null}
+      {!edges.atEnd ? (
+        <button
+          ref={nextButton}
+          type="button"
+          className={`${styles.control} ${styles.next}`}
+          aria-controls={id}
+          aria-label="Próximo artigo"
+          onClick={() => move(1)}
+        >
+          <span aria-hidden="true">→</span>
+        </button>
       ) : null}
     </div>
   );

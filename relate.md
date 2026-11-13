@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-032                                 |
+| Última atualização | 13/11/2026 — RP-033                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.0`, oito manifests privados alinhados         |
-| Git                | `dev`, base `707ac27`                               |
-| Autorização        | Quatro artigos imobiliários e carrosséis            |
+| Versão             | `0.13.1`, oito manifests privados alinhados         |
+| Git                | `dev`, base `5e06655`                               |
+| Autorização        | Ajustar as setas e ocultar a barra dos carrosséis   |
 | Checkpoint         | Revisar artigos e carrosséis em localhost           |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-033 — 13/11/2026 — Setas laterais dos carrosséis
+
+O componente compartilhado da Home e do fim das publicações oculta a barra horizontal e posiciona as setas nas bordas dos cards, junto ao início dos títulos. O fundo cinza claro tem 50% de transparência. A seta anterior aparece após passar o primeiro artigo. A próxima desaparece quando a faixa chega ao último. A rolagem por toque e a navegação pelo teclado seguem disponíveis.
+
+Arquivos de interface em `apps/web/src/components/editorial/article-carousel-track.tsx` e `article-carousel.module.css`. Versão `0.13.1` nos manifests e no checklist.
+
+Build otimizado, TypeScript, ESLint e Prettier passaram. O Edge verificou a Home em 1366, 768 e 390 px, a posição e a transparência das setas, os limites nos dois sentidos, a navegação por teclado e a presença das setas no carrossel da publicação em tela estreita.
 
 ### RP-032 — 13/11/2026 — Artigos imobiliários e carrossel editorial
 
