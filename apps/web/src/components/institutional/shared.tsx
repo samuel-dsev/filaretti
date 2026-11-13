@@ -4,13 +4,11 @@ import type {
   PublicArticleSummary,
   PublicPage,
   PublicProfessional,
-  PublicSiteSettings,
   ProfessionalSummary,
   PublicPracticeArea,
 } from '@filaretti/types';
 import { EmptyState, LinkButton } from '@filaretti/ui';
 import { PublicContent, contentText } from '@/lib/public-content';
-import { safePublicUrl } from '@/lib/public-content-core';
 import { publicImage } from '@/lib/public-media';
 import { PracticeAreaCard, ProfessionalCard } from '@/components/site';
 import { EditorialArticleCard } from '@/components/editorial/article-card';
@@ -162,90 +160,6 @@ export function ArticlePreviewGrid({
       {articles.map((article) => (
         <EditorialArticleCard key={article.id} article={article} />
       ))}
-    </div>
-  );
-}
-
-export function ContactChannels({ settings }: { settings: PublicSiteSettings }) {
-  const emailHref = settings.publicEmail ? safePublicUrl(`mailto:${settings.publicEmail}`) : null;
-  const phone = settings.publicPhone?.replace(/[^\d+]/g, '');
-  const phoneHref = phone ? safePublicUrl(`tel:${phone}`) : null;
-  const whatsappHref = safePublicUrl(settings.whatsappUrl);
-  const address = Object.values(settings.address)
-    .filter((part) => part.trim())
-    .join(', ');
-  const socialLinks = settings.socialLinks.flatMap((link) => {
-    const href = safePublicUrl(link.url);
-    return href ? [{ ...link, href }] : [];
-  });
-  const hasContacts = emailHref || phoneHref || whatsappHref || address || socialLinks.length;
-
-  return (
-    <div className="institution-contact-grid">
-      <div>
-        {hasContacts ? (
-          <>
-            <dl className="institution-contact-list">
-              {emailHref ? (
-                <div>
-                  <dt>E-mail</dt>
-                  <dd>
-                    <a href={emailHref}>{settings.publicEmail}</a>
-                  </dd>
-                </div>
-              ) : null}
-              {phoneHref ? (
-                <div>
-                  <dt>Telefone</dt>
-                  <dd>
-                    <a href={phoneHref}>{settings.publicPhone}</a>
-                  </dd>
-                </div>
-              ) : null}
-              {address ? (
-                <div>
-                  <dt>Endereço</dt>
-                  <dd>
-                    <address>{address}</address>
-                  </dd>
-                </div>
-              ) : null}
-            </dl>
-            {whatsappHref ? (
-              <LinkButton href={whatsappHref}>
-                WhatsApp<span aria-hidden="true">↗</span>
-              </LinkButton>
-            ) : null}
-            {socialLinks.length ? (
-              <nav aria-label="Redes sociais" className="institution-social-links">
-                <ul>
-                  {socialLinks.map((link, index) => (
-                    <li key={`${link.label}-${index}`}>
-                      <a href={link.href}>
-                        {link.label}
-                        <span aria-hidden="true">↗</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            ) : null}
-          </>
-        ) : (
-          <EmptyState
-            title="Canais de contato em preparação"
-            description="Os canais serão apresentados quando estiverem disponíveis."
-          />
-        )}
-      </div>
-      <aside className="institution-newsletter" aria-labelledby="newsletter-heading">
-        <p className="site-eyebrow">Newsletter</p>
-        <h3 id="newsletter-heading">Receber conteúdos</h3>
-        <p>Solicite a inscrição e confirme pelo link enviado ao seu e-mail.</p>
-        <LinkButton href="/newsletter" variant="secondary">
-          Receber conteúdos<span aria-hidden="true">↗</span>
-        </LinkButton>
-      </aside>
     </div>
   );
 }

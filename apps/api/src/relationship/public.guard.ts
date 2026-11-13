@@ -21,10 +21,14 @@ export class RelationshipPublicGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const contact = request.path.endsWith('/contact');
-    const enabled = contact
-      ? this.environment.RELATIONSHIP_ENABLED
-      : (this.environment.NEWSLETTER_ENABLED ?? this.environment.RELATIONSHIP_ENABLED);
+    const path = request.path.toLowerCase().replace(/\/+$/u, '');
+    const caseIntake = path.endsWith('/contact/case-intake');
+    const contact = caseIntake || path.endsWith('/contact');
+    const enabled = caseIntake
+      ? this.environment.CASE_INTAKE_ENABLED
+      : contact
+        ? this.environment.RELATIONSHIP_ENABLED
+        : (this.environment.NEWSLETTER_ENABLED ?? this.environment.RELATIONSHIP_ENABLED);
     if (!enabled) throw new NotFoundException();
     if (
       request.headers.origin !== new URL(this.environment.WEB_PUBLIC_URL).origin ||

@@ -25,6 +25,7 @@ import type { AuthenticatedRequest } from '../auth/types';
 import { VersionDto } from '../domain/dto';
 import { PDF_LIMIT, type UploadedFile } from '../cms/upload';
 import {
+  CaseIntakeDto,
   ContactDto,
   ContactQueryDto,
   ContactStatusDto,
@@ -39,6 +40,20 @@ import { DOMAIN_ENVIRONMENT } from '../domain/shared';
 import { resolveClientIp } from '../common/client-ip';
 
 const uuid = new ParseUUIDPipe();
+const ContactFilesInterceptor = FilesInterceptor('attachments', CONTACT_FILE_COUNT_LIMIT, {
+  limits: {
+    fileSize: PDF_LIMIT,
+    files: CONTACT_FILE_COUNT_LIMIT,
+    fields: 12,
+    fieldSize: 10000,
+    parts: 15,
+  },
+});
+const contactFilesSchema = {
+  type: 'array' as const,
+  maxItems: CONTACT_FILE_COUNT_LIMIT,
+  items: { type: 'string' as const, format: 'binary' },
+};
 
 @ApiTags('Relacionamento público')
 @UseGuards(RelationshipPublicGuard)
@@ -48,6 +63,47 @@ export class PublicRelationshipController {
     private readonly relationship: RelationshipService,
     @Inject(DOMAIN_ENVIRONMENT) private readonly environment: ApiEnvironment,
   ) {}
+
+  @Post('contact/case-intake')
+  @HttpCode(202)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: [
+        'name',
+        'phone',
+        'state',
+        'message',
+        'privacyAccepted',
+        'turnstileToken',
+        'idempotencyKey',
+      ],
+      properties: {
+        name: { type: 'string', minLength: 2, maxLength: 160 },
+        phone: { type: 'string', description: 'Telefone brasileiro com DDD.' },
+        state: { type: 'string', minLength: 2, maxLength: 2 },
+        email: { type: 'string', format: 'email', maxLength: 254 },
+        message: { type: 'string', minLength: 10, maxLength: 10000 },
+        privacyAccepted: { type: 'boolean', enum: [true] },
+        turnstileToken: { type: 'string' },
+        idempotencyKey: { type: 'string', format: 'uuid' },
+        attachments: contactFilesSchema,
+      },
+    },
+  })
+  @UseInterceptors(ContactFilesInterceptor)
+  caseIntake(
+    @Body() dto: CaseIntakeDto,
+    @UploadedFiles() files: UploadedFile[] | undefined,
+    @Req() request: Request,
+  ) {
+    return this.relationship.caseIntake(
+      dto,
+      files ?? [],
+      resolveClientIp(request, this.environment),
+    );
+  }
 
   @Post('contact')
   @HttpCode(202)
@@ -76,25 +132,11 @@ export class PublicRelationshipController {
         newsletterConsent: { type: 'boolean' },
         turnstileToken: { type: 'string' },
         idempotencyKey: { type: 'string', format: 'uuid' },
-        attachments: {
-          type: 'array',
-          maxItems: CONTACT_FILE_COUNT_LIMIT,
-          items: { type: 'string', format: 'binary' },
-        },
+        attachments: contactFilesSchema,
       },
     },
   })
-  @UseInterceptors(
-    FilesInterceptor('attachments', CONTACT_FILE_COUNT_LIMIT, {
-      limits: {
-        fileSize: PDF_LIMIT,
-        files: CONTACT_FILE_COUNT_LIMIT,
-        fields: 12,
-        fieldSize: 10000,
-        parts: 15,
-      },
-    }),
-  )
+  @UseInterceptors(ContactFilesInterceptor)
   contact(
     @Body() dto: ContactDto,
     @UploadedFiles() files: UploadedFile[] | undefined,

@@ -4,6 +4,7 @@ export function relationshipEndpoint(path: readonly string[], method: string): s
   const route = path.join('/');
   return [
     'contact',
+    'contact/case-intake',
     'newsletter/subscribe',
     'newsletter/confirm',
     'newsletter/unsubscribe',

@@ -148,6 +148,7 @@ test('F7 contact, private downloads, double opt-in, quotas and retention use Pos
           where: { idempotencyKey: contactKey },
           include: { files: true },
         });
+        assert.ok(stored.email);
         assert.equal(stored.files.length, 1);
         assert.equal(stored.files[0]!.scanStatus, 'LOCAL_VERIFIED');
         const mail = await db.outboxTask.findUniqueOrThrow({
@@ -549,5 +550,102 @@ test('F7 contact, private downloads, double opt-in, quotas and retention use Pos
     assert.ok(target.startsWith(`${temp}${sep}`) && target !== temp);
     const directory = await stat(target).catch(() => null);
     if (directory) await rm(target, { recursive: true, force: true });
+  }
+});
+
+test('case intake accepts phone-only requests and keeps the legacy public forms disabled', async (t) => {
+  assert.ok(process.env.DATABASE_URL);
+  const storageRoot = await mkdtemp(join(tmpdir(), 'filaretti-case-'));
+  t.after(async () => {
+    const target = resolve(storageRoot);
+    assert.ok(target.startsWith(`${resolve(tmpdir())}${sep}`));
+    await rm(target, { recursive: true, force: true });
+  });
+  const environment = testEnvironment({
+    DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_TIMEOUT_MS: 2000,
+    STORAGE_LOCAL_PATH: join(storageRoot, 'storage'),
+    MAIL_LOCAL_PATH: join(storageRoot, 'mail'),
+    PREVIEW_SECRET: randomBytes(32).toString('hex'),
+    MOCK_INTEGRATIONS: true,
+    RELATIONSHIP_ENABLED: false,
+    NEWSLETTER_ENABLED: false,
+    CASE_INTAKE_ENABLED: true,
+  });
+  const app = await createApplication(environment, new SanitizedLogger(() => {}));
+  await app.listen(0, '127.0.0.1');
+  try {
+    const db = app.get(PrismaService);
+    const visitor = new Browser(await app.getUrl(), environment.WEB_PUBLIC_URL);
+    const path = '/public/contact/case-intake';
+    const idempotencyKey = randomUUID();
+    const message = 'Relato fictício para testar o atendimento jurídico.';
+    const phone = '+55 (11) 99999-0101';
+    const png = await sharp({
+      create: { width: 24, height: 24, channels: 3, background: '#102A43' },
+    })
+      .png()
+      .toBuffer();
+    const data = () => {
+      const form = new FormData();
+      for (const [name, value] of Object.entries({
+        name: 'Pessoa fictícia',
+        phone,
+        state: 'SP',
+        message,
+        privacyAccepted: 'true',
+        turnstileToken: 'local-development-contact',
+        idempotencyKey,
+      }))
+        form.set(name, value);
+      form.append(
+        'attachments',
+        new Blob([new Uint8Array(png)], { type: 'image/png' }),
+        'caso.png',
+      );
+      return form;
+    };
+    assert.equal((await visitor.request('/public/contact', 'POST', data())).status, 404);
+    assert.equal((await visitor.request('/public/newsletter/subscribe', 'POST', {})).status, 404);
+    const invalidState = data();
+    invalidState.set('state', 'ZZ');
+    assert.equal((await visitor.request(path, 'POST', invalidState)).status, 400);
+    const invalidPhone = data();
+    invalidPhone.set('phone', '123');
+    assert.equal((await visitor.request(path, 'POST', invalidPhone)).status, 400);
+    const invalidConsent = data();
+    invalidConsent.set('newsletterConsent', 'true');
+    assert.equal((await visitor.request(path, 'POST', invalidConsent)).status, 400);
+    const subscriberCount = await db.newsletterSubscriber.count();
+    const accepted = await visitor.request(path, 'POST', data());
+    assert.equal(accepted.status, 202);
+    assert.deepEqual(await accepted.json(), { accepted: true, message: 'Solicitação recebida.' });
+    assert.equal((await visitor.request(path, 'POST', data())).status, 202);
+    assert.equal(await db.newsletterSubscriber.count(), subscriberCount);
+    const stored = await db.contact.findUniqueOrThrow({
+      where: { idempotencyKey },
+      include: { files: true },
+    });
+    assert.equal(stored.email, null);
+    assert.equal(stored.phone, phone);
+    assert.equal(stored.state, 'SP');
+    assert.equal(stored.message, message);
+    assert.equal(stored.isMock, true);
+    assert.equal(stored.files.length, 1);
+    assert.equal(stored.files[0]!.scanStatus, 'LOCAL_VERIFIED');
+    assert.equal(
+      (await visitor.request(`/media/public/${stored.files[0]!.storageKey}`)).status,
+      404,
+    );
+    const notification = await db.outboxTask.findUniqueOrThrow({
+      where: { idempotencyKey: `contact-notification:${stored.id}` },
+    });
+    assert.equal(JSON.stringify(notification.payload).includes(message), false);
+    const changed = data();
+    changed.set('message', 'Relato diferente com a mesma chave de idempotência.');
+    assert.equal((await visitor.request(path, 'POST', changed)).status, 409);
+    assert.equal(await db.contact.count({ where: { idempotencyKey } }), 1);
+  } finally {
+    await app.close();
   }
 });

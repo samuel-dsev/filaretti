@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Brand } from './brand';
 import type { SiteFooterProps } from './types';
 import { CookiePreferencesButton } from '../privacy/consent-provider';
+import { HomeFooterForm } from './home-footer-form';
 
 export function SiteFooter({
   brand,
@@ -9,17 +10,23 @@ export function SiteFooter({
   groups,
   note,
   address,
+  email,
+  homeForm,
   copyright,
 }: SiteFooterProps) {
   return (
     <footer className="site-footer">
       <div className="f-container">
+        {homeForm ? <HomeFooterForm>{homeForm}</HomeFooterForm> : null}
         <div className="site-footer-grid">
           <div className="site-footer-intro">
             <Brand brand={brand} />
             <p>{description}</p>
-            {address ? (
-              <address className="site-footer-address">Endereços: {address}</address>
+            {address ? <address className="site-footer-address">{address}</address> : null}
+            {email ? (
+              <a className="site-footer-email" href={email.href}>
+                {email.address}
+              </a>
             ) : null}
           </div>
           {groups.map((group) => (

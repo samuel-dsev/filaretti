@@ -19,6 +19,17 @@ export interface ContactSubmission {
   idempotencyKey: string;
 }
 
+export interface CaseIntakeSubmission {
+  name: string;
+  phone: string;
+  state: string;
+  email?: string;
+  message: string;
+  privacyAccepted: true;
+  turnstileToken: string;
+  idempotencyKey: string;
+}
+
 export interface NewsletterSubscription {
   email: string;
   name?: string;
@@ -41,7 +52,7 @@ export interface AdminContactFile {
 export interface AdminContact {
   id: string;
   name: string;
-  email: string;
+  email: string | null;
   phone: string | null;
   state: string | null;
   subject: string;

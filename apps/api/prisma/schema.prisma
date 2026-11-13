@@ -405,7 +405,7 @@ model Media {
 model Contact {
   id             String              @id @default(uuid()) @db.Uuid
   name           String              @db.VarChar(160)
-  email          String              @db.VarChar(254)
+  email          String?             @db.VarChar(254)
   phone          String?             @db.VarChar(40)
   state          String?             @db.VarChar(2)
   subject        String              @db.VarChar(200)

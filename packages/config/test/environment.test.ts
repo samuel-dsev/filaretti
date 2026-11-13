@@ -160,6 +160,24 @@ describe('configuration boundaries', () => {
       'SEO_INDEXING_ENABLED',
     );
   });
+  it('enables the case form independently and preserves real provider requirements', () => {
+    expect(validateApiEnvironment(api).CASE_INTAKE_ENABLED).toBe(false);
+    expect(validateWebEnvironment(web).caseIntakeEnabled).toBe(false);
+    expect(validateWebEnvironment({ ...web, CASE_INTAKE_ENABLED: 'true' }).caseIntakeEnabled).toBe(
+      true,
+    );
+    const caseOnly = {
+      ...api,
+      CASE_INTAKE_ENABLED: 'true',
+      RELATIONSHIP_ENABLED: 'false',
+      NEWSLETTER_ENABLED: 'false',
+    };
+    expect(validateApiEnvironment(caseOnly).CASE_INTAKE_ENABLED).toBe(true);
+    expect(validateApiEnvironment(caseOnly).RELATIONSHIP_ENABLED).toBe(false);
+    expect(() => validateApiEnvironment({ ...caseOnly, MOCK_INTEGRATIONS: false })).toThrow(
+      /RESEND_ENABLED.*TURNSTILE_ENABLED.*CONTACT_NOTIFICATION_EMAIL.*PRIVACY_VERSION/u,
+    );
+  });
   it('allows a configured R2 adapter only with separate buckets', () => {
     const r2 = {
       ...api,

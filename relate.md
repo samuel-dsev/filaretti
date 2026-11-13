@@ -4,16 +4,30 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-030                                 |
+| Última atualização | 13/11/2026 — RP-031                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.11.4`, oito manifests privados alinhados         |
-| Git                | `dev`, base `c73f0a3`                               |
-| Autorização        | Adicionar hover suave aos itens inativos do menu    |
-| Checkpoint         | Revisar o efeito no cabeçalho em localhost          |
+| Versão             | `0.12.0`, oito manifests privados alinhados         |
+| Git                | `dev`, base `742c245`                               |
+| Autorização        | Reorganizar a Home e incorporar o formulário        |
+| Checkpoint         | Revisar a Home e o formulário em localhost          |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-031 — 13/11/2026 — Home e formulário no rodapé
+
+A Home apresenta abertura com imagem ilustrativa de ponta a ponta e título administrável, carrossel dos perfis públicos em intervalos de cinco segundos, artigos publicados e o catálogo de áreas com a apresentação existente. Os guias e as demais seções saíram da Home. O catálogo editorial conserva suas rotas e filtros. O carrossel oferece pausa, navegação manual e respeita a preferência por movimento reduzido.
+
+O rodapé exibe e-mail e endereço das configurações do site. Na Home, Conte seu caso recebe nome, telefone, UF, relato, e-mail opcional e anexos opcionais. A solicitação é registrada em Contatos do CMS pelo gateway da mesma origem. O endpoint usa o pipeline de anexos privados e uma migração que aceita contatos sem e-mail. O aviso de privacidade foi atualizado. A inscrição editorial continua disponível nas rotas existentes.
+
+Os textos da Home, do escritório e do aviso de privacidade foram atualizados no CMS local em transação com snapshot ignorado pelo Git. Os textos de desenvolvimento foram atualizados em `apps/api/prisma/development-content.ts`. A base de revisão tinha zero profissionais e zero artigos publicados. A imagem de abertura reaproveita o arquivo ilustrativo existente. As fotos da equipe vêm dos perfis públicos.
+
+**Arquivos.** Rota, layout e componentes institucionais, carrossel, rodapé e CSS em `apps/web/src`; formulário e gateway em `apps/web/src/components/relationship` e `apps/web/src/lib`; painel Contatos em `apps/web/src/components/admin/contacts.tsx`; API em `apps/api/src/relationship`, schema e migração em `apps/api/prisma`; contratos, ambiente e configuração de build em `packages/types`, `packages/config`, exemplos de ambiente e `turbo.json`. A versão `0.12.0` está nos oito manifests e em `docs/release-checklist.json`.
+
+**Validação.** Geração Prisma, build da API, build otimizado da web e verificação de tipos aprovados. Lint da web e dos arquivos de API alterados, 72 testes web e 13 testes de configuração passaram. A integração de relacionamento aprovou 14 cenários no PostgreSQL isolado, incluindo anexos privados, e-mail omitido, idempotência e bloqueio das rotas legadas com somente o atendimento habilitado. No Edge local, a Home em 1440 e 390 px mostrou a ordem dos blocos, a imagem de fundo, os campos obrigatórios, o endereço e o e-mail no rodapé. O smoke isolado validou rotação em cinco segundos, navegação manual, movimento reduzido, foto do perfil e envio pelo navegador com HTTP 202 e e-mail nulo no banco.
+
+O smoke institucional final registrou 46 verificações e 30 layouts no Edge, com limpeza do banco, dos processos e da imagem de teste. A migração foi aplicada em `filaretti_dev`. A flag do formulário foi habilitada nos processos locais da API e da web com as integrações simuladas. Turnstile, notificações e storage externos aguardam homologação.
 
 ### RP-030 — 13/11/2026 — Hover suave no menu principal
 

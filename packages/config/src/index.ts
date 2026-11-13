@@ -47,6 +47,7 @@ const webSchema = z
     NEXT_PUBLIC_API_BASE_PATH: z.literal('/api/v1').default('/api/v1'),
     MOCK_CONTENT: flag(true),
     NEXT_PUBLIC_MOCK_INTEGRATIONS: flag(false),
+    CASE_INTAKE_ENABLED: flag(false),
     GA4_ENABLED: flag(false),
     GA4_ENHANCED_MEASUREMENT_DISABLED: flag(false),
     SEO_INDEXING_ENABLED: flag(false),
@@ -116,6 +117,7 @@ export function validateWebEnvironment(input: EnvironmentInput) {
     publicApiBasePath: env.NEXT_PUBLIC_API_BASE_PATH,
     mockContent: env.MOCK_CONTENT,
     mockIntegrations: env.NEXT_PUBLIC_MOCK_INTEGRATIONS,
+    caseIntakeEnabled: env.CASE_INTAKE_ENABLED,
     analyticsEnabled: env.GA4_ENABLED,
     seoIndexingEnabled: env.SEO_INDEXING_ENABLED,
     turnstileSiteKey: env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
@@ -137,6 +139,7 @@ const apiSchema = z
     MOCK_CONTENT: flag(true),
     MOCK_INTEGRATIONS: flag(false),
     RELATIONSHIP_ENABLED: flag(true),
+    CASE_INTAKE_ENABLED: flag(false),
     NEWSLETTER_ENABLED: flag(false).optional(),
     RELATIONSHIP_WORKER_ENABLED: flag(true),
     CONTACT_RETENTION_DAYS: z.coerce.number().int().min(1).max(3650).default(180),
@@ -262,18 +265,19 @@ const apiSchema = z
         if (!env[key]?.trim()) ctx.addIssue({ code: 'custom', path: [key], message: 'Required' });
     }
     const newsletterEnabled = env.NEWSLETTER_ENABLED ?? env.RELATIONSHIP_ENABLED;
-    if ((env.RELATIONSHIP_ENABLED || newsletterEnabled) && !env.MOCK_INTEGRATIONS) {
+    const contactEnabled = env.RELATIONSHIP_ENABLED || env.CASE_INTAKE_ENABLED;
+    if ((contactEnabled || newsletterEnabled) && !env.MOCK_INTEGRATIONS) {
       for (const key of ['RESEND_ENABLED', 'TURNSTILE_ENABLED'] as const)
         if (!env[key])
           ctx.addIssue({ code: 'custom', path: [key], message: 'Required for relationship' });
-      if (env.RELATIONSHIP_ENABLED && !z.email().safeParse(env.CONTACT_NOTIFICATION_EMAIL).success)
+      if (contactEnabled && !z.email().safeParse(env.CONTACT_NOTIFICATION_EMAIL).success)
         ctx.addIssue({
           code: 'custom',
           path: ['CONTACT_NOTIFICATION_EMAIL'],
           message: 'Required recipient',
         });
       const versions = [
-        ...(env.RELATIONSHIP_ENABLED ? (['PRIVACY_VERSION'] as const) : []),
+        ...(contactEnabled ? (['PRIVACY_VERSION'] as const) : []),
         ...(newsletterEnabled ? (['NEWSLETTER_CONSENT_VERSION'] as const) : []),
       ];
       for (const key of versions)

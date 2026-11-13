@@ -4,6 +4,9 @@ import { PublicLayout } from '../../components/site';
 import { getArticle, getSettings } from '../../lib/public-api';
 import { officeAddress } from '@/lib/office-address';
 import { safePublicUrl } from '@/lib/public-content-core';
+import { ContactForm } from '@/components/relationship/contact-form';
+import { relationshipConfiguration } from '@/components/relationship/configuration';
+import { validateWebEnvironment } from '@filaretti/config';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,6 +21,8 @@ export default async function InstitutionalLayout({ children }: { children: Reac
       : Promise.resolve(null),
   ]);
   const brand = { name: settings.siteName, href: '/', monogram: 'F' };
+  const email = settings.publicEmail ? safePublicUrl(`mailto:${settings.publicEmail}`) : null;
+  const caseIntakeEnabled = validateWebEnvironment(process.env).caseIntakeEnabled;
   return (
     <PublicLayout
       header={{
@@ -44,6 +49,13 @@ export default async function InstitutionalLayout({ children }: { children: Reac
         description:
           'Atuação integrada, escuta próxima e conhecimento jurídico para apoiar suas decisões.',
         address: officeAddress(settings.address),
+        email:
+          email && settings.publicEmail
+            ? { address: settings.publicEmail, href: email }
+            : undefined,
+        homeForm: caseIntakeEnabled ? (
+          <ContactForm config={relationshipConfiguration()} caseIntake />
+        ) : undefined,
         groups: [
           {
             title: 'Institucional',
@@ -59,7 +71,7 @@ export default async function InstitutionalLayout({ children }: { children: Reac
             links: [
               { label: 'Conteúdos publicados', href: '/conteudos' },
               { label: 'Contato', href: '/contato' },
-              { label: 'Newsletter', href: '/newsletter' },
+              ...(caseIntakeEnabled ? [{ label: 'Conte seu caso', href: '/#conte-seu-caso' }] : []),
             ],
           },
         ],

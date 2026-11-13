@@ -128,7 +128,7 @@ export function Contacts({ initialPage = 1 }: { initialPage?: number }) {
             }}
           />
           <TextField
-            label="Buscar por nome, e-mail ou assunto"
+            label="Buscar por nome, telefone, e-mail ou assunto"
             value={query}
             maxLength={120}
             onChange={setQuery}
@@ -185,7 +185,10 @@ export function Contacts({ initialPage = 1 }: { initialPage?: number }) {
                         <th scope="row">
                           {record.subject}
                           <span className="cms-table-sub">
-                            {record.name} · {record.email}
+                            {record.name}
+                            {record.email || record.phone
+                              ? ` · ${record.email ?? record.phone}`
+                              : ''}
                           </span>
                         </th>
                         <td>
@@ -262,7 +265,8 @@ export function Contacts({ initialPage = 1 }: { initialPage?: number }) {
               <div>
                 <dt>Contato</dt>
                 <dd>
-                  {selected.name} · {selected.email}
+                  {selected.name}
+                  {selected.email ? ` · ${selected.email}` : ''}
                 </dd>
               </div>
               {selected.phone ? (

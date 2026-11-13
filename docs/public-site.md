@@ -8,20 +8,20 @@ Na revisão local `0.10.1`, por pedido do usuário, a prosa passou a usar nomes 
 
 ## Rotas e dados
 
-| Rota                       | Consultas públicas da API                                                                                  |
-| -------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| `/`                        | Página `home`, página `o-escritorio`, settings, áreas, profissionais, artigos recentes, destacados e guias |
-| `/o-escritorio`            | Página publicada `o-escritorio`, settings e profissionais ativos                                           |
-| `/areas-de-atuacao`        | Áreas ativas, paginação real com 12 registros                                                              |
-| `/areas-de-atuacao/[slug]` | Área ativa, serviços, profissionais vinculados e artigos publicados filtrados por área                     |
-| `/profissionais`           | Profissionais ativos, paginação real com 12 registros                                                      |
-| `/profissionais/[slug]`    | Perfil ativo, bio, formação, experiência, áreas e artigos publicados filtrados pelo profissional           |
+| Rota                       | Consultas públicas da API                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------------------------ |
+| `/`                        | Página `home`, settings, áreas, profissionais ativos e três artigos recentes do tipo `ARTICLE`   |
+| `/o-escritorio`            | Página publicada `o-escritorio`, settings e profissionais ativos                                 |
+| `/areas-de-atuacao`        | Áreas ativas, paginação real com 12 registros                                                    |
+| `/areas-de-atuacao/[slug]` | Área ativa, serviços, profissionais vinculados e artigos publicados filtrados por área           |
+| `/profissionais`           | Profissionais ativos, paginação real com 12 registros                                            |
+| `/profissionais/[slug]`    | Perfil ativo, bio, formação, experiência, áreas e artigos publicados filtrados pelo profissional |
 
 Os Server Components consomem exclusivamente DTOs de `@filaretti/types` por `src/lib/public-api.ts`. Prisma, cookies de sessão e segredos não integram essa camada. O cliente servidor usa `API_INTERNAL_URL`, timeout de cinco segundos, `credentials: omit`, redirecionamentos recusados e `cache: no-store`; projeta somente campos públicos e diferencia 404, indisponibilidade e resposta inválida. Erros de transporte/corpos de erro não são apresentados ao visitante. O Nest continua responsável pela publicação, visibilidade e relações.
 
-`?pagina=N` nas listagens traduz-se em `page=N` na API. Valores inválidos retornam à primeira página; o limite máximo aceito é 100000. Página distante preserva o estado vazio e navegação. Menu e Home apresentam seleções limitadas; as listagens paginadas permitem percorrer todo o catálogo. A Home consulta recentes, destaques e guias separadamente, com três itens em cada seleção: `featured=true` e `type=GUIDE` são filtrados no PostgreSQL, sem depender de uma janela dos artigos recentes.
+`?pagina=N` nas listagens traduz-se em `page=N` na API. Valores inválidos retornam à primeira página. O limite máximo aceito é 100000. Página distante preserva o estado vazio e a navegação. O carrossel da Home consulta todas as páginas do catálogo público de profissionais ativos. A seção de artigos consulta três registros com filtro `type=ARTICLE`. Guias e atualizações permanecem disponíveis em `/conteudos`.
 
-Título/seções de Home e escritório, descrições/bios, serviços, contatos, marca textual, relações e mídias vêm da API. Rótulos de navegação e das seções são interface. Fotos ausentes usam iniciais; o Hero institucional mantém a ilustração CSS substituível aprovada na F3. `Page.sections` não possui campo de mídia; sua extensão e gestão de uploads pertencem ao CMS da F6.
+Título e descrição da abertura da Home, seções do escritório, bios, serviços, contatos, marca textual, relações e mídias vêm da API. A abertura reutiliza a imagem ilustrativa do escritório e o carrossel usa as fotos cadastradas nos perfis. O rodapé da Home inclui o formulário [Conte seu caso](relationship.md). Rótulos de navegação e das seções são definidos pela interface.
 
 ## Renderização, metadata e estados
 

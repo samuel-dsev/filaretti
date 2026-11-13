@@ -9,14 +9,10 @@ import type {
 } from '@filaretti/types';
 
 export interface HomeViewProps {
-  settings: PublicSiteSettings;
   page: PublicPage;
-  office: PublicPage | null;
   areas: PublicPracticeArea[];
   professionals: PublicProfessional[];
   articles: PublicArticleSummary[];
-  guides: PublicArticleSummary[];
-  featuredArticles: PublicArticleSummary[];
 }
 
 export interface OfficeViewProps {

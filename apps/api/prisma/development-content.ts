@@ -666,10 +666,10 @@ export const DEVELOPMENT_FAQS = [
 
 export const DEVELOPMENT_PAGES = {
   home: {
-    title: 'Direito próximo das suas decisões',
-    seoTitle: 'Ettori & Filaretti Advogados | Direito próximo das suas decisões',
+    title: 'Ao seu lado nas decisões que importam',
+    seoTitle: 'Ao seu lado nas decisões que importam | Ettori & Filaretti Advogados',
     seoDescription:
-      'Conheça a Ettori & Filaretti Advogados, suas áreas de atuação, profissionais e conteúdos sobre negócios, patrimônio, relações de trabalho e tecnologia.',
+      'A confiança começa com uma boa conversa. Na Filaretti, ouvimos sua história e ajudamos você a entender seus direitos e os próximos passos.',
     sections: [
       {
         key: 'intro',
@@ -691,13 +691,12 @@ export const DEVELOPMENT_PAGES = {
   'o-escritorio': {
     title: 'O escritório',
     seoTitle: 'O escritório | Ettori & Filaretti Advogados',
-    seoDescription:
-      'Conheça a abordagem da Ettori & Filaretti Advogados: escuta, trabalho integrado e comunicação clara para acompanhar decisões de empresas e pessoas.',
+    seoDescription: 'Conheça o escritório da Filaretti em Taubaté e veja como chegar.',
     sections: [
       {
         key: 'intro',
-        heading: 'Conhecimento que se constrói em conjunto',
-        text: 'A Ettori & Filaretti Advogados reúne profissionais que trabalham de forma integrada em questões empresariais, trabalhistas, imobiliárias, familiares e digitais. Partimos da compreensão de cada contexto para conectar as informações relevantes e discutir caminhos com quem precisa tomar uma decisão. Essa forma de atuar valoriza a escuta, a organização e a participação das áreas envolvidas.',
+        heading: '',
+        text: 'Em Taubaté, nosso escritório recebe quem busca orientação jurídica com escuta, clareza e atenção às particularidades de cada caso.',
       },
       {
         key: 'method',
@@ -715,12 +714,17 @@ export const DEVELOPMENT_PAGES = {
     title: 'Privacidade',
     seoTitle: 'Privacidade | Ettori & Filaretti Advogados',
     seoDescription:
-      'Entenda como as informações enviadas pelo contato e pela newsletter são utilizadas e como consultar suas preferências de privacidade no site.',
+      'Entenda como são utilizadas as informações enviadas pelo formulário, pelos canais de contato e pela newsletter.',
     sections: [
       {
         key: 'intro',
         heading: 'Informações e finalidades',
         text: 'O site recebe informações que você fornece ao utilizar o formulário de contato ou solicitar uma inscrição na newsletter. No contato, nome, e-mail, assunto, mensagem e eventuais anexos ajudam a compreender a solicitação e organizar o atendimento. Na newsletter, os dados da inscrição são utilizados para registrar a solicitação, sua confirmação e suas preferências relacionadas ao cadastro.',
+      },
+      {
+        key: 'home-case',
+        heading: 'Formulário Conte seu caso',
+        text: 'O formulário da página inicial pede nome, telefone, estado e um relato para organizar o atendimento e responder à solicitação. O e-mail e os documentos são opcionais. O acesso aos documentos é restrito à equipe responsável pelo atendimento. Envie apenas documentos pertinentes ao caso.',
       },
       {
         key: 'contact',

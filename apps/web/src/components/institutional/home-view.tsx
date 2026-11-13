@@ -1,36 +1,43 @@
-import { Hero, PlaceholderArtwork } from '@/components/site';
-import { PublicContent } from '@/lib/public-content';
-import {
-  ArticlePreviewGrid,
-  AreaGrid,
-  ContactChannels,
-  InstitutionalSection,
-  PageSections,
-  ProfessionalGrid,
-} from './shared';
+import Image from 'next/image';
+import { contentText } from '@/lib/public-content-core';
+import { publicImage } from '@/lib/public-media';
+import { ArticlePreviewGrid, AreaGrid, InstitutionalSection } from './shared';
+import { TeamCarousel } from './team-carousel';
 import type { HomeViewProps } from './types';
 
-export function HomeView({
-  settings,
-  page,
-  office,
-  areas,
-  professionals,
-  articles,
-  guides,
-  featuredArticles,
-}: HomeViewProps) {
+export function HomeView({ page, areas, professionals, articles }: HomeViewProps) {
+  const members = professionals.map((professional) => ({
+    id: professional.id,
+    name: professional.name,
+    title: professional.title,
+    qualification: contentText(professional.bio, 200) || professional.education[0],
+    href: `/profissionais/${encodeURIComponent(professional.slug)}`,
+    image: publicImage(professional.photo, professional.name),
+  }));
+
   return (
     <>
-      <Hero
-        eyebrow={settings.siteName}
-        title={page.title}
-        description={page.seoDescription ?? undefined}
-        visual={<PlaceholderArtwork />}
-      />
-      <PageSections page={page} />
-      <InstitutionalSection id="destaques" title="Destaques" eyebrow="Conteúdos" soft>
-        <ArticlePreviewGrid articles={featuredArticles} emptyTitle="Nenhum destaque publicado" />
+      <section className="home-hero" aria-labelledby="home-heading">
+        <Image
+          src="/brand/escritorio-ilustrativo.webp"
+          alt=""
+          fill
+          sizes="100vw"
+          preload
+          className="home-hero-image"
+        />
+        <div className="f-container home-hero-copy">
+          <h1 id="home-heading">{page.title}</h1>
+          {page.seoDescription ? <p>{page.seoDescription}</p> : null}
+        </div>
+      </section>
+      <TeamCarousel members={members} />
+      <InstitutionalSection
+        id="conteudos"
+        title="Artigos"
+        action={{ label: 'Todos os artigos', href: '/conteudos?tipo=ARTICLE' }}
+      >
+        <ArticlePreviewGrid articles={articles} emptyTitle="Nenhum artigo publicado" />
       </InstitutionalSection>
       <InstitutionalSection
         id="areas"
@@ -39,51 +46,6 @@ export function HomeView({
         action={{ label: 'Todas as áreas', href: '/areas-de-atuacao' }}
       >
         <AreaGrid areas={areas.slice(0, 6)} />
-      </InstitutionalSection>
-      {office ? (
-        <InstitutionalSection
-          id="escritorio"
-          title={office.title}
-          eyebrow="O escritório"
-          action={{ label: 'Conhecer o escritório', href: '/o-escritorio' }}
-          soft
-        >
-          <div className="institution-office-summary">
-            {office.sections[0] ? (
-              <PublicContent document={office.sections[0].body} />
-            ) : (
-              <p>Conteúdo em preparação.</p>
-            )}
-          </div>
-        </InstitutionalSection>
-      ) : null}
-      <InstitutionalSection
-        id="conteudos"
-        title="Conteúdos recentes"
-        eyebrow="Publicações"
-        action={{ label: 'Todos os conteúdos', href: '/conteudos' }}
-      >
-        <ArticlePreviewGrid articles={articles} />
-      </InstitutionalSection>
-      <InstitutionalSection
-        id="profissionais"
-        title="Profissionais"
-        eyebrow="Equipe"
-        action={{ label: 'Todos os profissionais', href: '/profissionais' }}
-        soft
-      >
-        <ProfessionalGrid professionals={professionals.slice(0, 3)} />
-      </InstitutionalSection>
-      <InstitutionalSection
-        id="guias"
-        title="Guias"
-        eyebrow="Publicações"
-        action={{ label: 'Todos os guias', href: '/conteudos?tipo=GUIDE' }}
-      >
-        <ArticlePreviewGrid articles={guides} emptyTitle="Nenhum guia publicado" />
-      </InstitutionalSection>
-      <InstitutionalSection id="contato" title="Contato" eyebrow="Canais de contato" soft>
-        <ContactChannels settings={settings} />
       </InstitutionalSection>
     </>
   );

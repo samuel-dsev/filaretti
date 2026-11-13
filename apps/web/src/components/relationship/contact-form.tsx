@@ -39,11 +39,13 @@ const states = [
 ];
 
 export function ContactForm({
-  areas,
+  areas = [],
   config,
+  caseIntake = false,
 }: {
-  areas: { id: string; name: string }[];
+  areas?: { id: string; name: string }[];
   config: RelationshipConfiguration;
+  caseIntake?: boolean;
 }) {
   const id = useId();
   const key = useRef('');
@@ -66,7 +68,7 @@ export function ContactForm({
     }
     values.delete('attachments');
     for (const file of files) values.append('attachments', file);
-    for (const field of ['phone', 'state', 'practiceAreaId'])
+    for (const field of ['phone', 'state', 'practiceAreaId', 'email'])
       if (!String(values.get(field) ?? '').trim()) values.delete(field);
     key.current ||= crypto.randomUUID();
     values.set('idempotencyKey', key.current);
@@ -75,7 +77,7 @@ export function ContactForm({
     setError('');
     setMessage('');
     try {
-      await relationshipApi('contact', values);
+      await relationshipApi(caseIntake ? 'contact/case-intake' : 'contact', values);
       setMessage(
         'Solicitação recebida. A equipe poderá responder pelos dados de contato informados.',
       );
@@ -89,6 +91,17 @@ export function ContactForm({
       setAttempt((value) => value + 1);
     }
   }
+  const emailField = (
+    <FormField
+      id={`${id}-email`}
+      label={caseIntake ? 'E-mail (opcional)' : 'E-mail'}
+      required={!caseIntake}
+    >
+      {(props) => (
+        <Input {...props} name="email" type="email" autoComplete="email" maxLength={254} />
+      )}
+    </FormField>
+  );
   return (
     <form className="relationship-form" onSubmit={submit} aria-busy={pending}>
       <fieldset disabled={pending}>
@@ -99,12 +112,13 @@ export function ContactForm({
               <Input {...props} name="name" autoComplete="name" minLength={2} maxLength={160} />
             )}
           </FormField>
-          <FormField id={`${id}-email`} label="E-mail" required>
-            {(props) => (
-              <Input {...props} name="email" type="email" autoComplete="email" maxLength={254} />
-            )}
-          </FormField>
-          <FormField id={`${id}-phone`} label="Telefone (opcional)">
+          {!caseIntake ? emailField : null}
+          <FormField
+            id={`${id}-phone`}
+            label={caseIntake ? 'Telefone' : 'Telefone (opcional)'}
+            required={caseIntake}
+            help={caseIntake ? 'Inclua o DDD.' : undefined}
+          >
             {(props) => (
               <Input
                 {...props}
@@ -116,7 +130,11 @@ export function ContactForm({
               />
             )}
           </FormField>
-          <FormField id={`${id}-state`} label="Estado (opcional)">
+          <FormField
+            id={`${id}-state`}
+            label={caseIntake ? 'Estado' : 'Estado (opcional)'}
+            required={caseIntake}
+          >
             {(props) => (
               <Select {...props} name="state" autoComplete="address-level1">
                 <option value="">Selecione o estado</option>
@@ -129,35 +147,49 @@ export function ContactForm({
             )}
           </FormField>
         </div>
-        <FormField id={`${id}-area`} label="Área de interesse (opcional)">
-          {(props) => (
-            <Select {...props} name="practiceAreaId">
-              <option value="">Selecione uma área</option>
-              {areas.map((area) => (
-                <option key={area.id} value={area.id}>
-                  {area.name}
-                </option>
-              ))}
-            </Select>
-          )}
-        </FormField>
-        <FormField id={`${id}-subject`} label="Assunto" required>
-          {(props) => <Input {...props} name="subject" minLength={3} maxLength={200} />}
-        </FormField>
+        {!caseIntake ? (
+          <>
+            <FormField id={`${id}-area`} label="Área de interesse (opcional)">
+              {(props) => (
+                <Select {...props} name="practiceAreaId">
+                  <option value="">Selecione uma área</option>
+                  {areas.map((area) => (
+                    <option key={area.id} value={area.id}>
+                      {area.name}
+                    </option>
+                  ))}
+                </Select>
+              )}
+            </FormField>
+            <FormField id={`${id}-subject`} label="Assunto" required>
+              {(props) => <Input {...props} name="subject" minLength={3} maxLength={200} />}
+            </FormField>
+          </>
+        ) : null}
         <FormField
           id={`${id}-message`}
-          label="Mensagem"
+          label={caseIntake ? 'Conte seu caso em poucas linhas' : 'Mensagem'}
           required
-          help="Entre 10 e 10.000 caracteres."
+          help={
+            caseIntake
+              ? 'Ex.: Datas, o que aconteceu e o que você quer resolver.'
+              : 'Entre 10 e 10.000 caracteres.'
+          }
         >
           {(props) => (
-            <Textarea {...props} name="message" minLength={10} maxLength={10000} rows={7} />
+            <Textarea
+              {...props}
+              name="message"
+              minLength={10}
+              maxLength={10000}
+              rows={caseIntake ? 4 : 7}
+            />
           )}
         </FormField>
         <FormField
           id={`${id}-files`}
-          label="Anexos (opcional)"
-          help="Até três arquivos, 15 MiB no total. PDF até 10 MiB; imagens JPEG, PNG, WebP ou AVIF até 5 MiB cada. Anexos são privados e passam por verificação."
+          label={caseIntake ? 'Anexar documentos (opcional)' : 'Anexos (opcional)'}
+          help={`${caseIntake ? 'Contrato, boleto, notificação ou print. ' : ''}Até três arquivos, 15 MiB no total. PDF até 10 MiB; imagens JPEG, PNG, WebP ou AVIF até 5 MiB cada. Anexos são privados e passam por verificação.`}
         >
           {(props) => (
             <Input
@@ -169,6 +201,7 @@ export function ContactForm({
             />
           )}
         </FormField>
+        {caseIntake ? emailField : null}
         <label className="relationship-checkbox">
           <input type="checkbox" name="privacyAccepted" value="true" required />
           <span>
@@ -176,10 +209,12 @@ export function ContactForm({
             desta solicitação. (obrigatório)
           </span>
         </label>
-        <p className="relationship-note">
-          A inscrição na newsletter é uma escolha separada, disponível em{' '}
-          <Link href="/newsletter">Receber conteúdos</Link>.
-        </p>
+        {!caseIntake ? (
+          <p className="relationship-note">
+            A inscrição na newsletter é uma escolha separada, disponível em{' '}
+            <Link href="/newsletter">Receber conteúdos</Link>.
+          </p>
+        ) : null}
         <Antispam key={attempt} config={config} action="contact" onToken={setToken} />
         {error ? (
           <p role="alert" className="relationship-error">

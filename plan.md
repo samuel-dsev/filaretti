@@ -2,18 +2,18 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                                |
-| ---------------------- | ----------------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — hover suave no menu principal                              |
-| Último relatório       | `RP-030`, em `relate.md`                                                |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                       |
-| Última entrega técnica | **Hover suave no menu principal — RP-030**                              |
-| Versão de referência   | `0.11.4`, oito manifests privados alinhados                             |
-| Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais**          |
-| Próximo passo          | Aprovar o texto de Sobre nós e revisar navegação, localização e Contato |
-| Autorização            | Aplicar a cor de seleção com 70% de transparência no hover do menu      |
-| Git                    | `dev`, base `c73f0a3`, hover suave no RP-030                            |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                          |
+| Campo                  | Situação                                                              |
+| ---------------------- | --------------------------------------------------------------------- |
+| Última atualização     | 13/11/2026 — Home e formulário no rodapé                              |
+| Último relatório       | `RP-031`, em `relate.md`                                              |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                     |
+| Última entrega técnica | **Home e formulário no rodapé — RP-031**                              |
+| Versão de referência   | `0.12.0`, oito manifests privados alinhados                           |
+| Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais**        |
+| Próximo passo          | Revisar Home, textos e formulário em localhost                        |
+| Autorização            | Reorganizar a Home, incorporar o formulário e limpar textos repetidos |
+| Git                    | `dev`, base `742c245`, revisão da Home no RP-031                      |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                        |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-031 — Home e formulário no rodapé.** A Home reúne abertura, carrossel da equipe, artigos e áreas. O rodapé recebe e-mail, endereço e o formulário Conte seu caso. A descrição institucional e o aviso de privacidade foram atualizados na base local.
 
 **13/11/2026 — RP-030 — Hover no menu principal.** Os itens inativos usam a cor de seleção com 70% de transparência ao passar o mouse. O fundo muda em 150 ms, respeita a preferência por movimento reduzido e permanece sólido no item ativo. O efeito cobre o texto e a seta de Quem somos.
 

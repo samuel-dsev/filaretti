@@ -220,6 +220,14 @@
   line-height: 1.6;
 }
 
+.site-footer-email {
+  display: inline-block;
+  margin-top: 0.625rem;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+  text-underline-offset: 0.2em;
+}
+
 .site-nav-link {
   border-radius: var(--f-radius-sm);
 }
@@ -761,6 +769,47 @@
   display: grid;
   grid-template-columns: 2fr repeat(2, minmax(0, 1fr));
   gap: 3rem;
+}
+
+.site-footer-inquiry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.75fr);
+  gap: clamp(1.5rem, 5vw, 5rem);
+  margin-bottom: clamp(2.75rem, 6vw, 5rem);
+  padding: clamp(1.25rem, 4vw, 3.5rem);
+  border: 1px solid var(--f-color-pale);
+  border-radius: var(--f-radius-sm);
+  background: var(--f-color-surface);
+  scroll-margin-block-start: 8rem;
+}
+
+.site-footer-inquiry h2 {
+  margin: 0;
+  font-family: var(--f-font-display);
+  font-size: clamp(2.75rem, 5vw, 4.5rem);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.site-footer-inquiry > div > p {
+  max-inline-size: 30ch;
+  margin: 1rem 0 0;
+  color: var(--f-color-muted);
+  line-height: 1.6;
+}
+
+.site-footer-inquiry .relationship-form > fieldset > button[type='submit'] {
+  justify-self: start;
+}
+
+.site-footer-inquiry .relationship-grid {
+  align-items: start;
+}
+
+@media (max-width: 767px) {
+  .site-footer-inquiry {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .site-footer-intro > p {

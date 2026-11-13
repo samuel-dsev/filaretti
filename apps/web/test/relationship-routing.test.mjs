@@ -7,9 +7,10 @@ import {
   relationshipEndpoint,
 } from '../src/lib/relationship-routing.ts';
 
-test('relationship gateway exposes only the four public POST mutations', () => {
+test('relationship gateway exposes only the allowed public POST mutations', () => {
   for (const path of [
     'contact',
+    'contact/case-intake',
     'newsletter/subscribe',
     'newsletter/confirm',
     'newsletter/unsubscribe',

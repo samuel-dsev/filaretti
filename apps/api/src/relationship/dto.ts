@@ -20,11 +20,25 @@ const optionalTrim = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.trim() || undefined : value;
 const email = ({ value }: { value: unknown }) =>
   typeof value === 'string' ? value.trim().toLowerCase() : value;
+const optionalEmail = (input: { value: unknown }) => {
+  const normalized = email(input);
+  return normalized === '' ? undefined : normalized;
+};
 const boolean = ({ value }: { value: unknown }) =>
   value === 'true' ? true : value === 'false' ? false : value;
+const brazilianState =
+  /^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$/u;
+const brazilianPhone = /^(?:\+55[ .-]?)?(?:\([1-9]\d\)|[1-9]\d)[ .-]?\d{4,5}[ .-]?\d{4}$/u;
 
-export class ContactDto {
+class ContactBaseDto {
   @ApiProperty() @Transform(trim) @IsString() @MinLength(2) @MaxLength(160) name!: string;
+  @ApiProperty() @Transform(trim) @IsString() @MinLength(10) @MaxLength(10000) message!: string;
+  @ApiProperty({ enum: [true] }) @Transform(boolean) @Equals(true) privacyAccepted!: true;
+  @ApiProperty() @IsString() @MinLength(1) @MaxLength(2048) turnstileToken!: string;
+  @ApiProperty({ format: 'uuid' }) @IsUUID('4') idempotencyKey!: string;
+}
+
+export class ContactDto extends ContactBaseDto {
   @ApiProperty() @Transform(email) @IsEmail() @MaxLength(254) email!: string;
   @ApiPropertyOptional()
   @Transform(optionalTrim)
@@ -36,15 +50,22 @@ export class ContactDto {
   @Transform(optionalTrim)
   @IsOptional()
   @IsString()
-  @Matches(/^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$/u)
+  @Matches(brazilianState)
   state?: string;
   @ApiPropertyOptional() @Transform(optionalTrim) @IsOptional() @IsUUID() practiceAreaId?: string;
   @ApiProperty() @Transform(trim) @IsString() @MinLength(3) @MaxLength(200) subject!: string;
-  @ApiProperty() @Transform(trim) @IsString() @MinLength(10) @MaxLength(10000) message!: string;
-  @ApiProperty({ enum: [true] }) @Transform(boolean) @Equals(true) privacyAccepted!: true;
   @ApiPropertyOptional() @Transform(boolean) @IsOptional() @IsBoolean() newsletterConsent?: boolean;
-  @ApiProperty() @IsString() @MinLength(1) @MaxLength(2048) turnstileToken!: string;
-  @ApiProperty({ format: 'uuid' }) @IsUUID('4') idempotencyKey!: string;
+}
+
+export class CaseIntakeDto extends ContactBaseDto {
+  @ApiPropertyOptional()
+  @Transform(optionalEmail)
+  @IsOptional()
+  @IsEmail()
+  @MaxLength(254)
+  email?: string;
+  @ApiProperty() @Transform(trim) @IsString() @Matches(brazilianPhone) phone!: string;
+  @ApiProperty() @Transform(trim) @IsString() @Matches(brazilianState) state!: string;
 }
 
 export class NewsletterSubscribeDto {

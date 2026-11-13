@@ -24,6 +24,7 @@ import { StorageService } from '../cms/storage.service';
 import { validateUpload, type UploadedFile } from '../cms/upload';
 import { DOMAIN_ENVIRONMENT, audit, paginated, paging, versionUpdated } from '../domain/shared';
 import {
+  CaseIntakeDto,
   ContactDto,
   ContactQueryDto,
   ContactStatusDto,
@@ -41,6 +42,11 @@ const accepted: RelationshipAccepted = {
   accepted: true,
   message: 'Solicitação recebida. Confira seu e-mail quando necessário.',
 };
+const caseIntakeAccepted: RelationshipAccepted = {
+  accepted: true,
+  message: 'Solicitação recebida.',
+};
+type ContactIntake = Omit<ContactDto, 'email'> & { email?: string };
 const contactInclude = { files: true } satisfies Prisma.ContactInclude;
 type ContactRecord = Prisma.ContactGetPayload<{ include: typeof contactInclude }>;
 const safeFilename = (name: string) =>
@@ -187,15 +193,35 @@ export class RelationshipService {
     });
   }
 
-  async contact(dto: ContactDto, files: UploadedFile[], ip: string): Promise<RelationshipAccepted> {
+  contact(dto: ContactDto, files: UploadedFile[], ip: string): Promise<RelationshipAccepted> {
+    return this.receiveContact(dto, files, ip);
+  }
+
+  caseIntake(dto: CaseIntakeDto, files: UploadedFile[], ip: string): Promise<RelationshipAccepted> {
+    return this.receiveContact(
+      { ...dto, subject: 'Solicitação de atendimento jurídico' },
+      files,
+      ip,
+      'case-intake',
+    );
+  }
+
+  private async receiveContact(
+    dto: ContactIntake,
+    files: UploadedFile[],
+    ip: string,
+    source?: 'case-intake',
+  ): Promise<RelationshipAccepted> {
     if (
       files.length > CONTACT_FILE_COUNT_LIMIT ||
       files.reduce((sum, file) => sum + file.size, 0) > CONTACT_FILE_TOTAL_LIMIT
     )
       throw new PayloadTooLargeException({ code: 'CONTACT_FILES_LIMIT' });
+    const response = source === 'case-intake' ? caseIntakeAccepted : accepted;
     const requestHash = createHash('sha256')
       .update(
         JSON.stringify({
+          source,
           name: dto.name,
           email: dto.email,
           phone: dto.phone,
@@ -220,9 +246,14 @@ export class RelationshipService {
     if (previous) {
       if (previous.requestHash !== requestHash)
         throw new ConflictException({ code: 'IDEMPOTENCY_CONFLICT' });
-      return accepted;
+      return response;
     }
-    await this.limiter.consume('contact-email', dto.email, 5);
+    if (source === 'case-intake' && dto.phone) {
+      const digits = dto.phone.replace(/\D/gu, '');
+      const nationalNumber = dto.phone.startsWith('+55') ? digits.slice(2) : digits;
+      await this.limiter.consume('contact-phone', nationalNumber, 5);
+    }
+    if (dto.email) await this.limiter.consume('contact-email', dto.email, 5);
     await this.turnstile.verify(dto.turnstileToken, 'contact', ip);
     if (
       dto.practiceAreaId &&
@@ -278,13 +309,13 @@ export class RelationshipService {
             },
             `contact-notification:${contact.id}`,
           );
-          if (dto.newsletterConsent === true)
+          if (dto.newsletterConsent === true && dto.email)
             await this.subscribeInTransaction(tx, dto.email, dto.name, ip);
         },
         { timeout: 10000 },
       );
       await this.cleanStaged(staged);
-      return accepted;
+      return response;
     } catch (error) {
       await this.cleanStaged(staged).catch(() => undefined);
       throw error;
@@ -490,6 +521,7 @@ export class RelationshipService {
             OR: [
               { name: { contains: query.q, mode: 'insensitive' } },
               { email: { contains: query.q, mode: 'insensitive' } },
+              { phone: { contains: query.q } },
               { subject: { contains: query.q, mode: 'insensitive' } },
             ],
           }

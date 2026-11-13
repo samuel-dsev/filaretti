@@ -26,9 +26,13 @@ export async function relationshipApi(
   body: FormData | object,
 ): Promise<RelationshipAccepted> {
   if (
-    !['contact', 'newsletter/subscribe', 'newsletter/confirm', 'newsletter/unsubscribe'].includes(
-      path,
-    )
+    ![
+      'contact',
+      'contact/case-intake',
+      'newsletter/subscribe',
+      'newsletter/confirm',
+      'newsletter/unsubscribe',
+    ].includes(path)
   )
     throw new Error('Ação não disponível.');
   let response: Response;

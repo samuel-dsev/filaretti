@@ -22,31 +22,33 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [page, office, settings, areas, professionals, articles, featured, guides] =
-    await Promise.all([
-      getPage('home'),
-      getPage('o-escritorio'),
-      getSettings(),
-      getPracticeAreas({ limit: 50 }),
-      getProfessionals({ limit: 6 }),
-      getArticles({ limit: 3 }),
-      getArticles({ featured: true, limit: 3 }),
-      getArticles({ type: 'GUIDE', limit: 3 }),
-    ]);
+  const [page, settings, areas, professionals, articles] = await Promise.all([
+    getPage('home'),
+    getSettings(),
+    getPracticeAreas({ limit: 50 }),
+    getHomeProfessionals(),
+    getArticles({ type: 'ARTICLE', limit: 3 }),
+  ]);
   if (!page) notFound();
   return (
     <>
       <JsonLd data={legalServiceSchema(settings)} />
       <HomeView
         page={page}
-        office={office}
-        settings={settings}
         areas={areas.data}
-        professionals={professionals.data}
+        professionals={professionals}
         articles={articles.data}
-        featuredArticles={featured.data}
-        guides={guides.data}
       />
     </>
   );
+}
+
+async function getHomeProfessionals() {
+  const first = await getProfessionals({ limit: 50 });
+  const remaining = await Promise.all(
+    Array.from({ length: Math.max(0, first.meta.pages - 1) }, (_, index) =>
+      getProfessionals({ page: index + 2, limit: 50 }),
+    ),
+  );
+  return first.data.concat(...remaining.map(({ data }) => data));
 }

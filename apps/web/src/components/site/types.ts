@@ -34,6 +34,8 @@ export interface SiteFooterProps {
   groups: { title: string; links: SiteNavigationLink[] }[];
   note?: string;
   address?: string;
+  email?: { address: string; href: string };
+  homeForm?: ReactNode;
   copyright: string;
 }
 
