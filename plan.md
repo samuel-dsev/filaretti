@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                       |
 | ---------------------- | -------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — Ordem da página Conteúdos                         |
-| Último relatório       | `RP-043`, em `relate.md`                                       |
+| Última atualização     | 13/11/2026 — Subtítulo de Publicações                          |
+| Último relatório       | `RP-044`, em `relate.md`                                       |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**              |
-| Última entrega técnica | **Ordem da página Conteúdos — RP-043**                         |
-| Versão de referência   | `0.13.10`, oito manifests privados alinhados                   |
+| Última entrega técnica | **Subtítulo de Publicações — RP-044**                          |
+| Versão de referência   | `0.13.11`, oito manifests privados alinhados                   |
 | Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais** |
-| Próximo passo          | Revisar Publicações e os filtros em localhost                  |
-| Autorização            | Reorganizar a página Conteúdos                                 |
-| Git                    | `dev`, base `bd07888` (RP-042)                                 |
+| Próximo passo          | Revisar o subtítulo de Publicações em localhost                |
+| Autorização            | Reduzir a fonte do subtítulo de Publicações pela metade        |
+| Git                    | `dev`, base `e75bdc9` (RP-043)                                 |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                 |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-044 — Subtítulo de Publicações.** A fonte do subtítulo em Conteúdos foi reduzida à metade.
 
 **13/11/2026 — RP-043 — Página Conteúdos.** Publicações abre a página com o subtítulo solicitado. Explore os conteúdos fica após a listagem e a paginação.
 

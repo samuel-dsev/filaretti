@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-043                                 |
+| Última atualização | 13/11/2026 — RP-044                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.10`, oito manifests privados alinhados        |
-| Git                | `dev`, base `bd07888`                               |
-| Autorização        | Reorganizar a página Conteúdos                      |
-| Checkpoint         | Revisar Publicações e os filtros em localhost       |
+| Versão             | `0.13.11`, oito manifests privados alinhados        |
+| Git                | `dev`, base `e75bdc9`                               |
+| Autorização        | Reduzir a fonte do subtítulo de Publicações         |
+| Checkpoint         | Revisar o subtítulo em localhost                    |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-044 — 13/11/2026 — Subtítulo de Publicações
+
+A regra do subtítulo de Publicações em `apps/web/src/components/editorial/styles.css` aplica metade dos valores da escala tipográfica anterior. Os manifests e o checklist registram a versão `0.13.11`.
+
+Build e TypeScript passaram. No Edge, a fonte passou de 18 para 9 px em 390 px, de 20,52 para 10,26 px em 1140 px e de 24 para 12 px em 1440 px.
 
 ### RP-043 — 13/11/2026 — Página Conteúdos
 
