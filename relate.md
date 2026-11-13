@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-044                                 |
+| Última atualização | 13/11/2026 — RP-045                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.11`, oito manifests privados alinhados        |
-| Git                | `dev`, base `e75bdc9`                               |
-| Autorização        | Reduzir a fonte do subtítulo de Publicações         |
-| Checkpoint         | Revisar o subtítulo em localhost                    |
+| Versão             | `0.13.12`, oito manifests privados alinhados        |
+| Git                | `dev`, base `e8adeeb`                               |
+| Autorização        | Retirar a foto de O escritório e ampliar o mapa     |
+| Checkpoint         | Revisar O escritório em localhost                   |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-045 — 13/11/2026 — Mapa e textos de O escritório
+
+A foto ilustrativa sai de `/o-escritorio`. A abertura traz os dois parágrafos de apresentação e o endereço à esquerda, com o mapa na altura da primeira divisão à direita. Em telas estreitas, o mapa aparece abaixo do endereço. O iframe carrega direto, com opção de abrir a localização no Google Maps. As seções adicionais do CMS são exibidas abaixo da abertura.
+
+A mudança está em `office-view.tsx`, `office-map.tsx`, nos estilos institucionais e em `security-policy.ts`. O iframe usa o endereço do prédio e o caminho de incorporação do Google Maps. O endereço exibido conserva a sala e o CEP. Os manifests e o checklist registram a versão `0.13.12`.
+
+Build, TypeScript, ESLint e Prettier passaram. O Edge confirmou o mapa real com marcador no número 65, os dois parágrafos, o endereço e a ausência de rolagem horizontal em 1366, 768 e 390 px.
 
 ### RP-044 — 13/11/2026 — Subtítulo de Publicações
 

@@ -44,7 +44,7 @@ export function contentSecurityPolicy(options: BrowserSecurityOptions): string {
     `frame-src ${
       [
         ...(options.turnstile ? ['https://challenges.cloudflare.com'] : []),
-        ...(options.maps ? ['https://www.google.com/maps'] : []),
+        ...(options.maps ? ['https://www.google.com/maps/embed'] : []),
       ].join(' ') || "'none'"
     }`,
     "object-src 'none'",
