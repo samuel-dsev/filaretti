@@ -2,18 +2,28 @@
 
 ## Situação atual
 
-| Campo              | Estado                                              |
-| ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-039                                 |
-| Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.6`, oito manifests privados alinhados         |
-| Git                | `dev`, base `39a3927`                               |
-| Autorização        | Cadastrar Mario Filaretti e revisar o texto público |
-| Checkpoint         | Revisar o perfil e os textos no site local          |
+| Campo              | Estado                                                |
+| ------------------ | ----------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-040                                   |
+| Etapa              | **Revisão institucional local. F8/F9/F10 parciais**   |
+| Versão             | `0.13.7`, oito manifests privados alinhados           |
+| Git                | `dev`, base `e88150e`                                 |
+| Autorização        | Atualizar as duas primeiras seções da Home            |
+| Checkpoint         | Revisar a abertura e o carrossel da Home em localhost |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-040 — 13/11/2026 — Abertura e carrossel da Home
+
+A abertura preenche a altura disponível na primeira tela após o cabeçalho, com o texto centralizado na faixa inferior. O carrossel central tem fundo diagonal em marfim e dourado claro, com nome, função e botão Ver perfil. Os profissionais continuam vindo do CMS. A rotação de cinco segundos, o controle de pausa e a seleção por indicadores ficam disponíveis com mais de um perfil. O layout móvel posiciona a foto acima dos dados.
+
+A imagem `apps/web/public/brand/mario-filaretti-home.webp` foi editada com a ferramenta de imagens para remover o texto e o botão da região central esquerda e recompor o fundo escuro. Somente o trecho editado foi incorporado ao original. O WebP sem perdas tem 1306 × 617 px e preserva os pixels fora da área da edição. A imagem do perfil individual continua no CMS.
+
+A mudança está em `photo-hero.tsx`, `home-view.tsx`, `team-carousel.tsx`, nos estilos institucionais, na altura compartilhada do cabeçalho em `components/site/styles.css` e na lista de imagens de `next.config.ts`. Os manifests e o checklist registram a versão `0.13.7`.
+
+Build otimizado, TypeScript, ESLint, Prettier e 17 testes de conteúdo e API pública passaram. O Edge verificou cinco resoluções entre 320 e 1440 px, a altura da abertura, o carregamento da imagem, o texto do slide, o acesso ao perfil por teclado e o escopo da abertura restrito à Home. Dois testes de componente com perfis de teste verificaram a rotação, a seleção e o movimento reduzido. Revisão em localhost.
 
 ### RP-039 — 13/11/2026 — Perfil de Mario Filaretti e revisão institucional
 

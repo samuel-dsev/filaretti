@@ -1,4 +1,6 @@
 .site-layout {
+  --site-header-height: 104px;
+  --site-header-border-width: 1px;
   color: var(--f-color-ink);
   background: var(--f-color-surface);
   font-family: var(--f-font-body);
@@ -16,13 +18,13 @@
 .site-header {
   position: relative;
   z-index: 30;
-  border-bottom: 1px solid rgb(176 139 75 / 30%);
+  border-bottom: var(--site-header-border-width) solid rgb(176 139 75 / 30%);
   background: var(--f-color-surface);
 }
 
 .site-header-inner {
   display: flex;
-  min-height: 104px;
+  min-height: var(--site-header-height);
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
@@ -880,8 +882,11 @@
 }
 
 @media (max-width: 1023px) {
+  .site-layout {
+    --site-header-height: 88px;
+  }
+
   .site-header-inner {
-    min-height: 88px;
     gap: 1rem;
   }
 
@@ -909,8 +914,11 @@
 }
 
 @media (max-width: 767px) {
+  .site-layout {
+    --site-header-height: 80px;
+  }
+
   .site-header-inner {
-    min-height: 80px;
     gap: 0.5rem;
   }
 

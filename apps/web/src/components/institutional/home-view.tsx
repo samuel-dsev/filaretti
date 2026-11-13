@@ -1,5 +1,4 @@
 import { ArticleCarousel } from '@/components/editorial/article-carousel';
-import { contentText } from '@/lib/public-content-core';
 import { publicImage } from '@/lib/public-media';
 import { PhotoHero } from './photo-hero';
 import { AreaGrid, InstitutionalSection } from './shared';
@@ -11,11 +10,10 @@ export function HomeView({ page, areas, professionals, articles }: HomeViewProps
     id: professional.id,
     name: professional.name,
     title: professional.title,
-    qualification:
-      contentText({ ...professional.bio, content: professional.bio.content.slice(0, 1) }, 200) ||
-      professional.education[0],
     href: `/profissionais/${encodeURIComponent(professional.slug)}`,
     image: publicImage(professional.photo, professional.name),
+    artwork:
+      professional.slug === 'mario-filaretti' ? '/brand/mario-filaretti-home.webp' : undefined,
   }));
 
   return (
@@ -24,6 +22,7 @@ export function HomeView({ page, areas, professionals, articles }: HomeViewProps
         headingId="home-heading"
         title={page.title}
         description={page.seoDescription ?? undefined}
+        fillViewport
       />
       <TeamCarousel members={members} />
       <InstitutionalSection

@@ -9,9 +9,9 @@ interface Member {
   id: string;
   name: string;
   title: string;
-  qualification?: string;
   href: string;
   image?: { src: string; alt: string };
+  artwork?: string;
 }
 
 const motionPreference = '(prefers-reduced-motion: reduce)';
@@ -45,49 +45,26 @@ export function TeamCarousel({ members }: { members: Member[] }) {
     return () => window.clearInterval(timer);
   }, [members.length, rotating]);
 
-  function move(offset: number) {
-    setPaused(true);
-    setPosition((current) => (current + offset + members.length) % members.length);
-  }
+  if (!member) return null;
 
+  const image = member.artwork ? { src: member.artwork, alt: '' } : member.image;
   return (
     <section
       id="profissionais"
       className="home-team"
-      data-f-surface="dark"
-      aria-labelledby="home-team-heading"
+      aria-label="Equipe"
       aria-roledescription={multiple ? 'carrossel' : undefined}
-      onPointerEnter={(event) => {
-        if (event.pointerType === 'mouse') setHovered(true);
-      }}
-      onPointerLeave={() => setHovered(false)}
     >
       <div className="f-container home-team-inner">
-        <h2 id="home-team-heading">Nossa equipe</h2>
-        {multiple ? (
-          <div className="home-team-controls">
-            {!reducedMotion ? (
-              <button type="button" onClick={() => setPaused(!paused)}>
-                {paused ? 'Retomar' : 'Pausar'}
-              </button>
-            ) : null}
-            <button type="button" aria-label="Perfil anterior" onClick={() => move(-1)}>
-              <span aria-hidden="true">←</span>
-            </button>
-            <span aria-hidden="true">
-              {index + 1} / {members.length}
-            </span>
-            <button type="button" aria-label="Próximo perfil" onClick={() => move(1)}>
-              <span aria-hidden="true">→</span>
-            </button>
-          </div>
-        ) : null}
         <div
-          className="home-team-slide"
-          aria-live={rotating ? 'off' : 'polite'}
-          onFocus={() => setPaused(true)}
+          className="home-team-frame"
+          data-f-surface="dark"
+          onPointerEnter={(event) => {
+            if (event.pointerType === 'mouse') setHovered(true);
+          }}
+          onPointerLeave={() => setHovered(false)}
         >
-          {member ? (
+          <div className="home-team-slide" aria-live={rotating ? 'off' : 'polite'}>
             <div
               key={member.id}
               className="home-team-profile"
@@ -95,31 +72,57 @@ export function TeamCarousel({ members }: { members: Member[] }) {
               aria-roledescription={multiple ? 'slide' : undefined}
               aria-label={multiple ? `${index + 1} de ${members.length}` : undefined}
             >
-              {member.image ? (
-                <div className="home-team-media">
+              {image ? (
+                <div
+                  className={
+                    member.artwork ? 'home-team-media home-team-artwork' : 'home-team-media'
+                  }
+                >
                   <Image
-                    src={member.image.src}
-                    alt={member.image.alt}
+                    src={image.src}
+                    alt={image.alt}
                     fill
-                    sizes="100vw"
-                    unoptimized={isManagedPublicMedia(member.image.src)}
+                    sizes="(max-width: 991px) 100vw, 960px"
+                    unoptimized={isManagedPublicMedia(image.src)}
                   />
                 </div>
               ) : null}
               <div className="home-team-copy">
-                <h3>{member.name}</h3>
-                <p className="home-team-title">{member.title}</p>
-                {member.qualification ? <p>{member.qualification}</p> : null}
-                <Link href={member.href} prefetch={false}>
-                  Ver perfil <span aria-hidden="true">↗</span>
+                <h2>{member.name}</h2>
+                <p>{member.title}</p>
+                <Link href={member.href} prefetch={false} onFocus={() => setPaused(true)}>
+                  Ver perfil
                 </Link>
               </div>
             </div>
-          ) : (
-            <div className="home-team-copy home-team-empty">
-              <p>Os perfis da equipe serão apresentados aqui.</p>
+          </div>
+          {multiple ? (
+            <div className="home-team-controls" role="group" aria-label="Selecionar perfil">
+              {members.map((item, itemIndex) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="home-team-dot"
+                  aria-label={`Ver slide de ${item.name}`}
+                  aria-current={index === itemIndex ? 'true' : undefined}
+                  onClick={() => {
+                    setPaused(true);
+                    setPosition(itemIndex);
+                  }}
+                  onFocus={() => setPaused(true)}
+                />
+              ))}
+              {!reducedMotion ? (
+                <button
+                  type="button"
+                  aria-label={paused ? 'Retomar rotação' : 'Pausar rotação'}
+                  onClick={() => setPaused(!paused)}
+                >
+                  <span aria-hidden="true">{paused ? '▶' : 'Ⅱ'}</span>
+                </button>
+              ) : null}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </section>

@@ -2,8 +2,7 @@
   padding-block: 0.5rem;
 }
 
-.institution-photo-hero,
-.home-team {
+.institution-photo-hero {
   position: relative;
   isolation: isolate;
   color: var(--f-color-surface);
@@ -23,8 +22,17 @@
   object-fit: cover;
 }
 
-.institution-photo-hero::before,
-.home-team-profile::before {
+.institution-photo-hero-full {
+  min-block-size: calc(100svh - var(--site-header-height) - var(--site-header-border-width));
+  padding-block: clamp(2rem, 6svh, 5rem);
+}
+
+.institution-photo-hero-full .institution-photo-hero-copy {
+  align-self: end;
+  margin-block-end: clamp(0rem, 4svh, 3rem);
+}
+
+.institution-photo-hero::before {
   position: absolute;
   z-index: -1;
   inset: 0;
@@ -35,8 +43,7 @@
   background: linear-gradient(150deg, rgb(6 7 8 / 74%), rgb(6 7 8 / 65%));
 }
 
-.institution-photo-hero-copy h1,
-.home-team-copy h3 {
+.institution-photo-hero-copy h1 {
   margin: 0;
   font-family: var(--f-font-display);
   font-weight: 500;
@@ -61,134 +68,165 @@
 }
 
 .home-team {
-  background: linear-gradient(120deg, #181b1c, #302a23);
+  padding-block: clamp(2.75rem, 8vw, 7rem);
+  background: linear-gradient(165deg, var(--f-color-surface) 49.8%, var(--f-color-pale) 50%);
 }
 
-.home-team-inner {
+.home-team-frame {
+  position: relative;
+  isolation: isolate;
+  max-inline-size: 60rem;
+  margin-inline: auto;
+  overflow: hidden;
+  color: var(--f-color-surface);
+  background: var(--f-color-ink);
+}
+
+.home-team-profile {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-content: space-between;
+  min-block-size: 21rem;
+  aspect-ratio: 1306 / 617;
   align-items: center;
-  gap: clamp(2rem, 6vw, 5rem) 1rem;
-  min-block-size: clamp(24rem, 61svh, 44rem);
-  padding-block: clamp(1.5rem, 5vw, 4rem);
-}
-
-.home-team-inner:has(.home-team-empty) {
-  min-block-size: auto;
-  gap: 1rem;
-}
-
-.home-team-inner > h2 {
-  margin: 0;
-  color: var(--f-color-pale);
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.home-team-slide {
-  grid-column: 1 / -1;
-}
-
-.home-team-profile::before {
-  background: linear-gradient(90deg, #181b1c 35%, rgb(24 27 28 / 88%) 47%, transparent 78%);
+  padding: clamp(1.5rem, 5vw, 4rem);
 }
 
 .home-team-media {
   position: absolute;
   z-index: -2;
-  inset: 0 0 0 38%;
+  inset: 0 0 0 48%;
+}
+
+.home-team-media::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--f-color-ink), transparent 45%);
+  content: '';
 }
 
 .home-team-media img {
   object-fit: cover;
-  object-position: center 8%;
+  object-position: center 10%;
+}
+
+.home-team-artwork {
+  inset: 0;
+}
+
+.home-team-artwork::after {
+  content: none;
+}
+
+.home-team-artwork img {
+  object-position: 72% center;
 }
 
 .home-team-copy {
-  max-inline-size: 50ch;
+  max-inline-size: 49%;
 }
 
-.home-team-copy h3 {
-  font-size: clamp(2.75rem, 5.8vw, 5.75rem);
+.home-team-copy h2 {
+  margin: 0;
+  color: var(--f-color-pale);
+  font-family: var(--f-font-display);
+  font-size: clamp(2rem, 5vw, 4.25rem);
+  font-weight: 500;
+  line-height: 1.03;
+  overflow-wrap: anywhere;
 }
 
 .home-team-copy p {
-  margin: 0.875rem 0 0;
-  line-height: 1.65;
-}
-
-.home-team-copy .home-team-title {
-  color: var(--f-color-pale);
-  font-weight: 600;
+  margin: 0.75rem 0 0;
+  font-size: clamp(0.875rem, 1.5vw, 1.0625rem);
+  line-height: 1.5;
 }
 
 .home-team-copy a {
   display: inline-flex;
   min-block-size: 44px;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 1.25rem;
-  color: inherit;
-  text-underline-offset: 0.25em;
+  margin-top: clamp(1rem, 2.8vw, 2rem);
+  padding-inline: 1.25rem;
+  border: 1px solid var(--f-color-pale);
+  color: var(--f-color-ink);
+  background: var(--f-color-pale);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-.home-team-empty {
-  font-family: var(--f-font-display);
-  font-size: clamp(1.75rem, 4vw, 3rem);
+.home-team-copy a:hover {
+  color: var(--f-color-pale);
+  background: var(--f-color-ink);
 }
 
 .home-team-controls {
+  position: relative;
   display: flex;
-  grid-column: 2;
+  flex-wrap: wrap;
+  justify-content: end;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
+  padding-inline: 1rem;
+  background: var(--f-color-ink);
 }
 
 .home-team-controls button {
-  min-inline-size: 44px;
+  display: grid;
   min-block-size: 44px;
-  padding-inline: 0.75rem;
-  color: inherit;
-  background: #1d1c1b;
-  border: 1px solid var(--f-color-pale);
-  border-radius: var(--f-radius-sm);
+  min-inline-size: 32px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  color: var(--f-color-pale);
+  background: transparent;
   cursor: pointer;
 }
 
-.home-team-controls button:hover {
-  color: var(--f-color-ink);
-  background: var(--f-color-pale);
+.home-team-dot::after {
+  display: block;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background: currentColor;
+  content: '';
 }
 
-@media (max-width: 767px) {
-  .home-team-inner {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.home-team-dot[aria-current='true']::after,
+.home-team-dot:hover::after {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+}
 
-  .home-team-inner:has(.home-team-media) {
-    min-block-size: 34rem;
-  }
-
-  .home-team-controls {
-    grid-row: 3;
-    grid-column: 1;
+@media (max-width: 640px) {
+  .home-team-profile {
+    min-block-size: auto;
+    aspect-ratio: auto;
+    padding: 0;
   }
 
   .home-team-media {
-    inset: 0;
+    position: relative;
+    inset: auto;
+    min-block-size: clamp(12rem, 64vw, 22rem);
   }
 
-  .home-team-profile::before {
-    background: linear-gradient(
-      180deg,
-      rgb(6 7 8 / 78%),
-      rgb(6 7 8 / 27%) 27%,
-      rgb(6 7 8 / 92%) 76%
-    );
+  .home-team-media::after {
+    background: linear-gradient(0deg, var(--f-color-ink), transparent 24%);
+    content: '';
+  }
+
+  .home-team-artwork img {
+    object-position: 85% center;
+  }
+
+  .home-team-copy {
+    max-inline-size: none;
+    padding: 1rem 1.25rem 1.5rem;
+  }
+
+  .home-team-profile:not(:has(.home-team-media)) .home-team-copy {
+    padding-block-start: 1.5rem;
   }
 }
 

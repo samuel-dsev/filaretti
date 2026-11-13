@@ -5,14 +5,19 @@ export function PhotoHero({
   title,
   description,
   imageSrc = '/brand/escritorio-ilustrativo.webp',
+  fillViewport = false,
 }: {
   headingId: string;
   title: string;
   description?: string;
   imageSrc?: string;
+  fillViewport?: boolean;
 }) {
   return (
-    <section className="institution-photo-hero" aria-labelledby={headingId}>
+    <section
+      className={`institution-photo-hero${fillViewport ? ' institution-photo-hero-full' : ''}`}
+      aria-labelledby={headingId}
+    >
       <Image
         src={imageSrc}
         alt=""
