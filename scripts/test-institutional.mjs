@@ -480,7 +480,7 @@ async function domainChecks() {
     assert.equal((await json('/articles?featured=true')).meta.total, 3);
   });
   await check(
-    'home renders its four sections in order and places contact in the footer',
+    'home renders its three sections in order and places contact in the footer',
     async () => {
       const [body, home, settings] = await Promise.all([
         html('/'),
@@ -488,13 +488,13 @@ async function domainChecks() {
         json('/settings'),
       ]);
       const footer = body.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/iu)?.[1] ?? '';
-      const sections = ['home-heading', 'profissionais', 'conteudos', 'areas'];
+      const sections = ['home-heading', 'conteudos', 'areas'];
       // Next can stream the main content into a later HTML chunk.
       const positions = sections.map((id) => body.indexOf(`id="${id}"`));
       assert.ok(positions.every((position, index) => position > (positions[index - 1] ?? -1)));
       assert.ok(body.includes(home.title));
       assert.match(body, /escritorio-ilustrativo\.webp/iu);
-      assert.doesNotMatch(body, /id="(?:escritorio|destaques|guias|contato)"/iu);
+      assert.doesNotMatch(body, /id="(?:profissionais|escritorio|destaques|guias|contato)"/iu);
       assert.ok(footer.includes(`mailto:${settings.publicEmail}`));
       assert.match(footer, /Conte seu caso/iu);
     },
@@ -534,61 +534,6 @@ async function domainChecks() {
     return { source: '512x384 PNG', resized: '256x192 PNG' };
   });
   if (browser) await layouts();
-  if (browser)
-    await check(
-      'home team advances at five seconds and supports manual and reduced-motion navigation',
-      async () => {
-        const people = (await json('/professionals')).data;
-        const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
-        try {
-          await page.clock.install();
-          await page.goto(webOrigin, { waitUntil: 'domcontentloaded' });
-          const team = page.locator('#profissionais');
-          const pause = team.getByRole('button', { name: 'Pausar', exact: true });
-          const resume = team.getByRole('button', { name: 'Retomar', exact: true });
-          const profile = team.getByRole('heading', { level: 3 });
-          await pause.waitFor();
-          assert.equal(await team.getByRole('heading', { name: 'Nossa equipe' }).count(), 1);
-          assert.equal(await profile.textContent(), people[0].name);
-          const photographedMember = people.find((person) => person.photo?.url === fixtureUrl);
-          assert.ok(photographedMember);
-          await page.clock.runFor(4000);
-          assert.equal(await profile.textContent(), people[0].name);
-          await page.clock.runFor(1000);
-          await team.getByRole('heading', { name: people[1].name, exact: true }).waitFor();
-          const previous = team.getByRole('button', { name: 'Perfil anterior' });
-          const next = team.getByRole('button', { name: 'Próximo perfil' });
-          await previous.focus();
-          await page.keyboard.press('Enter');
-          assert.equal(await profile.textContent(), people[0].name);
-          await resume.waitFor();
-          await page.clock.runFor(5500);
-          assert.equal(await profile.textContent(), people[0].name);
-          await page.emulateMedia({ reducedMotion: 'reduce' });
-          await resume.waitFor({ state: 'hidden' });
-          await page.reload({ waitUntil: 'networkidle' });
-          await page.clock.runFor(5500);
-          assert.equal(await profile.textContent(), people[0].name);
-          assert.equal(await pause.count(), 0);
-          await next.focus();
-          await page.keyboard.press('Enter');
-          assert.equal(await profile.textContent(), people[1].name);
-          for (let index = 1; index < people.indexOf(photographedMember); index++) {
-            await page.keyboard.press('Enter');
-          }
-          if (people[0] === photographedMember) {
-            await previous.focus();
-            await page.keyboard.press('Enter');
-          }
-          const photo = team.locator('.home-team-media img');
-          await photo.scrollIntoViewIfNeeded();
-          await photo.evaluate((element) => element.decode());
-          assert.ok((await photo.getAttribute('src')).includes(`f4-fixture-${id}.png`));
-        } finally {
-          await page.close();
-        }
-      },
-    );
   if (browser)
     await check('home footer submits a private case with optional email omitted', async () => {
       const page = await browser.newPage({ viewport: { width: 375, height: 812 } });

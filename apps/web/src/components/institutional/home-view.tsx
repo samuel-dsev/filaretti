@@ -1,21 +1,9 @@
 import { ArticleCarousel } from '@/components/editorial/article-carousel';
-import { publicImage } from '@/lib/public-media';
 import { PhotoHero } from './photo-hero';
 import { AreaGrid, InstitutionalSection } from './shared';
-import { TeamCarousel } from './team-carousel';
 import type { HomeViewProps } from './types';
 
-export function HomeView({ page, areas, professionals, articles }: HomeViewProps) {
-  const members = professionals.map((professional) => ({
-    id: professional.id,
-    name: professional.name,
-    title: professional.title,
-    href: `/profissionais/${encodeURIComponent(professional.slug)}`,
-    image: publicImage(professional.photo, professional.name),
-    artwork:
-      professional.slug === 'mario-filaretti' ? '/brand/mario-filaretti-home.webp' : undefined,
-  }));
-
+export function HomeView({ page, areas, articles }: HomeViewProps) {
   return (
     <>
       <PhotoHero
@@ -24,7 +12,6 @@ export function HomeView({ page, areas, professionals, articles }: HomeViewProps
         description={page.seoDescription ?? undefined}
         fillViewport
       />
-      <TeamCarousel members={members} />
       <InstitutionalSection
         id="conteudos"
         title="Artigos"

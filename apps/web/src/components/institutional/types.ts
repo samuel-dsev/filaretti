@@ -11,7 +11,6 @@ import type {
 export interface HomeViewProps {
   page: PublicPage;
   areas: PublicPracticeArea[];
-  professionals: PublicProfessional[];
   articles: PublicArticleSummary[];
 }
 

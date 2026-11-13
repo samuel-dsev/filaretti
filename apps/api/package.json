@@ -1,6 +1,6 @@
 {
   "name": "@filaretti/api",
-  "version": "0.13.7",
+  "version": "0.13.8",
   "private": true,
   "scripts": {
     "dev": "prisma generate && tsc-watch --onSuccess \"node dist/main.js\"",

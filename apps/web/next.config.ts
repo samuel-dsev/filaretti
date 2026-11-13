@@ -34,7 +34,6 @@ const nextConfig: NextConfig = {
       { pathname: '/media/public/**', search: '' },
       { pathname: '/brand/escritorio-ilustrativo.webp', search: '' },
       { pathname: '/brand/areas-de-atuacao.webp', search: '' },
-      { pathname: '/brand/mario-filaretti-home.webp', search: '' },
     ],
     remotePatterns: [],
     dangerouslyAllowSVG: false,

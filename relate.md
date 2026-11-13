@@ -2,18 +2,26 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                |
-| ------------------ | ----------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-040                                   |
-| Etapa              | **Revisão institucional local. F8/F9/F10 parciais**   |
-| Versão             | `0.13.7`, oito manifests privados alinhados           |
-| Git                | `dev`, base `e88150e`                                 |
-| Autorização        | Atualizar as duas primeiras seções da Home            |
-| Checkpoint         | Revisar a abertura e o carrossel da Home em localhost |
+| Campo              | Estado                                              |
+| ------------------ | --------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-041                                 |
+| Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
+| Versão             | `0.13.8`, oito manifests privados alinhados         |
+| Git                | `dev`, base `e334853`                               |
+| Autorização        | Remover a seção do carrossel da equipe da Home      |
+| Checkpoint         | Revisar a sequência das seções da Home em localhost |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-041 — 13/11/2026 — Remoção do carrossel da equipe da Home
+
+Artigos aparece diretamente após a abertura em tela cheia, seguido por Áreas de atuação. As páginas Equipe e perfil continuam a consumir o CMS. A Home deixa de consultar profissionais para a seção removida.
+
+A rota inicial, `home-view.tsx` e os tipos foram ajustados. O componente `team-carousel.tsx`, seus estilos e testes exclusivos, a imagem `mario-filaretti-home.webp` e sua entrada em `next.config.ts` foram retirados. O teste institucional verifica a nova sequência e a ausência da seção. Os manifests e o checklist registram a versão `0.13.8`.
+
+Build otimizado, TypeScript, ESLint e Prettier passaram. A suíte institucional passou em 45 verificações e 30 layouts. O Edge verificou a abertura em tela cheia, a sequência das seções, a ausência do carrossel, a largura sem rolagem horizontal e o acesso ao perfil de Mario pela página Equipe em 1440 e 390 px.
 
 ### RP-040 — 13/11/2026 — Abertura e carrossel da Home
 

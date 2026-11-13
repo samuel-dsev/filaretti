@@ -1,12 +1,6 @@
 import { notFound } from 'next/navigation';
 import { HomeView } from '../../components/institutional';
-import {
-  getPage,
-  getPracticeAreas,
-  getProfessionals,
-  getPublishedArticles,
-  getSettings,
-} from '../../lib/public-api';
+import { getPage, getPracticeAreas, getPublishedArticles, getSettings } from '../../lib/public-api';
 import { contentText } from '../../lib/public-content-core';
 import { publicMetadata } from '../../lib/public-metadata';
 import { JsonLd, legalServiceSchema } from '@/components/seo/structured-data';
@@ -22,28 +16,17 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const [page, settings, areas, professionals, articles] = await Promise.all([
+  const [page, settings, areas, articles] = await Promise.all([
     getPage('home'),
     getSettings(),
     getPracticeAreas({ limit: 50 }),
-    getHomeProfessionals(),
     getPublishedArticles(),
   ]);
   if (!page) notFound();
   return (
     <>
       <JsonLd data={legalServiceSchema(settings)} />
-      <HomeView page={page} areas={areas.data} professionals={professionals} articles={articles} />
+      <HomeView page={page} areas={areas.data} articles={articles} />
     </>
   );
-}
-
-async function getHomeProfessionals() {
-  const first = await getProfessionals({ limit: 50 });
-  const remaining = await Promise.all(
-    Array.from({ length: Math.max(0, first.meta.pages - 1) }, (_, index) =>
-      getProfessionals({ page: index + 2, limit: 50 }),
-    ),
-  );
-  return first.data.concat(...remaining.map(({ data }) => data));
 }
