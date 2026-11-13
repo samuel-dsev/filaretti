@@ -17,12 +17,9 @@ export function ProfessionalIndexView({ professionals, pagination }: Professiona
       <div className="f-container institution-breadcrumb">
         <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Equipe' }]} />
       </div>
-      <Hero title="Equipe" />
+      <h1 className="f-sr-only">Equipe</h1>
       <div className="f-container institution-index-content">
         <h2 className="f-sr-only">Perfis publicados</h2>
-        <p className="institution-result-count">
-          {pagination.total} {pagination.total === 1 ? 'perfil publicado' : 'perfis publicados'}
-        </p>
         <ProfessionalGrid professionals={professionals} />
         <Pagination
           currentPage={pagination.page}

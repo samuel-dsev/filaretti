@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-045                                 |
+| Última atualização | 13/11/2026 — RP-046                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.12`, oito manifests privados alinhados        |
-| Git                | `dev`, base `e8adeeb`                               |
-| Autorização        | Retirar a foto de O escritório e ampliar o mapa     |
-| Checkpoint         | Revisar O escritório em localhost                   |
+| Versão             | `0.13.13`, oito manifests privados alinhados        |
+| Git                | `dev`, base `7ae09d3`                               |
+| Autorização        | Remover o título grande e a contagem de perfis      |
+| Checkpoint         | Revisar a listagem da equipe em localhost           |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-046 — 13/11/2026 — Listagem da equipe
+
+A listagem de `/profissionais` aparece diretamente após a navegação estrutural. `professional-views.tsx` retira a abertura grande e a contagem de perfis. O título da página permanece disponível para tecnologias assistivas e a paginação continua na listagem. Os manifests e o checklist registram a versão `0.13.13`.
+
+Build, TypeScript, ESLint e Prettier passaram. O Edge confirmou a listagem sem o título grande e sem a contagem em 1440 e 390 px. O perfil de Mario Filaretti abriu por teclado nas duas larguras.
 
 ### RP-045 — 13/11/2026 — Mapa e textos de O escritório
 
