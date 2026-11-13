@@ -76,7 +76,7 @@
   border: 1px solid rgb(75 75 75 / 30%);
   border-radius: 50%;
   color: var(--f-color-ink);
-  background: rgb(48 48 48 / 50%);
+  background: rgb(48 48 48 / 30%);
   cursor: pointer;
   font-size: 1.25rem;
   line-height: 1;

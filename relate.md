@@ -2,18 +2,24 @@
 
 ## Situação atual
 
-| Campo              | Estado                                              |
-| ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-034                                 |
-| Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.2`, oito manifests privados alinhados         |
-| Git                | `dev`, base `1f788c2`                               |
-| Autorização        | Usar botões redondos com fundo cinza-escuro         |
-| Checkpoint         | Revisar artigos e carrosséis em localhost           |
+| Campo              | Estado                                               |
+| ------------------ | ---------------------------------------------------- |
+| Última atualização | 13/11/2026 — RP-035                                  |
+| Etapa              | **Revisão institucional local. F8/F9/F10 parciais**  |
+| Versão             | `0.13.3`, oito manifests privados alinhados          |
+| Git                | `dev`, base `844a72e`                                |
+| Autorização        | Aumentar a transparência do fundo das setas para 70% |
+| Checkpoint         | Revisar artigos e carrosséis em localhost            |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-035 — 13/11/2026 — Transparência das setas
+
+O CSS compartilhado em `apps/web/src/components/editorial/article-carousel.module.css` usa alfa de 30% no fundo dos botões circulares. Os manifests e o checklist registram a versão `0.13.3`.
+
+Build, TypeScript e Prettier passaram. O Edge verificou a transparência na Home em 1366 e 390 px e no carrossel de uma publicação.
 
 ### RP-034 — 13/11/2026 — Botões circulares dos carrosséis
 
