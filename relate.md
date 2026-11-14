@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-050                                 |
+| Última atualização | 13/11/2026 — RP-051                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
 | Versão             | `0.13.16`, oito manifests privados alinhados        |
-| Git                | `dev`, base `01743d5`                               |
-| Autorização        | Tornar circular o botão do WhatsApp                 |
-| Checkpoint         | Revisar o botão flutuante no site local             |
+| Git                | `dev`, base `dfc3853`                               |
+| Autorização        | Substituir a foto do perfil de Mario Filaretti      |
+| Checkpoint         | Revisar a nova foto no site local                   |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-051 — 13/11/2026 — Foto de Mario Filaretti
+
+A foto fornecida foi cadastrada na biblioteca de mídia e vinculada ao perfil de Mario Filaretti pelo serviço editorial do CMS de desenvolvimento. O PNG tem 538 × 537 px. A comparação de pixels confirmou o retrato fornecido, e o restante do perfil foi conferido antes e depois da troca. A foto anterior permanece na biblioteca. A versão da aplicação segue em `0.13.16` por se tratar de edição de mídia no CMS.
+
+O Edge confirmou o carregamento da imagem na listagem da equipe, no perfil e na área Imobiliário em 1440 e 390 px. A mídia fica no armazenamento do CMS local.
 
 ### RP-050 — 13/11/2026 — Botão flutuante do WhatsApp
 
