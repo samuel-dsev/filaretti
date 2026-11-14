@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-048                                 |
+| Última atualização | 13/11/2026 — RP-049                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
 | Versão             | `0.13.15`, oito manifests privados alinhados        |
-| Git                | `dev`, base `562d594`                               |
-| Autorização        | Atualizar Sobre nós e os metadados                  |
+| Git                | `dev`, base `025c70b`                               |
+| Autorização        | Remover Trajetória profissional de Sobre nós        |
 | Checkpoint         | Revisar Sobre nós no site local                     |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-049 — 13/11/2026 — Remoção da trajetória em Sobre nós
+
+A seção Trajetória profissional saiu de `/sobre-nos` no CMS local e da carga editorial em `apps/api/prisma/publish-about-page.ts`. A versão da aplicação segue em `0.13.15` por se tratar de edição de conteúdo.
+
+ESLint, Prettier e TypeScript passaram. A API confirmou a remoção da única seção solicitada, com os demais campos preservados. O Edge confirmou os títulos e links restantes em 1440 e 390 px.
 
 ### RP-048 — 13/11/2026 — Revisão de Sobre nós
 

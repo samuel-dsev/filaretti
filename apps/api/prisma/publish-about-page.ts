@@ -85,18 +85,6 @@ const sections: PageSection[] = [
     },
   },
   {
-    key: 'trajetoria-profissional',
-    heading: 'Trajetória profissional',
-    body: {
-      type: 'doc',
-      content: [
-        paragraph(
-          'Mario Filaretti é bacharel em Direito pela Universidade Federal de Ouro Preto (UFOP) e especialista em Processo Civil pela PUC Minas. Sua atuação profissional abrange questões imobiliárias e condominiais.',
-        ),
-      ],
-    },
-  },
-  {
     key: 'onde-estamos',
     heading: 'Onde estamos',
     body: {
