@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-047                                 |
+| Última atualização | 13/11/2026 — RP-048                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.14`, oito manifests privados alinhados        |
-| Git                | `dev`, base `f045449`                               |
-| Autorização        | Adicionar Nossos Profissionais acima da listagem    |
-| Checkpoint         | Revisar o título acima dos perfis em localhost      |
+| Versão             | `0.13.15`, oito manifests privados alinhados        |
+| Git                | `dev`, base `562d594`                               |
+| Autorização        | Atualizar Sobre nós e os metadados                  |
+| Checkpoint         | Revisar Sobre nós no site local                     |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-048 — 13/11/2026 — Revisão de Sobre nós
+
+A rota existente usa a seção `intro` do CMS para apresentar os dois parágrafos abaixo do H1. A tipografia institucional dá mais destaque ao primeiro. Como trabalhamos, Áreas de atuação, Trajetória profissional e Onde estamos usam o renderizador de seções já existente. Os links são editáveis no CMS e aparecem ao final de suas respectivas seções. A descrição de SEO é usada pelos metadados.
+
+`apps/api/prisma/publish-about-page.ts` cadastra ou atualiza o slug pelo serviço editorial, com validação, controle de versão e auditoria no banco local. Os estilos da abertura e o template da rota foram ajustados. Os manifests e o checklist registram a versão `0.13.15`.
+
+A atualização foi aplicada no CMS local e a segunda execução confirmou que o conteúdo já estava atualizado. Build, TypeScript, ESLint e Prettier passaram. No Edge, em 1440 e 390 px, foram conferidos o H1, os parágrafos, os metadados e os dois links internos.
 
 ### RP-047 — 13/11/2026 — Título da listagem da equipe
 

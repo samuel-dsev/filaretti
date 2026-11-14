@@ -139,8 +139,24 @@
   padding-block: clamp(2.5rem, 5vw, 5rem);
 }
 
-.institution-office-link {
-  padding-block: 2rem;
+.institution-about-intro {
+  padding-block-start: clamp(2rem, 6vw, 6rem);
+}
+
+.institution-about-intro h1 {
+  margin: 0 0 1.5rem;
+  color: var(--f-color-navy);
+  font-family: var(--f-font-display);
+  font-size: clamp(2.75rem, 5.5vw, 5rem);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.institution-about-intro .public-content > p:first-child {
+  color: var(--f-color-navy);
+  font-size: clamp(1.25rem, 2.3vw, 1.625rem);
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .institution-office-location {
