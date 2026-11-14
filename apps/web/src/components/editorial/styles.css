@@ -11,7 +11,6 @@
 }
 
 .editorial-filter-heading h2,
-.editorial-result-heading h1,
 .editorial-outline h2,
 .editorial-download h2,
 .editorial-share-section h2 {
@@ -74,7 +73,6 @@
   margin-bottom: 1.5rem;
 }
 
-.editorial-result-heading h1,
 .editorial-result-heading .institution-result-count {
   margin: 0;
 }

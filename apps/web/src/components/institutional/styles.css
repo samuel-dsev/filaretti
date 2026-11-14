@@ -370,6 +370,14 @@
   padding-block: clamp(2.5rem, 5vw, 5rem);
 }
 
+.institution-professional-index {
+  padding-block-start: clamp(1.25rem, 2vw, 2rem);
+}
+
+.institution-professional-index > .site-catalog-heading {
+  margin-block-end: 1rem;
+}
+
 .institution-result-count {
   margin: 0 0 1.5rem;
   color: var(--f-color-muted);

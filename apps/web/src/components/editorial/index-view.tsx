@@ -60,7 +60,9 @@ export function EditorialIndexView({
           <section className="editorial-results" aria-labelledby="resultados-heading">
             <div className="editorial-result-heading">
               <div>
-                <h1 id="resultados-heading">Publicações</h1>
+                <h1 id="resultados-heading" className="site-catalog-heading">
+                  Publicações
+                </h1>
                 <p className="editorial-result-subtitle">
                   Artigos, atualizações e guias. Explore as publicações por assunto, área de atuação
                   ou autoria.

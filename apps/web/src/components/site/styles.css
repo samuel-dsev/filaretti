@@ -10,6 +10,16 @@
   min-width: 0;
 }
 
+.site-catalog-heading {
+  margin: 0;
+  color: var(--f-color-navy);
+  font-family: var(--f-font-display);
+  font-size: clamp(1.875rem, 3vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
 /* Keep the footer outside the initial viewport while streamed page content is pending. */
 .institution-loading {
   min-block-size: 100svh;

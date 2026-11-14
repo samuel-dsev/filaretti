@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-046                                 |
+| Última atualização | 13/11/2026 — RP-047                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.13`, oito manifests privados alinhados        |
-| Git                | `dev`, base `7ae09d3`                               |
-| Autorização        | Remover o título grande e a contagem de perfis      |
-| Checkpoint         | Revisar a listagem da equipe em localhost           |
+| Versão             | `0.13.14`, oito manifests privados alinhados        |
+| Git                | `dev`, base `f045449`                               |
+| Autorização        | Adicionar Nossos Profissionais acima da listagem    |
+| Checkpoint         | Revisar o título acima dos perfis em localhost      |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-047 — 13/11/2026 — Título da listagem da equipe
+
+`professional-views.tsx` apresenta Nossos Profissionais como título da listagem. Os estilos institucionais posicionam o título entre a navegação estrutural e os perfis. A regra tipográfica em `site/styles.css` é compartilhada com Publicações, em `editorial/index-view.tsx` e seus estilos. Os manifests e o checklist registram a versão `0.13.14`.
+
+Build, TypeScript, ESLint e Prettier passaram. No Edge, os dois títulos tiveram a mesma tipografia a 1440, 985 e 390 px. O título da equipe apareceu alinhado à listagem e a contagem de perfis seguiu ausente.
 
 ### RP-046 — 13/11/2026 — Listagem da equipe
 

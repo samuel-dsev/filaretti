@@ -17,8 +17,8 @@ export function ProfessionalIndexView({ professionals, pagination }: Professiona
       <div className="f-container institution-breadcrumb">
         <Breadcrumb items={[{ label: 'Início', href: '/' }, { label: 'Equipe' }]} />
       </div>
-      <h1 className="f-sr-only">Equipe</h1>
-      <div className="f-container institution-index-content">
+      <div className="f-container institution-index-content institution-professional-index">
+        <h1 className="site-catalog-heading">Nossos Profissionais</h1>
         <h2 className="f-sr-only">Perfis publicados</h2>
         <ProfessionalGrid professionals={professionals} />
         <Pagination
