@@ -42,7 +42,7 @@ const sections: PageSection[] = [
       type: 'doc',
       content: [
         paragraph(
-          'Somos a Éttori & Filaretti Advogados, escritório de Taubaté (SP) com atuação em Direito Imobiliário e Condominial.',
+          'Somos a Éttori & Filaretti Advogados, escritório de advocacia com atuação em Direito Imobiliário e Condominial.',
         ),
         paragraph(
           'Orientamos pessoas, condomínios e empresas em decisões sobre imóveis e contratos. Em cada caso, explicamos os riscos, as opções e o que cada caminho pode exigir.',

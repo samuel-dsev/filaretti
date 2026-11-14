@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { AreaDetailView } from '../../../../components/institutional';
-import { getArticles, getFaqs, getPracticeArea } from '../../../../lib/public-api';
+import { getFaqs, getPracticeArea } from '../../../../lib/public-api';
 import { JsonLd, faqSchema, breadcrumbSchema } from '@/components/seo/structured-data';
 import { publicMetadata } from '../../../../lib/public-metadata';
 
@@ -19,10 +19,7 @@ export async function generateMetadata({ params }: Props) {
 export default async function AreaPage({ params }: Props) {
   const area = await getPracticeArea((await params).slug);
   if (!area) notFound();
-  const [articles, faqs] = await Promise.all([
-    getArticles({ area: area.slug, limit: 6 }),
-    getFaqs({ area: area.slug, limit: 12 }),
-  ]);
+  const faqs = await getFaqs({ area: area.slug, limit: 12 });
   return (
     <>
       <JsonLd
@@ -35,12 +32,7 @@ export default async function AreaPage({ params }: Props) {
           ]),
         ]}
       />
-      <AreaDetailView
-        area={area}
-        articles={articles.data}
-        faqs={faqs.data}
-        faqTotal={faqs.meta.total}
-      />
+      <AreaDetailView area={area} faqs={faqs.data} faqTotal={faqs.meta.total} />
     </>
   );
 }

@@ -445,7 +445,11 @@ async function domainChecks() {
     assert.equal(people.meta.total, 4);
     assert.equal(articles.meta.total, 12);
     for (const path of routes) metadata(await html(path), path);
-    assert.ok((await html('/areas-de-atuacao')).includes(areas.data[0].name));
+    const catalogue = await html('/areas-de-atuacao');
+    assert.ok(catalogue.includes(areas.data[0].name));
+    assert.doesNotMatch(catalogue, /class="institution-result-count"/u);
+    const areaDetail = await html('/areas-de-atuacao/area-ficticia-1');
+    assert.doesNotMatch(areaDetail, /id="(?:profissionais|conteudos-relacionados)"/u);
     assert.ok((await html('/profissionais')).includes(people.data[0].name));
     for (const item of [
       await json('/practice-areas/area-ficticia-1'),

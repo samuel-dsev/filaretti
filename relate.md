@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 14/11/2026 — RP-053                                 |
+| Última atualização | 14/11/2026 — RP-054                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.17`, oito manifests privados alinhados        |
-| Git                | `dev`, base `13b0a51`                               |
-| Autorização        | Vincular as imagens enviadas aos quatro artigos     |
-| Checkpoint         | Revisar as capas no site local                      |
+| Versão             | `0.13.18`, oito manifests privados alinhados        |
+| Git                | `dev`, base `5b687c3`                               |
+| Autorização        | Simplificar as áreas e atualizar Sobre nós          |
+| Checkpoint         | Revisar as páginas no site local                    |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-054 — 14/11/2026 — Áreas de atuação e Sobre nós
+
+O catálogo de áreas retira a contagem visível. As páginas individuais reduzem os espaçamentos da abertura, dos títulos e das seções. Equipe da área e Publicações saem dessas páginas. Apresentação, Serviços e Perguntas frequentes seguem disponíveis. A rota de detalhes deixa de consultar artigos e os testes institucionais e editoriais refletem o novo comportamento.
+
+A carga `publish-about-page.ts` atualiza o primeiro parágrafo de Sobre nós no CMS, com a redação fornecida pelo usuário. O destaque da abertura continua aplicado ao parágrafo. Os manifests e o checklist registram a versão `0.13.18`.
+
+Build, TypeScript, ESLint, Prettier e as suítes HTTP institucional (13 verificações) e editorial (16 verificações) passaram. O Edge conferiu o catálogo, as quatro áreas e a abertura de Sobre nós a 1440 e 390 px. A comparação pela API confirmou a mudança apenas no primeiro parágrafo institucional.
 
 ### RP-053 — 14/11/2026 — Capas dos artigos imobiliários
 

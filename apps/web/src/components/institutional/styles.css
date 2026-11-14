@@ -83,6 +83,24 @@
   background: var(--f-color-offwhite);
 }
 
+.institution-area-detail .site-hero {
+  padding-block: clamp(2rem, 4vw, 3.5rem);
+}
+
+.institution-area-detail .site-hero h1 {
+  margin-block: 0.75rem 1rem;
+}
+
+.institution-area-detail .institution-section {
+  padding-block: clamp(1.5rem, 3vw, 2.75rem);
+  content-visibility: visible;
+  contain-intrinsic-block-size: none;
+}
+
+.institution-area-detail .institution-section-heading {
+  margin-bottom: 1.25rem;
+}
+
 .institution-section-heading {
   display: flex;
   align-items: flex-end;

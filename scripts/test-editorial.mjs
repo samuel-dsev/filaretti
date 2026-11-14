@@ -586,13 +586,9 @@ async function domainChecks() {
     return { published: published.meta.total, pageSize: (await json('/articles')).meta.limit };
   });
   await check(
-    'Home area and professional editorial links open the published reading route',
+    'Home and professional editorial links open the published reading route',
     async () => {
-      for (const path of [
-        '/',
-        '/areas-de-atuacao/area-ficticia-1',
-        '/profissionais/profissional-ficticio-1',
-      ]) {
+      for (const path of ['/', '/profissionais/profissional-ficticio-1']) {
         const body = await html(path);
         assert.ok(body.includes(`href="/conteudos/${articleSlug}"`), `Editorial link in ${path}`);
         if (browser) {
@@ -1060,7 +1056,6 @@ async function domainChecks() {
       const dependent = [
         '/',
         `${combinedWeb}&pagina=2`,
-        '/areas-de-atuacao/area-ficticia-1',
         '/profissionais/profissional-ficticio-1',
         `/conteudos/f5-${id}-0`,
       ];

@@ -26,7 +26,6 @@ export interface AreaIndexViewProps {
 
 export interface AreaDetailViewProps {
   area: PublicPracticeArea;
-  articles: PublicArticleSummary[];
   faqs?: PublicFaq[];
   faqTotal?: number;
 }

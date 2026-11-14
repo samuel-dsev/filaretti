@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                       |
 | ---------------------- | -------------------------------------------------------------- |
-| Última atualização     | 14/11/2026 — Capas dos artigos imobiliários                    |
-| Último relatório       | `RP-053`, em `relate.md`                                       |
+| Última atualização     | 14/11/2026 — Áreas de atuação e Sobre nós                      |
+| Último relatório       | `RP-054`, em `relate.md`                                       |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**              |
-| Última entrega técnica | **Capas dos artigos imobiliários — RP-053**                    |
-| Versão de referência   | `0.13.17`, oito manifests privados alinhados                   |
+| Última entrega técnica | **Áreas de atuação e Sobre nós — RP-054**                      |
+| Versão de referência   | `0.13.18`, oito manifests privados alinhados                   |
 | Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais** |
-| Próximo passo          | Revisar as capas no site local                                 |
-| Autorização            | Vincular as quatro imagens enviadas aos artigos                |
-| Git                    | `dev`, base `13b0a51` (RP-052)                                 |
+| Próximo passo          | Revisar as áreas e a abertura de Sobre nós no site local       |
+| Autorização            | Simplificar as áreas e atualizar a abertura de Sobre nós       |
+| Git                    | `dev`, base `5b687c3` (RP-053)                                 |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                 |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**14/11/2026 — RP-054 — Áreas de atuação e Sobre nós.** O catálogo deixa de exibir a contagem, as páginas de área ficam mais compactas e a apresentação institucional recebe a frase aprovada.
 
 **14/11/2026 — RP-053 — Capas dos artigos imobiliários.** As quatro imagens enviadas foram vinculadas aos artigos no CMS local.
 

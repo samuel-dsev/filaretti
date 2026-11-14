@@ -4,7 +4,7 @@ import { FaqList } from '@/components/search/faq-list';
 import { Breadcrumb, Hero } from '@/components/site';
 import { PublicContent } from '@/lib/public-content';
 import { PhotoHero } from './photo-hero';
-import { ArticlePreviewGrid, AreaGrid, InstitutionalSection, ProfessionalGrid } from './shared';
+import { AreaGrid, InstitutionalSection } from './shared';
 import type { AreaDetailViewProps, AreaIndexViewProps } from './types';
 
 export function AreaIndexView({ areas, pagination }: AreaIndexViewProps) {
@@ -21,9 +21,6 @@ export function AreaIndexView({ areas, pagination }: AreaIndexViewProps) {
       />
       <div className="f-container institution-index-content">
         <h2 className="f-sr-only">Áreas publicadas</h2>
-        <p className="institution-result-count">
-          {pagination.total} {pagination.total === 1 ? 'área publicada' : 'áreas publicadas'}
-        </p>
         <AreaGrid areas={areas} />
         <Pagination
           currentPage={pagination.page}
@@ -36,9 +33,9 @@ export function AreaIndexView({ areas, pagination }: AreaIndexViewProps) {
   );
 }
 
-export function AreaDetailView({ area, articles, faqs = [], faqTotal = 0 }: AreaDetailViewProps) {
+export function AreaDetailView({ area, faqs = [], faqTotal = 0 }: AreaDetailViewProps) {
   return (
-    <>
+    <div className="institution-area-detail">
       <div className="f-container institution-breadcrumb">
         <Breadcrumb
           items={[
@@ -70,20 +67,6 @@ export function AreaDetailView({ area, articles, faqs = [], faqTotal = 0 }: Area
           <EmptyState title="Nenhum serviço publicado" />
         )}
       </InstitutionalSection>
-      <InstitutionalSection id="profissionais" title="Profissionais" eyebrow="Equipe da área">
-        <ProfessionalGrid professionals={area.professionals} />
-      </InstitutionalSection>
-      <InstitutionalSection
-        id="conteudos-relacionados"
-        title="Conteúdos relacionados"
-        eyebrow="Publicações"
-        soft
-      >
-        <ArticlePreviewGrid
-          articles={articles}
-          emptyTitle="Nenhum conteúdo relacionado publicado"
-        />
-      </InstitutionalSection>
       <InstitutionalSection
         id="perguntas-frequentes"
         title="Perguntas frequentes"
@@ -101,6 +84,6 @@ export function AreaDetailView({ area, articles, faqs = [], faqTotal = 0 }: Area
           </p>
         ) : null}
       </InstitutionalSection>
-    </>
+    </div>
   );
 }

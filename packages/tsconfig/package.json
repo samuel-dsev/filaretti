@@ -1,6 +1,6 @@
 {
   "name": "@filaretti/tsconfig",
-  "version": "0.13.17",
+  "version": "0.13.18",
   "private": true,
   "exports": {
     "./base.json": "./base.json",
