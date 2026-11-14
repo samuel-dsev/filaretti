@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-052                                 |
+| Última atualização | 14/11/2026 — RP-053                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
 | Versão             | `0.13.17`, oito manifests privados alinhados        |
-| Git                | `dev`, base `a546086`                               |
-| Autorização        | Cadastrar Érika e ajustar os perfis da equipe       |
-| Checkpoint         | Revisar os perfis e o texto provisório de Érika     |
+| Git                | `dev`, base `13b0a51`                               |
+| Autorização        | Vincular as imagens enviadas aos quatro artigos     |
+| Checkpoint         | Revisar as capas no site local                      |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-053 — 14/11/2026 — Capas dos artigos imobiliários
+
+As quatro capas foram cadastradas na biblioteca do CMS local, com textos alternativos e registro de origem. Locação de curta duração usa a imagem do Unsplash (3000 × 2002 px). CIB e Cotas de condomínio usam os arquivos dos links fornecidos (678 × 452 e 739 × 415 px). Financiamento usa o PNG anexado (1672 × 941 px). A autoria e a licença das duas imagens fornecidas por links de miniatura do Google ainda precisam de confirmação para a publicação externa.
+
+O serviço editorial atualizou os vínculos das capas com controle de versão e auditoria. A conferência pela API preservou o conteúdo, a autoria e a data de publicação. A mídia permanece no armazenamento do CMS local. A versão segue em `0.13.17` por se tratar de edição de mídia.
+
+O Edge confirmou as quatro capas nas páginas, na listagem de Conteúdos e nos carrosséis da Home e de artigos relacionados em 1440 e 390 px.
 
 ### RP-052 — 13/11/2026 — Perfis e apresentação da equipe
 
