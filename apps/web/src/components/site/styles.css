@@ -202,18 +202,15 @@
   right: max(1rem, env(safe-area-inset-right));
   bottom: max(1rem, env(safe-area-inset-bottom));
   z-index: 45;
-  display: flex;
-  min-height: 44px;
-  align-items: center;
-  padding: 0.75rem 1rem;
+  display: grid;
+  inline-size: 3rem;
+  block-size: 3rem;
+  place-items: center;
   border: 1px solid var(--f-color-primary);
-  border-radius: var(--f-radius-sm);
+  border-radius: 50%;
   color: var(--f-color-ink);
   background: var(--f-color-pale);
   box-shadow: 0 6px 20px rgb(6 7 8 / 16%);
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
 }
 
 .site-whatsapp:hover {

@@ -4,16 +4,22 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-049                                 |
+| Última atualização | 13/11/2026 — RP-050                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.15`, oito manifests privados alinhados        |
-| Git                | `dev`, base `025c70b`                               |
-| Autorização        | Remover Trajetória profissional de Sobre nós        |
-| Checkpoint         | Revisar Sobre nós no site local                     |
+| Versão             | `0.13.16`, oito manifests privados alinhados        |
+| Git                | `dev`, base `01743d5`                               |
+| Autorização        | Tornar circular o botão do WhatsApp                 |
+| Checkpoint         | Revisar o botão flutuante no site local             |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-050 — 13/11/2026 — Botão flutuante do WhatsApp
+
+O layout público mostra o ícone do WhatsApp centralizado em um círculo bege de 48 px. O link mantém o rótulo acessível “Conversar pelo WhatsApp”. A mudança está em `public-layout.tsx`, `icons.tsx` e nos estilos compartilhados do site. Os manifests e o checklist registram a versão `0.13.16`.
+
+Build, TypeScript, ESLint e Prettier passaram. O Edge confirmou o formato, o fundo, a centralização, o foco e o endereço do link em desktop e celular.
 
 ### RP-049 — 13/11/2026 — Remoção da trajetória em Sobre nós
 

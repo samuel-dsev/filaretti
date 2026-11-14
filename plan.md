@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                       |
 | ---------------------- | -------------------------------------------------------------- |
-| Última atualização     | 13/11/2026 — Remoção da trajetória em Sobre nós                |
-| Último relatório       | `RP-049`, em `relate.md`                                       |
+| Última atualização     | 13/11/2026 — Botão flutuante do WhatsApp                       |
+| Último relatório       | `RP-050`, em `relate.md`                                       |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**              |
-| Última entrega técnica | **Remoção da trajetória em Sobre nós — RP-049**                |
-| Versão de referência   | `0.13.15`, oito manifests privados alinhados                   |
+| Última entrega técnica | **Botão flutuante do WhatsApp — RP-050**                       |
+| Versão de referência   | `0.13.16`, oito manifests privados alinhados                   |
 | Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais** |
-| Próximo passo          | Revisar Sobre nós no site local                                |
-| Autorização            | Remover a seção Trajetória profissional de Sobre nós           |
-| Git                    | `dev`, base `025c70b` (RP-048)                                 |
+| Próximo passo          | Revisar o botão flutuante no site local                        |
+| Autorização            | Tornar circular o botão do WhatsApp                            |
+| Git                    | `dev`, base `01743d5` (RP-049)                                 |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                 |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**13/11/2026 — RP-050 — Botão flutuante do WhatsApp.** O atalho fica circular, com ícone centralizado e fundo bege.
 
 **13/11/2026 — RP-049 — Sobre nós.** A seção Trajetória profissional foi retirada do conteúdo do CMS local.
 
