@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 13/11/2026 — RP-051                                 |
+| Última atualização | 13/11/2026 — RP-052                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.16`, oito manifests privados alinhados        |
-| Git                | `dev`, base `dfc3853`                               |
-| Autorização        | Substituir a foto do perfil de Mario Filaretti      |
-| Checkpoint         | Revisar a nova foto no site local                   |
+| Versão             | `0.13.17`, oito manifests privados alinhados        |
+| Git                | `dev`, base `a546086`                               |
+| Autorização        | Cadastrar Érika e ajustar os perfis da equipe       |
+| Checkpoint         | Revisar os perfis e o texto provisório de Érika     |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-052 — 13/11/2026 — Perfis e apresentação da equipe
+
+A carga `apps/api/prisma/publish-team-profiles.ts` cria Dra. Érika Ettori no CMS de desenvolvimento com biografia provisória em primeira pessoa, sem formação ou foto, e atualiza o nome de Dr. Mario Filaretti pelo serviço editorial. O texto de Érika aguarda revisão antes da publicação externa.
+
+O layout compartilhado em `professional-views.tsx` aproxima o título Trajetória profissional do nome e mantém a foto em coluna lateral quando disponível. Os estilos institucionais empilham o conteúdo em telas estreitas e a formação e a experiência aparecem quando preenchidas. Os manifests e o checklist registram a versão `0.13.17`.
+
+`content-cards.tsx` desconsidera os prefixos Dr. e Dra. ao formar as iniciais dos retratos ausentes. Build, TypeScript, ESLint e Prettier passaram. No Edge, os dois perfis ficaram com 40 px entre o nome e Trajetória profissional em 1440 px e 24 px em 390 e 320 px. A listagem, a foto de Mario e a ausência de formação no perfil de Érika foram conferidas.
 
 ### RP-051 — 13/11/2026 — Foto de Mario Filaretti
 

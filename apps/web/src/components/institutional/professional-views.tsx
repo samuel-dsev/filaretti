@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import { EmptyState, Pagination } from '@filaretti/ui';
-import { Breadcrumb, Hero } from '@/components/site';
+import { Pagination } from '@filaretti/ui';
+import { Breadcrumb } from '@/components/site';
 import { PublicContent } from '@/lib/public-content';
 import { isManagedPublicMedia, publicImage } from '@/lib/public-media';
 import {
@@ -34,12 +34,7 @@ export function ProfessionalIndexView({ professionals, pagination }: Professiona
 
 export function ProfessionalDetailView({ professional, articles }: ProfessionalDetailViewProps) {
   const image = publicImage(professional.photo, professional.name);
-  const initials = professional.name
-    .split(' ')
-    .filter(Boolean)
-    .map((word) => word[0])
-    .slice(0, 2)
-    .join('');
+  const { education, experience } = professional;
 
   return (
     <>
@@ -52,62 +47,62 @@ export function ProfessionalDetailView({ professional, articles }: ProfessionalD
           ]}
         />
       </div>
-      <Hero
-        eyebrow={professional.title}
-        title={professional.name}
-        visual={
-          image ? (
-            <div className="institution-profile-photo">
-              <Image
-                src={image.src}
-                unoptimized={isManagedPublicMedia(image.src)}
-                alt={image.alt}
-                width={720}
-                height={800}
-                sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1023px) 40vw, 45vw"
-              />
+      <div
+        className={`f-container institution-profile${image ? ' institution-profile-with-photo' : ''}`}
+      >
+        <div className="institution-profile-copy">
+          <header>
+            {professional.title ? <p className="site-eyebrow">{professional.title}</p> : null}
+            <h1>{professional.name}</h1>
+          </header>
+          <section id="biografia" aria-labelledby="biografia-heading">
+            <h2 id="biografia-heading" className="site-catalog-heading">
+              Trajetória profissional
+            </h2>
+            <div className="institution-readable">
+              <PublicContent document={professional.bio} />
             </div>
-          ) : (
-            <div className="institution-profile-placeholder">
-              <span aria-hidden="true">{initials}</span>
-              <p>Retrato em preparação</p>
-            </div>
-          )
-        }
-      />
-      <InstitutionalSection id="biografia" title="Trajetória profissional">
-        <div className="institution-readable">
-          <PublicContent document={professional.bio} />
+          </section>
         </div>
-      </InstitutionalSection>
-      <section className="institution-section institution-section-soft">
-        <div className="f-container institution-profile-background">
-          <div>
-            <h2>Formação</h2>
-            {professional.education.length ? (
-              <ul className="institution-background-list">
-                {professional.education.map((education, index) => (
-                  <li key={`${education}-${index}`}>{education}</li>
-                ))}
-              </ul>
-            ) : (
-              <EmptyState title="Formação não publicada" />
-            )}
+        {image ? (
+          <div className="institution-profile-photo">
+            <Image
+              src={image.src}
+              unoptimized={isManagedPublicMedia(image.src)}
+              alt={image.alt}
+              width={720}
+              height={800}
+              sizes="(max-width: 767px) calc(100vw - 32px), 38vw"
+            />
           </div>
-          <div>
-            <h2>Experiência</h2>
-            {professional.experience.length ? (
-              <ul className="institution-background-list">
-                {professional.experience.map((experience, index) => (
-                  <li key={`${experience}-${index}`}>{experience}</li>
-                ))}
-              </ul>
-            ) : (
-              <EmptyState title="Experiência não publicada" />
-            )}
+        ) : null}
+      </div>
+      {education.length || experience.length ? (
+        <section className="institution-section institution-section-soft">
+          <div className="f-container institution-profile-background">
+            {education.length ? (
+              <div>
+                <h2>Formação</h2>
+                <ul className="institution-background-list">
+                  {education.map((item, index) => (
+                    <li key={`${item}-${index}`}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {experience.length ? (
+              <div>
+                <h2>Experiência</h2>
+                <ul className="institution-background-list">
+                  {experience.map((item, index) => (
+                    <li key={`${item}-${index}`}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
       {professional.practiceAreas.length ? (
         <InstitutionalSection id="areas" title="Áreas de atuação">
           <AreaRelationLinks areas={professional.practiceAreas} />

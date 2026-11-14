@@ -108,6 +108,7 @@ export function ProfessionalCard({
   areas,
 }: ProfessionalCardProps) {
   const initials = name
+    .replace(/^Dr(?:a)?\.\s+/iu, '')
     .split(' ')
     .filter(Boolean)
     .map((word) => word[0])

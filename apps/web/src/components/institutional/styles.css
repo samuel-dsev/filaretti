@@ -437,6 +437,35 @@
   letter-spacing: 0.1em;
 }
 
+.institution-profile {
+  display: grid;
+  align-items: start;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  padding-block: clamp(1.5rem, 3vw, 3rem) clamp(2rem, 5vw, 5rem);
+}
+
+.institution-profile-with-photo {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+}
+
+.institution-profile-copy h1 {
+  margin: 0.5rem 0 0;
+  color: var(--f-color-navy);
+  font-family: var(--f-font-display);
+  font-size: clamp(2.75rem, 5.5vw, 5.75rem);
+  font-weight: 500;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.institution-profile-copy > section {
+  margin-block-start: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.institution-profile-copy h2 {
+  margin-block-end: 1rem;
+}
+
 .institution-profile-photo {
   overflow: hidden;
   background: var(--f-color-pale);
@@ -449,30 +478,6 @@
   aspect-ratio: 0.9;
   object-fit: cover;
   object-position: center top;
-}
-
-.institution-profile-placeholder {
-  display: flex;
-  min-height: 280px;
-  aspect-ratio: 1.1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  color: var(--f-color-navy);
-  background: var(--f-color-pale);
-}
-
-.institution-profile-placeholder > span {
-  font-family: var(--f-font-display);
-  font-size: clamp(5rem, 11vw, 10rem);
-  font-weight: 500;
-  line-height: 1;
-}
-
-.institution-profile-placeholder > p {
-  margin: 0;
-  font-size: 0.75rem;
 }
 
 .institution-profile-background {
@@ -554,6 +559,7 @@
   .institution-copy-section:not(.institution-copy-section-unheaded),
   .institution-service-list,
   .institution-profile-background,
+  .institution-profile-with-photo,
   .institution-relation-links {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -565,14 +571,5 @@
 
   .institution-profile-background {
     gap: 2.5rem;
-  }
-
-  .institution-profile-placeholder {
-    min-height: 240px;
-    aspect-ratio: 1.35;
-  }
-
-  .institution-profile-placeholder > span {
-    font-size: 5rem;
   }
 }
