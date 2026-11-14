@@ -1,6 +1,6 @@
 {
   "name": "@filaretti/types",
-  "version": "0.13.18",
+  "version": "0.13.19",
   "private": true,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

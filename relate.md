@@ -4,16 +4,24 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 14/11/2026 — RP-054                                 |
+| Última atualização | 14/11/2026 — RP-055                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.18`, oito manifests privados alinhados        |
-| Git                | `dev`, base `5b687c3`                               |
-| Autorização        | Simplificar as áreas e atualizar Sobre nós          |
-| Checkpoint         | Revisar as páginas no site local                    |
+| Versão             | `0.13.19`, oito manifests privados alinhados        |
+| Git                | `dev`, base `8f8dc27`                               |
+| Autorização        | Reposicionar Serviços e retirar perguntas por área  |
+| Checkpoint         | Revisar as páginas de área no site local            |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-055 — 14/11/2026 — Serviços nas páginas de área
+
+O template em `area-views.tsx` usa duas colunas a partir de 768 px. O título e a apresentação ficam à esquerda, com a lista existente de Serviços alinhada à direita. Em telas menores, a lista aparece depois da apresentação. Os estilos estão em `styles.css`. A rota individual deixa de consultar perguntas e de anunciar o schema FAQPage. `types.ts` deixa de exigir dados de FAQ e a rota geral de perguntas continua disponível.
+
+O build Next.js com TypeScript, o ESLint dos arquivos modificados e os 13 checks HTTP de `test-institutional.mjs` passaram. O Edge conferiu os quatro detalhes com dados do CMS a 1440, 768 e 390 px, incluindo posição da lista, textos dos serviços, ausência da seção de perguntas, ausência de rolagem horizontal, breadcrumb estruturado e disponibilidade da rota geral de perguntas. O frontend local foi reiniciado com a versão validada.
+
+`plan.md`, `relate.md`, os oito manifests privados e `docs/release-checklist.json` registram a entrega local na branch `dev`, base `8f8dc27`. A edição prévia de `apps/web/tsconfig.json` fica fora do commit.
 
 ### RP-054 — 14/11/2026 — Áreas de atuação e Sobre nós
 

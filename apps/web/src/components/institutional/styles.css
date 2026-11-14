@@ -83,8 +83,14 @@
   background: var(--f-color-offwhite);
 }
 
+.institution-area-columns > div > .site-hero > .f-container,
+.institution-area-columns .institution-section > .f-container {
+  width: 100%;
+}
+
 .institution-area-detail .site-hero {
   padding-block: clamp(2rem, 4vw, 3.5rem);
+  background: transparent;
 }
 
 .institution-area-detail .site-hero h1 {
@@ -99,6 +105,19 @@
 
 .institution-area-detail .institution-section-heading {
   margin-bottom: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .institution-area-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: clamp(2rem, 6vw, 6rem);
+  }
+
+  .institution-area-detail #servicos {
+    padding-top: clamp(2rem, 4vw, 3.5rem);
+  }
 }
 
 .institution-section-heading {
@@ -430,12 +449,6 @@
   list-style: none;
 }
 
-.institution-service-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 2rem;
-}
-
 .institution-service-list li {
   display: flex;
   align-items: baseline;
@@ -575,7 +588,6 @@
 
   .institution-grid,
   .institution-copy-section:not(.institution-copy-section-unheaded),
-  .institution-service-list,
   .institution-profile-background,
   .institution-profile-with-photo,
   .institution-relation-links {

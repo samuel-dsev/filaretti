@@ -1,6 +1,4 @@
 import { EmptyState, Pagination } from '@filaretti/ui';
-import Link from 'next/link';
-import { FaqList } from '@/components/search/faq-list';
 import { Breadcrumb, Hero } from '@/components/site';
 import { PublicContent } from '@/lib/public-content';
 import { PhotoHero } from './photo-hero';
@@ -33,7 +31,7 @@ export function AreaIndexView({ areas, pagination }: AreaIndexViewProps) {
   );
 }
 
-export function AreaDetailView({ area, faqs = [], faqTotal = 0 }: AreaDetailViewProps) {
+export function AreaDetailView({ area }: AreaDetailViewProps) {
   return (
     <div className="institution-area-detail">
       <div className="f-container institution-breadcrumb">
@@ -45,45 +43,32 @@ export function AreaDetailView({ area, faqs = [], faqTotal = 0 }: AreaDetailView
           ]}
         />
       </div>
-      <Hero eyebrow="Área de atuação" title={area.name} description={area.summary} />
-      <InstitutionalSection id="apresentacao" title="Apresentação" eyebrow="Sobre a área">
-        <div className="institution-readable">
-          <PublicContent document={area.description} />
+      <div className="f-container institution-area-columns">
+        <div>
+          <Hero eyebrow="Área de atuação" title={area.name} description={area.summary} />
+          <InstitutionalSection id="apresentacao" title="Apresentação" eyebrow="Sobre a área">
+            <div className="institution-readable">
+              <PublicContent document={area.description} />
+            </div>
+          </InstitutionalSection>
         </div>
-      </InstitutionalSection>
-      <InstitutionalSection id="servicos" title="Serviços" eyebrow="Atuação" soft>
-        {area.services.length ? (
-          <ul className="institution-service-list">
-            {area.services.map((service, index) => (
-              <li key={`${service}-${index}`}>
-                <span className="institution-service-number" aria-hidden="true">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <span>{service}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <EmptyState title="Nenhum serviço publicado" />
-        )}
-      </InstitutionalSection>
-      <InstitutionalSection
-        id="perguntas-frequentes"
-        title="Perguntas frequentes"
-        eyebrow="Sobre esta área"
-      >
-        <FaqList faqs={faqs} />
-        {faqTotal > faqs.length ? (
-          <p>
-            <Link
-              href={`/perguntas-frequentes?area=${encodeURIComponent(area.slug)}`}
-              prefetch={false}
-            >
-              Ver todas as perguntas desta área
-            </Link>
-          </p>
-        ) : null}
-      </InstitutionalSection>
+        <InstitutionalSection id="servicos" title="Serviços" eyebrow="Atuação">
+          {area.services.length ? (
+            <ul className="institution-service-list">
+              {area.services.map((service, index) => (
+                <li key={`${service}-${index}`}>
+                  <span className="institution-service-number" aria-hidden="true">
+                    {String(index + 1).padStart(2, '0')}
+                  </span>
+                  <span>{service}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <EmptyState title="Nenhum serviço publicado" />
+          )}
+        </InstitutionalSection>
+      </div>
     </div>
   );
 }

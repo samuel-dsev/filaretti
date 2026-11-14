@@ -449,7 +449,12 @@ async function domainChecks() {
     assert.ok(catalogue.includes(areas.data[0].name));
     assert.doesNotMatch(catalogue, /class="institution-result-count"/u);
     const areaDetail = await html('/areas-de-atuacao/area-ficticia-1');
-    assert.doesNotMatch(areaDetail, /id="(?:profissionais|conteudos-relacionados)"/u);
+    assert.match(areaDetail, /id="servicos-heading">Serviços<\/h2>/u);
+    assert.doesNotMatch(
+      areaDetail,
+      /id="(?:profissionais|conteudos-relacionados|perguntas-frequentes)"/u,
+    );
+    assert.doesNotMatch(areaDetail, /"@type":"FAQPage"/u);
     assert.ok((await html('/profissionais')).includes(people.data[0].name));
     for (const item of [
       await json('/practice-areas/area-ficticia-1'),
