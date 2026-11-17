@@ -4,16 +4,28 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 17/11/2026 — RP-056                                 |
+| Última atualização | 17/11/2026 — RP-057                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
 | Versão             | `0.13.20`, oito manifests privados alinhados        |
-| Git                | `dev`, base `cb3e90f`                               |
-| Autorização        | Substituir e ampliar a logo                         |
-| Checkpoint         | Revisar a nova logo no site local                   |
+| Git                | `dev`, base `0524579`                               |
+| Autorização        | Editar texto e foto da Dra. Érika Ettori            |
+| Checkpoint         | Revisar o perfil atualizado no site local           |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-057 — 17/11/2026 — Perfil da Dra. Érika Ettori
+
+O perfil ativo em `/profissionais/erika-ettori` recebeu o título, os cinco parágrafos da trajetória profissional, os três itens de formação, os cinco itens de experiência e o retrato de 566 × 566 px enviados pelo usuário. A biblioteca de mídia do CMS local recebeu a foto com texto alternativo. A edição usou o DTO e os serviços do CMS, com controle de versão do registro e auditoria.
+
+`.local/revisao-institucional/profile-rp057.mjs` aplica a edição apenas no banco de desenvolvimento local. `profile-rp057-before-v1.json` guarda o estado anterior do perfil. A segunda execução reconheceu os campos e a imagem já gravados. A comparação dos pixels confirmou a foto enviada. Os anexos e arquivos auxiliares ficam fora do Git.
+
+A prévia local em `127.0.0.1:3210` foi ligada à API de desenvolvimento em `127.0.0.1:3211` por `.local/revisao-institucional/private-preview-rp057.mjs`. O build com Webpack e TypeScript passou. A API local respondeu 200 no health e retornou o perfil atualizado. A API da apresentação usa uma cópia separada e a consulta de conferência retornou a versão anterior.
+
+`qa-rp057.mjs` conferiu no Edge o perfil e o acesso pelo card de Equipe a 320, 390 e 1440 px, com comparação do texto e dos pixels do PNG servido, carregamento do retrato e ausência de rolagem horizontal e erros JavaScript. As capturas `perfil-rp057-390.png` e `perfil-rp057-1440.png` ficam em `.local/revisao-institucional/`.
+
+O conteúdo foi atualizado no CMS, com a versão de aplicação `0.13.20`. Os arquivos versionados desta entrega são `plan.md` e `relate.md`. O commit local na branch `dev` está previsto como `docs(cms): registra atualização do perfil da Dra. Érika Ettori`. Próximo passo é a revisão local do perfil. A publicação externa depende de autorização própria.
 
 ### RP-056 — 17/11/2026 — Nova logo transparente
 
