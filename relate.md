@@ -4,16 +4,30 @@
 
 | Campo              | Estado                                              |
 | ------------------ | --------------------------------------------------- |
-| Última atualização | 14/11/2026 — RP-055                                 |
+| Última atualização | 17/11/2026 — RP-056                                 |
 | Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.19`, oito manifests privados alinhados        |
-| Git                | `dev`, base `8f8dc27`                               |
-| Autorização        | Reposicionar Serviços e retirar perguntas por área  |
-| Checkpoint         | Revisar as páginas de área no site local            |
+| Versão             | `0.13.20`, oito manifests privados alinhados        |
+| Git                | `dev`, base `cb3e90f`                               |
+| Autorização        | Substituir e ampliar a logo                         |
+| Checkpoint         | Revisar a nova logo no site local                   |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-056 — 17/11/2026 — Nova logo transparente
+
+O PNG fornecido na raiz, com 1254 × 1254 px e canal alfa, foi copiado byte a byte para `apps/web/public/brand/logomarca.png`. O componente `apps/web/src/components/site/brand.tsx` usa a nova imagem no cabeçalho e no rodapé. O enquadramento em `apps/web/src/components/site/styles.css` aproveita a área visível da arte e adapta o tamanho a três faixas de largura. A altura do cabeçalho acomoda a marca maior e acompanha o cálculo da abertura da Home.
+
+`apps/web/src/lib/public-status.ts` atualiza a marca do template compartilhado das respostas 404 e 503. `apps/web/src/app/layout.tsx` referencia o mesmo PNG para o ícone da aba e substitui `apps/web/src/app/icon.jpg`. O JPG em `public/brand` segue disponível para páginas em cache.
+
+Os manifests `package.json`, `apps/{api,web}/package.json` e `packages/{config,eslint-config,tsconfig,types,ui}/package.json` e o checklist `docs/release-checklist.json` registram a versão `0.13.20`. O checkpoint está em `plan.md` e neste relatório. O arquivo original da raiz e a edição prévia de `apps/web/tsconfig.json` ficam fora do commit.
+
+O build otimizado do Next.js com Webpack e a etapa TypeScript passaram. O Turbopack falhou na resolução das fontes do Google neste ambiente. O ESLint da web passou pelo executável instalado localmente. `node --test` aprovou os dez testes de rotas públicas e política de segurança. `fc /b` confirmou que a cópia em `public/brand` é idêntica ao arquivo fornecido.
+
+O Edge aprovou 18 layouts da Home, Contato e 404 em 320, 390, 768, 1024, 1440 e 1920 px. Foram conferidos o carregamento e o enquadramento da arte, a ausência de rolagem horizontal, o ícone da aba e o acesso à Home e ao menu móvel por teclado. As capturas e os resultados estão em `.local/transparent-logo-review/`. A resposta 503 compartilha o template da 404 e foi coberta pelos testes de status.
+
+Commit local na branch `dev` previsto como `fix(site): amplia a logo transparente (v0.13.20)`. Próximo passo: revisão visual pelo usuário. Novas etapas e publicação externa aguardam autorização.
 
 ### RP-055 — 14/11/2026 — Serviços nas páginas de área
 

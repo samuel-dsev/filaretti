@@ -6,7 +6,7 @@ export function Brand({ brand }: { brand: SiteBrand }) {
   return (
     <Link prefetch={false} className="site-brand" href={brand.href}>
       <span className="site-brand-logo">
-        <Image src="/brand/logomarca.jpg" alt={brand.name} width={1254} height={1254} unoptimized />
+        <Image src="/brand/logomarca.png" alt={brand.name} width={1254} height={1254} unoptimized />
       </span>
     </Link>
   );

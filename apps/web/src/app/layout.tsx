@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   title: 'Ettori & Filaretti Advogados — site institucional',
   description:
     'Informações institucionais, áreas de atuação, profissionais e conteúdos publicados.',
+  icons: { icon: { url: '/brand/logomarca.png', type: 'image/png', sizes: '1254x1254' } },
   robots: { index: false, follow: false },
 };
 

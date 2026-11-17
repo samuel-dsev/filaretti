@@ -4,15 +4,15 @@
 
 | Campo                  | Situação                                                       |
 | ---------------------- | -------------------------------------------------------------- |
-| Última atualização     | 14/11/2026 — Serviços nas páginas de área                      |
-| Último relatório       | `RP-055`, em `relate.md`                                       |
+| Última atualização     | 17/11/2026 — Nova logo transparente                            |
+| Último relatório       | `RP-056`, em `relate.md`                                       |
 | Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**              |
-| Última entrega técnica | **Serviços nas páginas de área — RP-055**                      |
-| Versão de referência   | `0.13.19`, oito manifests privados alinhados                   |
+| Última entrega técnica | **Logo transparente e responsiva — RP-056**                    |
+| Versão de referência   | `0.13.20`, oito manifests privados alinhados                   |
 | Etapa corrente         | **Revisão institucional local. F8/F9/F10 permanecem parciais** |
-| Próximo passo          | Revisar as páginas de área no site local                       |
-| Autorização            | Reposicionar Serviços e retirar a seção de perguntas por área  |
-| Git                    | `dev`, base `8f8dc27` (RP-054)                                 |
+| Próximo passo          | Revisar a nova logo no site local                              |
+| Autorização            | Substituir e ampliar a logo. Novas etapas aguardam autorização |
+| Git                    | `dev`, base `cb3e90f` (RP-055)                                 |
 | Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                 |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
@@ -223,6 +223,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**17/11/2026 — RP-056 — Nova logo transparente.** O PNG fornecido é exibido em tamanho maior no cabeçalho, no rodapé e nas respostas públicas de erro. O ícone da aba usa o PNG.
 
 **14/11/2026 — RP-055 — Serviços nas páginas de área.** Serviços ocupa a coluna direita em telas a partir de 768 px e vem após a apresentação em telas menores. A seção de perguntas frequentes sai das páginas individuais de área.
 

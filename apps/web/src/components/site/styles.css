@@ -1,5 +1,5 @@
 .site-layout {
-  --site-header-height: 104px;
+  --site-header-height: 124px;
   --site-header-border-width: 1px;
   color: var(--f-color-ink);
   background: var(--f-color-surface);
@@ -53,18 +53,20 @@
   position: relative;
   display: block;
   flex: none;
-  width: 210px;
-  height: 84px;
+  width: 184px;
+  aspect-ratio: 8 / 5;
   overflow: hidden;
 }
 
 .site-brand-logo img {
   position: absolute;
-  top: -50px;
-  left: 17px;
-  width: 176px;
-  height: 176px;
+  top: 50%;
+  left: 50%;
+  /* Frame the artwork inside the square PNG's transparent margins. */
+  width: 125%;
+  height: auto;
   max-width: none;
+  transform: translate(-51%, -52%);
 }
 
 .site-brand-monogram {
@@ -890,11 +892,15 @@
 
 @media (max-width: 1023px) {
   .site-layout {
-    --site-header-height: 88px;
+    --site-header-height: 116px;
   }
 
   .site-header-inner {
     gap: 1rem;
+  }
+
+  .site-brand-logo {
+    width: 168px;
   }
 
   .site-desktop-nav,
@@ -922,7 +928,7 @@
 
 @media (max-width: 767px) {
   .site-layout {
-    --site-header-height: 80px;
+    --site-header-height: 96px;
   }
 
   .site-header-inner {
@@ -934,15 +940,7 @@
   }
 
   .site-brand-logo {
-    width: 154px;
-    height: 68px;
-  }
-
-  .site-brand-logo img {
-    top: -39px;
-    left: 8px;
-    width: 138px;
-    height: 138px;
+    width: 140px;
   }
 
   .site-brand-monogram {
