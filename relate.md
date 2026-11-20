@@ -2,18 +2,34 @@
 
 ## Situação atual
 
-| Campo              | Estado                                              |
-| ------------------ | --------------------------------------------------- |
-| Última atualização | 17/11/2026 — RP-057                                 |
-| Etapa              | **Revisão institucional local. F8/F9/F10 parciais** |
-| Versão             | `0.13.20`, oito manifests privados alinhados        |
-| Git                | `dev`, base `0524579`                               |
-| Autorização        | Editar texto e foto da Dra. Érika Ettori            |
-| Checkpoint         | Revisar o perfil atualizado no site local           |
+| Campo              | Estado                                                         |
+| ------------------ | -------------------------------------------------------------- |
+| Última atualização | 19/11/2026 — RP-058                                            |
+| Etapa              | **Avaliação de hospedagem concluída; F8/F9/F10 parciais**      |
+| Versão             | `0.13.20`, oito manifests privados alinhados                   |
+| Git                | `dev`, base `e174391` (RP-057)                                 |
+| Autorização        | Avaliar hospedagem gerenciada e VPS atual, sem contratar       |
+| Checkpoint         | Escolher destino e autorizar preparação/implantação específica |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-058 — 19/11/2026 — Avaliação de hospedagem e coexistência na VPS
+
+O pedido inicial autorizava publicar/enviar os arquivos à hospedagem Premium da Hostinger, explicitamente sem usar VPS. A consulta autenticada confirmou um plano `hostinger_premium` ativo e 12 websites, nenhum correspondente à Filaretti. O usuário informou o domínio `ettorifilaretti.adv.br`, adquirido no Registro.br, e decidiu preservar o sistema completo e avaliar hospedagem gerenciada compatível, sem contratar. Em seguida, pediu incluir a possibilidade de usar a VPS existente junto ao painel, com domínio separado. Essa última orientação autoriza avaliação, sem implantação automática na VPS.
+
+A revisão do código confirmou Next.js com SSR, API NestJS contínua, workers por timers e PostgreSQL, sem exportação estática implementada. A documentação oficial da Hostinger limita Node.js a Business/Cloud, não oferece PostgreSQL nesses planos e exclui workers permanentes do ambiente web/cloud. Por isso, copiar o repositório para `public_html` não entrega o sistema funcional; Business com banco externo também exigiria adaptar a execução das tarefas. A skill oficial `hostinger/claude-plugin/skills/deploy-to-hosting/SKILL.md` foi consultada pela fonte pública. Um subagente realizou revisão técnica somente leitura de runtimes, ingress, portas, mídia e provedores; a integração e a documentação ficaram com o agente principal.
+
+API Hostinger confirmou uma VPS KVM 1 ativa, Ubuntu com Easypanel, 1 vCPU, 4096 MB nominais e 51200 MB de disco provisionado. Métricas de 19/11 UTC, 48 amostras entre 00:19 e 23:45: CPU média 14,48%, pico amostrado 19,54%; RAM máxima amostrada 1,78 GiB. SSH somente leitura confirmou 16 contêineres ativos, incluindo WAIA produção/V2, dois n8n, Easypanel e Traefik. O Traefik já ocupa 80/443. No instante da consulta, `free -m` mostrou 2120 MiB disponíveis e nenhum swap; `df -h /` mostrou 31 GiB livres; load de 1 minuto 0,28. São medições do ambiente existente, sem teste de carga do Filaretti e sem comprovação de capacidade futura.
+
+A API Docker Manager retornou HTTP 400 porque o sistema instalado não é compatível com esse recurso; isso não significa ausência de Docker. A consulta SSH com chave e host conhecido existentes verificou os contêineres sem alterar configuração, allowlists ou firewall. A primeira chamada SSH no sandbox retornou `Permission denied`; a mesma consulta de leitura foi autorizada pela revisão automática e executada com acesso de rede. O resolver DNS local expirou na consulta NS; DNS do domínio não foi validado nem alterado.
+
+`docs/hosting-evaluation.md` compara VPS existente, Render, Hostinger Business/Cloud com PostgreSQL externo e Vercel/Railway. A VPS é candidata a ensaio isolado, com projeto/rede/volumes/segredos próprios, PostgreSQL 17 separado, imagem compilada fora do host e rota apenas do novo domínio no proxy existente. O domínio separado não isola CPU, RAM ou indisponibilidade do host. Scanner de anexos e os gates F8/F9 continuam pendentes. Render é a alternativa gerenciada mais direta tecnicamente; custos publicados são pisos/exemplos, sem cotação ou capacidade validada.
+
+Arquivos versionados alterados: `plan.md`, `relate.md` e `docs/deployment.md`; criado: `docs/hosting-evaluation.md`. Evidências sanitizadas criadas em `.local/hostinger-deployment/2026-11-19-assessment.json`, ignorada pelo Git. Nenhum arquivo de aplicação, manifesto, banco ou serviço remoto foi alterado. As mudanças anteriores em `apps/web/tsconfig.json` e o arquivo `LOGO_FUNDO_TRANSPARENTE` foram preservados e ficam fora da entrega. Versão `0.13.20`, branch `dev`, base real `e174391`; commit documental previsto como `docs(deploy): avalia hospedagem e VPS para Filaretti`.
+
+Validação: consultas autenticadas Hostinger, `docker ps`, `docker stats --no-stream`, `free -m`, `df -h /` e `uptime`; revisão do código e documentação primária dos provedores. Formatação Markdown e revisão do diff são os checks locais desta entrega. Lint, typecheck, build, suítes de aplicação, teste de carga e smokes externos não foram executados, pois não houve implementação ou implantação. Nenhum upload, deploy, contratação, DNS, push ou publicação realizado. Próximo passo: o usuário escolher o destino e autorizar a preparação/implantação correspondente; F8/F9/F10 permanecem parciais.
 
 ### RP-057 — 17/11/2026 — Perfil da Dra. Érika Ettori
 
