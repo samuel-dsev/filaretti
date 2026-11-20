@@ -1,0 +1,72 @@
+# syntax=docker/dockerfile:1.7
+ARG NODE_IMAGE=node:24.18.0-bookworm-slim
+
+FROM ${NODE_IMAGE} AS base
+ENV PNPM_HOME=/pnpm \
+    PATH=/pnpm:/usr/local/bin:$PATH \
+    NEXT_TELEMETRY_DISABLED=1 \
+    HUSKY=0
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates openssl \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install --global --ignore-scripts pnpm@11.25.0
+WORKDIR /workspace
+
+FROM base AS build
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY packages/ ./packages/
+COPY apps/api/ ./apps/api/
+COPY infra/vps/api-operations.sh ./infra/vps/
+RUN --mount=type=cache,id=filaretti-vps-pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --store-dir /pnpm/store --network-concurrency 8 --child-concurrency 2
+# prisma generate only parses this synthetic URL. No database is contacted here.
+RUN DATABASE_URL=postgresql://build:build@127.0.0.1:5432/build \
+    pnpm --filter @filaretti/config build \
+    && pnpm --filter @filaretti/types build \
+    && DATABASE_URL=postgresql://build:build@127.0.0.1:5432/build \
+       pnpm --filter @filaretti/api build
+
+# One-shot administration image. It is never the listening API service.
+FROM build AS operations-full
+COPY scripts/vps-import-staging.mjs ./scripts/vps-import-staging.mjs
+ENV NODE_ENV=production \
+    XDG_CACHE_HOME=/tmp/filaretti-cache
+USER node
+WORKDIR /workspace
+ENTRYPOINT ["/bin/sh", "/workspace/infra/vps/api-operations.sh"]
+CMD ["migrate"]
+
+FROM build AS packaged
+RUN --mount=type=cache,id=filaretti-vps-pnpm,target=/pnpm/store \
+    pnpm --filter @filaretti/api deploy --legacy --prod --prefer-offline \
+      --network-concurrency 8 --store-dir /pnpm/store /runtime/api
+COPY infra/vps/package-api.mjs ./infra/vps/package-api.mjs
+RUN node infra/vps/package-api.mjs /runtime/api
+
+FROM base AS runtime
+ARG SOURCE_COMMIT=unknown
+LABEL org.opencontainers.image.title="Filaretti API" \
+      org.opencontainers.image.revision=${SOURCE_COMMIT}
+ENV NODE_ENV=production \
+    API_HOST=0.0.0.0 \
+    API_PORT=3001
+WORKDIR /app
+COPY --from=packaged --chown=node:node /runtime/api/ ./
+USER node
+EXPOSE 3001
+CMD ["node", "dist/main.js"]
+
+# The first protected deployment only needs migrations and the guarded public
+# snapshot importer. Reuse the already verified production dependency closure.
+FROM runtime AS operations
+ENV XDG_CACHE_HOME=/tmp/filaretti-cache
+COPY --from=build --chown=node:node /workspace/apps/api/prisma/schema.prisma ./prisma/schema.prisma
+COPY --from=build --chown=node:node /workspace/apps/api/prisma/migrations/ ./prisma/migrations/
+COPY --from=build --chown=node:node /workspace/apps/api/prisma.config.ts ./prisma.config.ts
+COPY --chown=node:node scripts/vps-import-staging.mjs ./scripts/vps-import-staging.mjs
+COPY --chown=node:node infra/vps/staging-operations.mjs ./staging-operations.mjs
+USER root
+RUN node -e "const fs=require('node:fs'),p=require('node:path'),r=require('node:module').createRequire(require.resolve('@prisma/client/package.json'));fs.symlinkSync(p.dirname(r.resolve('prisma/package.json')),'/app/node_modules/prisma','dir')"
+USER node
+ENTRYPOINT ["node", "staging-operations.mjs"]
+CMD ["migrate"]

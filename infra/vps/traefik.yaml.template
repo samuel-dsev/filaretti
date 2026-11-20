@@ -1,0 +1,23 @@
+http:
+  routers:
+    filaretti-stage:
+      rule: Host(`ettorifilaretti.adv.br`)
+      entryPoints: [https]
+      priority: 100
+      middlewares: [filaretti-stage-allowlist, filaretti-stage-noindex]
+      service: filaretti-stage
+      tls:
+        certResolver: letsencrypt
+  middlewares:
+    filaretti-stage-allowlist:
+      ipAllowList:
+        sourceRange: [__OPERATOR_CIDR__]
+    filaretti-stage-noindex:
+      headers:
+        customResponseHeaders:
+          X-Robots-Tag: noindex, nofollow, noarchive
+  services:
+    filaretti-stage:
+      loadBalancer:
+        servers:
+          - url: http://filaretti-stage-ingress:8080

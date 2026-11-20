@@ -2,18 +2,38 @@
 
 ## Situação atual
 
-| Campo              | Estado                                                         |
-| ------------------ | -------------------------------------------------------------- |
-| Última atualização | 19/11/2026 — RP-058                                            |
-| Etapa              | **Avaliação de hospedagem concluída; F8/F9/F10 parciais**      |
-| Versão             | `0.13.20`, oito manifests privados alinhados                   |
-| Git                | `dev`, base `e174391` (RP-057)                                 |
-| Autorização        | Avaliar hospedagem gerenciada e VPS atual, sem contratar       |
-| Checkpoint         | Escolher destino e autorizar preparação/implantação específica |
+| Campo              | Estado                                                            |
+| ------------------ | ----------------------------------------------------------------- |
+| Última atualização | 20/11/2026 — RP-059                                               |
+| Etapa              | **Homologação protegida instalada; F8/F9/F10 parciais**           |
+| Versão             | `0.13.20`, oito manifests privados alinhados                      |
+| Git                | `dev`, base `fac3524` (RP-058)                                    |
+| Autorização        | Preparar ambiente, upload e iniciar deploy na VPS existente       |
+| Checkpoint         | Revisar visual/conteúdo e fechar gates antes da liberação pública |
 
 Este documento distingue implementação, validação e pendências externas. Atualizar em cada entrega; preservar o histórico. Datas dos relatórios e informadas ao usuário seguem America/Sao_Paulo; evidências preservam seus timestamps UTC originais.
 
 ## Histórico
+
+### RP-059 — 20/11/2026 — Homologação protegida instalada na VPS
+
+O usuário autorizou preparar o ambiente, enviar os arquivos e iniciar o deploy na VPS existente, preservando o sistema completo e os serviços do painel. A retomada confirmou `dev`, base `fac3524`, versão `0.13.20` e as alterações anteriores em `apps/web/tsconfig.json` e `LOGO_FUNDO_TRANSPARENTE`, que ficam fora da entrega. Não houve contratação, upgrade ou push.
+
+Criados Dockerfiles Linux para API/runtime/operações e Next standalone, contexto com allowlist, scripts de build e templates de Compose/ingress/Traefik em `infra/vps/`. Os novos exportador/importador implementam transporte estritamente de homologação: fonte local somente leitura, colunas públicas explícitas, snapshot com hash, flags históricas preservadas, destino novo e vazio, operador exclusivo e transação. Não substituem nem relaxam o gate F9 de produção. Subagentes cuidaram de arquivos distintos; o principal integrou, revisou, compilou e operou o servidor.
+
+Ambiente `APP_ENV=staging`, sem mocks de integração, envios, formulários, analytics, indexação ou workers, com banco/volumes/segredos exclusivos. `/opt/filaretti/staging` recebeu configuração privada e os serviços `postgres`, `api`, `web` e `ingress` do projeto `filaretti-stage`. API e banco não têm portas host publicadas. PostgreSQL 17 usa volume próprio; o volume exclusivo `filaretti-stage_storage`, pré-criado para receber/verificar os arquivos, é referenciado explicitamente pelo Compose. As seis migrations aplicaram com sucesso. A transação importou 4 artigos, 5 páginas, 2 profissionais, 4 áreas, 7 mídias e relacionamentos públicos; criou um operador fictício novo com senha aleatória por stdin/SSH e Argon2id. Nenhuma conta, contato, assinante, sessão ou outbox da origem foi transportado. As flags `is_mock` históricas foram preservadas e o acesso externo permanece restrito ao operador.
+
+O usuário criou o registro A no Registro.br; a consulta DNS pública confirmou `187.77.247.218`. Uma rota exclusiva do hostname foi adicionada ao provedor de arquivos do Traefik existente, sem reiniciar serviços nem alterar regras WAIA. `https://ettorifilaretti.adv.br` respondeu com certificado válido e conteúdo real do snapshot. O proxy compartilhado usa `forwardedHeaders.insecure=true`; o ingresso próprio aceita somente seu endereço inspecionado e extrai o par à direita de XFF. Os requests com headers falsificados mantiveram o IP correto nos logs; tentativas de acesso direto por outro contêiner e de origem não autorizada, mesmo forjando os headers, retornaram 403. O ingresso transmite sem buffers; seu access log omite URI/query e os fluxos com tokens usam somente esse log seguro e os logs sanitizados da aplicação.
+
+Dois builds locais simultâneos pressionaram a memória e foram cancelados; as primeiras tentativas de empacotamento também exigiram corrigir metadados offline e cópia de pacotes já existentes. Os builds finais passaram no builder exclusivo `filaretti-vps`, limitado a 3 GiB/quatro CPUs/uma etapa, depois parado para liberar recursos. API e Next passaram por TypeScript; Next standalone usou Webpack, dois workers e segredo BuildKit. A imagem compacta de operações reutiliza as dependências de produção já verificadas e só aceita migrations/importação no banco de staging exato. O target opcional `operations-full` não foi publicado nem executado. Os três runtimes Node usam usuário não root. Não houve build na VPS. O código de aplicação continua na base `fac3524`, incluindo a edição preexistente do tsconfig no contexto de trabalho; a infraestrutura é a revisão `vps1`, sem alegar artefato de produção gerado de árvore limpa.
+
+Checks aprovados: sintaxe/ESLint dos cinco scripts de implantação; Prettier; dez testes existentes de API pública/política web; guardas negativos do exportador/importador; builds/typechecks; Prisma e módulos nativos Linux; 330 versões de dependências da API presentes no lockfile; ausência de ambientes privados nas imagens; 216 arquivos Next inspecionados sem os segredos de build; hashes de snapshot/sete mídias e dos dois arquivos de imagens após upload; camadas/plataforma/usuário das três imagens; Compose `config --quiet`; seis migrations e carga PostgreSQL real; Nginx `-t`; 29 checks HTTP finais sem falhas, incluindo páginas/artigos, mídia byte a byte, 404, ocultação de superfície dev, noindex, CSRF, origem e login/logout com cookies Secure/HttpOnly; 16 recursos de JavaScript/CSS/imagem otimizada e 12 fontes WOFF2 carregados e verificados. O smoke foi repetido após o ajuste final do ingresso. Os 16 contêineres anteriores mantiveram seus IDs e o WAIA continuou com readiness 200. Na amostra após implantação, restavam 1820 MiB de RAM disponível e 29 GiB de disco; load de 1 minuto 1,14 durante as verificações. Isso não é teste de carga nem garantia de capacidade futura.
+
+Arquivos criados: `infra/vps/Dockerfile.api`, `Dockerfile.api.dockerignore`, `Dockerfile.web`, `Dockerfile.web.dockerignore`, `api-operations.sh`, `build-web.mjs`, `package-api.mjs`, `staging-operations.mjs`, `compose.yaml`, `ingress.conf.template`, `traefik.yaml.template`, `README.md`; `scripts/vps-export-public.mjs` e `scripts/vps-import-staging.mjs`. Arquivos alterados: `plan.md`, `relate.md`, `docs/deployment.md`. Nenhum arquivo removido. As alterações anteriores do usuário continuam fora do commit. Commit local previsto: `build(deploy): inicia homologação isolada na VPS`, branch `dev`, aplicação `0.13.20`.
+
+Registros, três imagens identificadas por camadas, hashes, snapshot público, scripts auxiliares, `http-smoke.json`, `assets-smoke.json` e `server-audit.json` ficam ignorados em `.local/hostinger-deployment/`. A configuração operacional está em `stage-20261119-fac3524`; credenciais exclusivas em `private/admin-access.txt`, sem impressão de valores. O arquivo API/operações tem SHA-256 `14f788913615124f88dd79e56e833b01d5d0f54b989449e93eeecf4af1666deb`; web `734b98b626c57c2c98d333a9df0a37c630fb5643291caa07a5b028034859ebeb`; snapshot `0aaf117b6fe761e8d260a0425fefa1475f766be4bf846686ada96f82d850aa24`.
+
+Limites: inspeção visual não executada; o navegador integrado retornou timeout `service_info` e o helper Windows retornou timeout `list_apps` inclusive após retry/reset. HTTP e carregamento de assets não certificam layout, teclado, hidratação ou navegadores/dispositivos. Não foram executados carga, Lighthouse, CI remoto, backup/restore, R2/Resend/Turnstile/scanner reais nem liberação ao público geral. Conteúdo/mídia ainda exigem revisão e promoção consciente de flags/ativos; nenhum mock foi desmarcado para contornar gates. F8/F9/F10 continuam parciais. A etapa autorizada de ambiente/upload/deploy inicial terminou em homologação protegida; próximo passo é revisão visual e dos materiais, integrações e aceites operacionais antes da liberação pública. Sem push ou contratação.
 
 ### RP-058 — 19/11/2026 — Avaliação de hospedagem e coexistência na VPS
 

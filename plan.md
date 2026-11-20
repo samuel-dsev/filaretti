@@ -2,22 +2,22 @@
 
 ## 1. Situação atual e ponto de retomada
 
-| Campo                  | Situação                                                                 |
-| ---------------------- | ------------------------------------------------------------------------ |
-| Última atualização     | 19/11/2026 — Avaliação de hospedagem e VPS                               |
-| Último relatório       | `RP-058`, em `relate.md`                                                 |
-| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                        |
-| Última entrega técnica | **Avaliação de hospedagem para o sistema completo — RP-058**             |
-| Versão de referência   | `0.13.20`, oito manifests privados alinhados                             |
-| Etapa corrente         | **Avaliação concluída; implantação pendente. F8/F9/F10 parciais**        |
-| Próximo passo          | Escolher destino e autorizar preparação/implantação específica           |
-| Autorização            | Avaliar opções gerenciadas e VPS atual; preservar sistema, sem contratar |
-| Git                    | `dev`, base `e174391` (RP-057)                                           |
-| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                           |
+| Campo                  | Situação                                                             |
+| ---------------------- | -------------------------------------------------------------------- |
+| Última atualização     | 20/11/2026 — Homologação protegida instalada na VPS                  |
+| Último relatório       | `RP-059`, em `relate.md`                                             |
+| Última fase concluída  | **F7 — Relacionamento, busca, SEO e privacidade**                    |
+| Última entrega técnica | **Deploy de homologação protegida na VPS — RP-059**                  |
+| Versão de referência   | `0.13.20`, oito manifests privados alinhados                         |
+| Etapa corrente         | **Homologação instalada e validada por HTTP; F8/F9/F10 parciais**    |
+| Próximo passo          | Revisão visual/conteúdo e gates externos antes da liberação pública  |
+| Autorização            | Preparar ambiente, enviar arquivos e iniciar deploy na VPS existente |
+| Git                    | `dev`, base `fac3524` (RP-058)                                       |
+| Cwd verificado         | `C:\Users\Samuel\Documents\Projetos\Filaretti`                       |
 
 **Antes de cada implementação:** ler `AGENTS.md`, este arquivo inteiro e a situação atual de `relate.md`; verificar a pasta e o estado real do Git. Executar somente a etapa autorizada. Ao encerrar, atualizar este quadro, a tabela de etapas e o relatório, entregar os resultados e aguardar confirmação para avançar.
 
-**Destino informado em 19/11:** `ettorifilaretti.adv.br`, adquirido no Registro.br segundo o usuário. O pedido inicial de upload no Premium foi redirecionado pelo usuário para avaliação de hospedagem gerenciada, preservando o sistema completo e sem contratar; também foi autorizada a avaliação da VPS existente junto ao painel, com domínio separado. A avaliação está em `docs/hosting-evaluation.md`. Não houve upload, deploy ou alteração de DNS. A VPS admite essa arquitetura, mas a capacidade para produção ainda exige ensaio isolado; o Premium ativo não executa a aplicação atual.
+**Destino informado em 19/11:** `ettorifilaretti.adv.br`, adquirido no Registro.br segundo o usuário. A avaliação RP-058 está em `docs/hosting-evaluation.md`. Depois, o usuário autorizou ambiente, upload e início do deploy na VPS existente. Em 20/11, web, API, PostgreSQL e ingresso próprios ficaram ativos em homologação protegida, com HTTPS válido e acesso restrito ao IP autorizado. O usuário criou o registro A no Registro.br. A liberação pública e o aceite de produção continuam pendentes; o Premium não foi alterado.
 
 Os números de versão abaixo são marcos previstos. Correções intermediárias podem alterar a sequência efetiva; sempre registrar a versão real, sem renumerar o histórico. A conclusão técnica de uma etapa não autoriza automaticamente a seguinte.
 
@@ -68,19 +68,19 @@ Usar migrations versionadas, relações e políticas de exclusão explícitas. A
 
 ## 4. Grandes atualizações e ordem cronológica
 
-| Etapa | Versão prevista | Entrega principal                             | Dependência                                               | Estado                                                                      |
-| ----- | --------------- | --------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------- |
-| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                                              | **Concluída — RP-000**                                                      |
-| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026                                  | **Concluída — RP-002**                                                      |
-| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1; autorizada pelo usuário                               | **Concluída — RP-003**                                                      |
-| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026                              | **Concluída — RP-004**                                                      |
-| F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026                              | **Concluída — RP-005**                                                      |
-| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026                              | **Concluída — RP-006**                                                      |
-| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5; autorizada em 03/10/2026                              | **Concluída — RP-007**                                                      |
-| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6; autorizada em 04/10/2026                              | **Concluída — RP-008**                                                      |
-| F8    | 0.8.0           | Validação integrada e homologação             | F7; autorizada em 04/10/2026                              | **Parcial — entrega local RP-009; gates externos e QA pendentes**           |
-| F9    | 0.9.0           | Migração e preparação da release              | Autorizada em 05/10; F8/material real pendentes           | **Parcial — mecanismos locais RP-010; lote/candidata oficiais pendentes**   |
-| F10   | 1.0.0           | Publicação e validação operacional da V1      | F8/F9 e ambiente pendentes; avaliação autorizada em 19/11 | **Parcial — RP-058 avalia hospedagem/VPS; destino e implantação pendentes** |
+| Etapa | Versão prevista | Entrega principal                             | Dependência                                               | Estado                                                                    |
+| ----- | --------------- | --------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------- |
+| F0    | 0.0.0           | Planejamento e regras de continuidade         | Plano mestre                                              | **Concluída — RP-000**                                                    |
+| F1    | 0.1.0           | Fundação, arquitetura e ambiente reproduzível | Autorizada em 02/10/2026                                  | **Concluída — RP-002**                                                    |
+| F2    | 0.2.0           | Banco, autenticação e API de domínio          | F1; autorizada pelo usuário                               | **Concluída — RP-003**                                                    |
+| F3    | 0.3.0           | Design System e estrutura de interfaces       | F2; autorizada em 03/10/2026                              | **Concluída — RP-004**                                                    |
+| F4    | 0.4.0           | Site institucional conectado à API            | F3; autorizada em 03/10/2026                              | **Concluída — RP-005**                                                    |
+| F5    | 0.5.0           | Portal editorial e leitura de conteúdos       | F4; autorizada em 03/10/2026                              | **Concluída — RP-006**                                                    |
+| F6    | 0.6.0           | CMS, mídia e publicação ponta a ponta         | F5; autorizada em 03/10/2026                              | **Concluída — RP-007**                                                    |
+| F7    | 0.7.0           | Contato, newsletter, busca, SEO e privacidade | F6; autorizada em 04/10/2026                              | **Concluída — RP-008**                                                    |
+| F8    | 0.8.0           | Validação integrada e homologação             | F7; autorizada em 04/10/2026                              | **Parcial — entrega local RP-009; gates externos e QA pendentes**         |
+| F9    | 0.9.0           | Migração e preparação da release              | Autorizada em 05/10; F8/material real pendentes           | **Parcial — mecanismos locais RP-010; lote/candidata oficiais pendentes** |
+| F10   | 1.0.0           | Publicação e validação operacional da V1      | Deploy inicial autorizado em 20/11; gates F8/F9 pendentes | **Parcial — homologação VPS instalada (RP-059); produção pendente**       |
 
 Cada etapa termina com validação, documentação, commit local quando o Git estiver preparado, relatório e pausa. Os subpassos pertencem à mesma atualização; não autorizam executar a etapa seguinte. Segurança, testes e acessibilidade começam na fundação e acompanham todas as entregas.
 
@@ -225,6 +225,8 @@ Documentação consultada em 02/10/2026 para sustentar decisões do planejamento
 - [Versionamento Semântico](https://semver.org/lang/pt-BR/): referência do formato de versão; a convenção de marcos 0.x acima é a política de trabalho deste projeto.
 
 ## 8. Registro da última atualização
+
+**20/11/2026 — RP-059 — Homologação protegida na VPS.** Três imagens Linux compiladas e verificadas; seis migrations, snapshot público e sete mídias carregados em banco/storage próprios. Passaram 29 checks HTTP, 16 recursos frontend e 12 fontes, autenticação/CSRF, bloqueios de origem/acesso direto e preservação dos 16 contêineres anteriores. WAIA readiness 200. Inspeção visual não executada: os helpers de navegador/Windows expiraram. Integrações, revisão dos materiais e gates de produção permanecem pendentes.
 
 **19/11/2026 — RP-058 — Avaliação de hospedagem e VPS.** Premium ativo incompatível com o runtime atual. Sistema completo preservado por decisão do usuário. Alternativas gerenciadas comparadas e VPS KVM 1 consultada por API/SSH somente leitura: 1 vCPU, 4 GB nominais, cerca de 2,1 GB de RAM disponível e 31 GB de disco livre no instante da consulta. Coexistência por domínio/contêineres separados é possível em princípio; dimensionamento, staging e gates externos continuam pendentes. Nenhuma contratação, transferência de arquivos ou mudança no servidor/DNS.
 
